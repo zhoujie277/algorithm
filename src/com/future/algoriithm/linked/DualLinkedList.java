@@ -1,18 +1,20 @@
 package com.future.algoriithm.linked;
 
 import com.future.algoriithm.PrintUtils;
+import com.future.algoriithm.Printable;
 import com.future.algoriithm.node.DualNode;
 import com.future.algoriithm.node.Node;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.function.Consumer;
 
 /**
  * 双向链表
  */
 @SuppressWarnings("unused")
-public class DualLinkedList<T extends Comparable<T>> {
+public class DualLinkedList<T extends Comparable<T>> implements Printable, Iterable<T> {
 
     private DualNode<T> head;
     private DualNode<T> tail;
@@ -52,6 +54,18 @@ public class DualLinkedList<T extends Comparable<T>> {
 
     public T pop() {
         return unLinkLast(tail);
+    }
+
+    public void push(T obj) {
+        linkLast(obj);
+    }
+
+    public void unshift(T obj) {
+        linkFirst(obj);
+    }
+
+    public T shift() {
+        return unLinkFirst(head);
     }
 
     @SuppressWarnings("all")
@@ -108,7 +122,7 @@ public class DualLinkedList<T extends Comparable<T>> {
         return value;
     }
 
-    public void linkFirst(T obj) {
+    private void linkFirst(T obj) {
         DualNode<T> first = head;
         DualNode<T> newNode = new DualNode<>(obj, first, null);
         head = newNode;
@@ -120,7 +134,7 @@ public class DualLinkedList<T extends Comparable<T>> {
         count++;
     }
 
-    public void linkLast(T obj) {
+    private void linkLast(T obj) {
         DualNode<T> last = tail;
         DualNode<T> newNode = new DualNode<>(obj, null, last);
         tail = newNode;
@@ -132,7 +146,7 @@ public class DualLinkedList<T extends Comparable<T>> {
         count++;
     }
 
-    public T get(int index) {
+    private T get(int index) {
         Node<T> current = node(index);
         return current == null ? null : current.value;
     }
@@ -154,18 +168,28 @@ public class DualLinkedList<T extends Comparable<T>> {
        return current;
     }
 
-    public void foreach(Consumer<T> consumer) {
+    @Override
+    public Iterator<T> iterator() {
+        return new Itr();
+    }
+
+    public Iterator<T> reverseIterator() {
+        return new ReverseIterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super T> action) {
         Node<T> current = head;
         while (current != null) {
-            consumer.accept(current.value);
+            action.accept(current.value);
             current = current.next;
         }
     }
 
-    public void print() {
-        System.out.printf("-------------DualLinkListed(%d)------------\n", count);
-        foreach((t) -> System.out.printf("%s\t", t.toString()));
-        System.out.println("\n---------------------------------------------");
+    @Override
+    public void println() {
+        PrintUtils.printf("-------------DualLinkListed(%d)------------\n", count);
+        forEach((t) -> PrintUtils.printf("%s", t.toString()));
     }
 
     public static void main(String[] args) {
@@ -176,7 +200,48 @@ public class DualLinkedList<T extends Comparable<T>> {
         for (Integer o : list) {
             dualLinkedList.linkLast(o);
         }
-
-        dualLinkedList.print();
+        dualLinkedList.println();
     }
+
+
+    private class Itr implements Iterator<T> {
+
+        Node<T> current;
+        public Itr() {
+            current = head;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public T next() {
+            T val = current.value;
+            current = current.next;
+            return val;
+        }
+    }
+
+    private class ReverseIterator implements Iterator<T> {
+
+        DualNode<T> current;
+        public ReverseIterator() {
+            current = tail;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public T next() {
+            T val = current.value;
+            current = current.prev;
+            return val;
+        }
+    }
+
 }

@@ -6,7 +6,8 @@ import com.future.algoriithm.node.Node;
 
 import java.util.Iterator;
 
-public class Queue <T extends Comparable<T>> implements Printable, Iterable {
+@SuppressWarnings("unused")
+public class Queue <T extends Comparable<T>> implements Printable, Iterable<T> {
     private Node<T> front;
     private Node<T> rear;
     private int count;
@@ -22,7 +23,7 @@ public class Queue <T extends Comparable<T>> implements Printable, Iterable {
         count++;
     }
 
-    public T unshift() {
+    public T poll() {
         if (front == null) return null;
         Node<T> first = front;
         T value = first.value;
@@ -40,11 +41,9 @@ public class Queue <T extends Comparable<T>> implements Printable, Iterable {
     @Override
     public void println() {
         PrintUtils.println("----------------Queue---------------");
-        Iterator<T> it = iterator();
-        while (it.hasNext()) {
-            PrintUtils.print(it.next());
+        for (T t : this) {
+            PrintUtils.print(t);
         }
-        PrintUtils.println();
     }
 
     public static void main(String[] args) {
