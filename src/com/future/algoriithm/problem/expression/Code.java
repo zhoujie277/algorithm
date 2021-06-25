@@ -12,6 +12,7 @@ class MaskCode {
 public class Code implements Comparable<Code> {
     private int mask;
     private int value;
+    private float decimal;
 
     public Code(int value) {
         this(value, true);
@@ -19,6 +20,7 @@ public class Code implements Comparable<Code> {
 
     public Code(int value, boolean digit) {
         this.value = value;
+        this.decimal = 0f;
         initMask(digit);
     }
 
@@ -51,6 +53,14 @@ public class Code implements Comparable<Code> {
         return value;
     }
 
+    public float getDecimal() {
+        return decimal;
+    }
+
+    public void setDecimal(float decimal) {
+        this.decimal = decimal;
+    }
+
     @Override
     public int compareTo(Code o) {
         return mask - o.mask;
@@ -60,7 +70,8 @@ public class Code implements Comparable<Code> {
     public String toString() {
         if (isOperator()) {
             return (char) value + " ";
-        } else if(isDigit()){
+        } else if (isDigit()) {
+            if (decimal * 10 > value * 10) return decimal + " ";
             return value + " ";
         }
         return "Code{" +

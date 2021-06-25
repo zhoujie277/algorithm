@@ -14,22 +14,26 @@ public class Operator {
     }
 
     public static Code operation(Code left, Code right, Code operator) {
-        int result = 0;
+        float result = 0f;
         int operatorValue = operator.getValue();
-       switch (operatorValue) {
-           case '+':
-               result = left.getValue() + right.getValue();
-               break;
-           case '-':
-               result = left.getValue() - right.getValue();
-               break;
-           case '*':
-               result = left.getValue() * right.getValue();
-               break;
-           case '/':
-               result = left.getValue() / right.getValue();
-               break;
-       }
-        return new Code(result, true);
+        float leftValue = left.getDecimal();
+        float rightValue = right.getDecimal();
+        switch (operatorValue) {
+            case '+':
+                result = leftValue + rightValue;
+                break;
+            case '-':
+                result = leftValue - rightValue;
+                break;
+            case '*':
+                result = leftValue * rightValue;
+                break;
+            case '/':
+                result = leftValue / rightValue;
+                break;
+        }
+        Code resCode = new Code((int)result, true);
+        resCode.setDecimal(result);
+        return resCode;
     }
 }

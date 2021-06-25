@@ -17,72 +17,81 @@ public class Expression implements Printable {
     private String originExpr;
 
     private Queue<Code> infixExpr = new Queue<>();
-    private Queue<Code> postExpr = new Queue<>();
+    private Queue<Code> prefixExpr = new Queue<>();
+    private Queue<Code> suffixExpr = new Queue<>();
 
     public Expression(String originExpr) {
         this.originExpr = originExpr;
     }
 
     public void parse() {
-        Stack<Integer> digitCache = new Stack<>();
-        StringBuilder digitBuilderr = new StringBuilder();
-        for (int i = 0; i < originExpr.length(); i++) {
+        Stack<Character> digitCache = new Stack<>();
+        for (int i = 0; i < originExpr.length(); ) {
             char c = originExpr.charAt(i);
-            if (Character.isDigit(c)) {
-//                digitBuilder.append(c);
-                int num = c - '0';
-                digitCache.push(num);
-                if (i == originExpr.length() - 1) {
-                    pushDigit(digitCache);
-//                    pushDigit(digitBuilder);
-                }
-            } else {
-                pushDigit(digitCache);
-//                pushDigit(digitBuilder);
+            if (!Character.isDigit(c) && c != '.') {
                 if (!Character.isWhitespace(c)) {
                     infixExpr.push(new Code(c, false));
                 }
+                i++;
+            } else {
+                do {
+                    digitCache.push(c);
+                    i++;
+                } while (i < originExpr.length() && Character.isDigit(c = originExpr.charAt(i)) || c == '.');
+                pushDigit(digitCache);
             }
         }
-        toPostExpression();
+        infixToPostExpression();
     }
 
     /**
      * 转后序表达式，方便运算
-     *
-     * @return
      */
-    public void toPostExpression() {
+    public void infixToPostExpression() {
         Stack<Code> codeStack = new Stack<>();
         Iterator<Code> iterator = infixExpr.iterator();
         Code code;
         while (iterator.hasNext()) {
             code = iterator.next();
             if (code.isDigit()) {
-                postExpr.push(code);
+                suffixExpr.push(code);
             } else if (code.isOperator()) {
-                if (code.getValue() ==')') {
+                if (code.getValue() == ')') {
                     Code pop;
                     while ((pop = codeStack.pop()) != null && pop.getValue() != '(') {
-                        postExpr.push(pop);
+                        suffixExpr.push(pop);
                     }
                     continue;
                 }
                 if (!codeStack.isEmpty()) {
                     Code peekCode = codeStack.peek();
                     if (peekCode.getValue() != '(' && code.compareTo(peekCode) <= 0) {
-                        postExpr.push(codeStack.pop());
+                        suffixExpr.push(codeStack.pop());
                     }
                 }
                 codeStack.push(code);
             }
         }
         while ((code = codeStack.pop()) != null) {
-            postExpr.push(code);
+            suffixExpr.push(code);
         }
     }
 
-    public int infixOperation() {
+    /**
+     * 数字的出栈运算并重新入栈
+     */
+    private void digitOperation(Stack<Code> digitStack, Code code) {
+        Code right = digitStack.pop();
+        Code left = digitStack.pop();
+        Code result = Operator.operation(left, right, code);
+        digitStack.push(result);
+    }
+
+    /**
+     * 5 + (3 * 4) - 2
+     * 5 + (3 * 4) - 2
+     */
+    public float infixOperation() {
         Stack<Code> digitStack = new Stack<>();
         Stack<Code> operatorStack = new Stack<>();
         Code code;
@@ -90,7 +99,7 @@ public class Expression implements Printable {
             if (code.isDigit()) {
                 digitStack.push(code);
             } else {
-                if (code.getValue() ==')') {
+                if (code.getValue() == ')') {
                     Code pop;
                     while ((pop = operatorStack.pop()) != null && pop.getValue() != '(') {
                         digitOperation(digitStack, pop);
@@ -110,25 +119,17 @@ public class Expression implements Printable {
         while ((code = operatorStack.pop()) != null) {
             digitOperation(digitStack, code);
         }
-        return digitStack.pop().getValue();
+        return digitStack.pop().getDecimal();
     }
 
     /**
-     * 数字的出栈运算并重新入栈
-     * @param digitStack
-     * @param code
+     * 5 + (3 * 4) - 2
+     * 5 3 4 * + 2 -
      */
-    private void digitOperation(Stack<Code> digitStack, Code code) {
-        Code right = digitStack.pop();
-        Code left = digitStack.pop();
-        Code result = Operator.operation(left, right, code);
-        digitStack.push(result);
-    }
-
-    public int postOperation() {
+    public int suffixOperation() {
         Stack<Code> operationStack = new Stack<>();
         Code code;
-        while ((code = postExpr.unshift()) != null) {
+        while ((code = suffixExpr.unshift()) != null) {
             if (code.isDigit()) {
                 operationStack.push(code);
             } else {
@@ -138,34 +139,46 @@ public class Expression implements Printable {
         return operationStack.pop().getValue();
     }
 
-    private int pushDigit(Stack<Integer> digitCache) {
-        if (digitCache.isEmpty()) return 0;
-        Integer ch;
-        int bit = 1;
-        int lastDigit = 0;
-        while ((ch = digitCache.pop()) != null) {
-            lastDigit = lastDigit + ch * bit;
-            bit *= 10;
-        }
-        if (lastDigit != 0) {
-            infixExpr.push(new Code(lastDigit, true));
-        }
-        return lastDigit;
+    /**
+     * 5 + (3 * 4) - 2
+     * - + 5 * 3 4 2
+     */
+    public int prefixOperation() {
+        return 0;
     }
 
-    private int pushDigit(StringBuilder digitBuilder) {
-        if (digitBuilder.length() == 0) return 0;
-        int lastDigit = Integer.parseInt(digitBuilder.toString());
-        infixExpr.push(new Code(lastDigit, true));
-        digitBuilder.delete(0, digitBuilder.length());
+    private int pushDigit(Stack<Character> digitCache) {
+        if (digitCache.isEmpty()) return 0;
+        Character ch;
+        int bit = 1;
+        int lastDigit = 0;
+        float dotDigit = 0f;
+        int temp;
+        while ((ch = digitCache.pop()) != null) {
+            if (ch == '.') {
+                dotDigit = lastDigit * 1f / bit;
+                bit = 1;
+                lastDigit = 0;
+            } else {
+                temp = ch - '0';
+                lastDigit = lastDigit + temp * bit;
+                bit *= 10;
+            }
+        }
+        float finalDigit = lastDigit + dotDigit;
+        Code digitCode = new Code(lastDigit, true);
+        digitCode.setDecimal(finalDigit);
+        infixExpr.push(digitCode);
         return lastDigit;
     }
 
     @Override
     public void println() {
+        PrintUtils.println("\n----------------OriginExpression---------------");
+        PrintUtils.println(originExpr);
         PrintUtils.println("\n----------------InfixExpression---------------");
         this.infixExpr.println();
         PrintUtils.println("\n----------------PostExpression---------------");
-        this.postExpr.println();
+        this.suffixExpr.println();
     }
 }
