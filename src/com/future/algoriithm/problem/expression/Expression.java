@@ -10,6 +10,7 @@ import java.util.Iterator;
 /**
  * 队列+栈实现的表达式的解析、存储、运算
  * 前缀表达式/中缀表达式/后缀表达式
+ *
  * @author zhoujie
  */
 public class Expression implements Printable {
@@ -50,30 +51,8 @@ public class Expression implements Printable {
      * 则栈底元素（先入栈）在表达式的左边，栈顶元素（后入栈）在表达式左边
      */
     public void infixToPostExpression() {
-        Stack<Code> codeStack = new Stack<>();
-        Code code;
-        for (Code value : infixExpr) {
-            code = value;
-            if (code.isDigit()) {
-                suffixExpr.push(code);
-            } else if (code.isOperator()) {
-                if (code.getValue() == ')') {
-                    Code pop;
-                    while ((pop = codeStack.pop()) != null && pop.getValue() != '(') {
-                        suffixExpr.push(pop);
-                    }
-                    continue;
-                }
-                Code peekCode;
-                while ((peekCode = codeStack.peek()) != null && peekCode.getValue() != '(' && code.compareTo(peekCode) <= 0) {
-                    suffixExpr.push(codeStack.pop());
-                }
-                codeStack.push(code);
-            }
-        }
-        while ((code = codeStack.pop()) != null) {
-            suffixExpr.push(code);
-        }
+        Iterator<Code> iterator = infixExpr.iterator();
+        forEachInfixExpression(iterator, ')', '(', suffixExpr, true);
     }
 
     /**
@@ -82,31 +61,42 @@ public class Expression implements Printable {
      * 这一点和后缀表达式不同
      */
     public void infixToPrefixExpression() {
+        Iterator<Code> iterator = infixExpr.reverseIterator();
+        forEachInfixExpression(iterator, '(', ')', prefixExpr, false);
+    }
+
+    private void forEachInfixExpression(Iterator<Code> iterator, char popStack, char pushStack, DualLinkedList<Code> expr, boolean leftToRight) {
         Stack<Code> codeStack = new Stack<>();
         Code code;
-        Iterator<Code> iterator = infixExpr.reverseIterator();
         while (iterator.hasNext()) {
             code = iterator.next();
             if (code.isDigit()) {
-                prefixExpr.unshift(code);
+                addToExpression(expr, leftToRight, code);
             } else if (code.isOperator()) {
-                if (code.getValue() == '(') {
+                if (code.getValue() == popStack) {
                     Code pop;
-                    while ((pop = codeStack.pop()) != null && pop.getValue() != ')') {
-                        prefixExpr.unshift(pop);
+                    while ((pop = codeStack.pop()) != null && pop.getValue() != pushStack) {
+                        addToExpression(expr, leftToRight, pop);
                     }
                     continue;
                 }
                 Code peekCode;
-                while ((peekCode = codeStack.peek()) != null && peekCode.getValue() != ')' && code.compareTo(peekCode) < 0) {
-                    prefixExpr.unshift(codeStack.pop());
+                while ((peekCode = codeStack.peek()) != null && peekCode.getValue() != pushStack && code.compareTo(peekCode) < 0) {
+                    addToExpression(expr, leftToRight, codeStack.pop());
                 }
                 codeStack.push(code);
             }
         }
         while ((code = codeStack.pop()) != null) {
-            prefixExpr.unshift(code);
+            addToExpression(expr, leftToRight, code);
         }
+    }
+
+    private void addToExpression(DualLinkedList<Code> expr, boolean leftToRight, Code code) {
+        if (leftToRight)
+            expr.push(code);
+        else
+            expr.unshift(code);
     }
 
     /**
@@ -118,7 +108,7 @@ public class Expression implements Printable {
         Code upCode = digitStack.pop();
         Code downCode = digitStack.pop();
         Code result;
-        if(leftToRight) {
+        if (leftToRight) {
             result = Operator.operation(downCode, upCode, code);
         } else {
             result = Operator.operation(upCode, downCode, code);
@@ -160,34 +150,31 @@ public class Expression implements Printable {
     }
 
     /**
+     * 后缀表达式执行运算
      * 5 + (3 * 4) - 2
      * 5 3 4 * + 2 -
      */
     public float suffixOperation() {
-        Stack<Code> operationStack = new Stack<>();
-        Code code;
-        while ((code = suffixExpr.poll()) != null) {
-            if (code.isDigit()) {
-                operationStack.push(code);
-            } else {
-                digitOperation(operationStack, code, true);
-            }
-        }
-        return operationStack.pop().getDecimal();
+        return internalOperation(suffixExpr, true);
     }
 
     /**
+     * 前缀表达式执行运算
      * 5 + (3 * 4) - 2
      * - + 5 * 3 4 2
      */
     public float prefixOperation() {
+        return internalOperation(prefixExpr, false);
+    }
+
+    private float internalOperation(DualLinkedList<Code> expr, boolean leftToRight) {
         Stack<Code> operationStack = new Stack<>();
         Code code;
-        while ((code = prefixExpr.pop()) != null) {
+        while ((code = (leftToRight ? expr.poll() : expr.pop())) != null) {
             if (code.isDigit()) {
                 operationStack.push(code);
             } else {
-                digitOperation(operationStack, code, false);
+                digitOperation(operationStack, code, leftToRight);
             }
         }
         return operationStack.pop().getDecimal();
