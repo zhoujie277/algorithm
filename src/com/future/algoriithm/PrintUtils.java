@@ -28,7 +28,14 @@ public class PrintUtils {
         System.out.printf(s, args);
     }
 
+    public static void error(String s) {
+        System.err.println(s);
+    }
+
     public static <T> void print(T[] t) {
+        System.out.println(Arrays.toString(t));
+    }
+    public static <T> void print(int[] t) {
         System.out.println(Arrays.toString(t));
     }
 }

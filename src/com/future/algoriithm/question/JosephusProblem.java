@@ -1,6 +1,4 @@
-package com.future.algoriithm.problem;
-
-import java.util.Arrays;
+package com.future.algoriithm.question;
 
 /**
  * 约瑟夫问题
