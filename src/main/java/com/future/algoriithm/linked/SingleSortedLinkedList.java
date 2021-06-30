@@ -51,7 +51,7 @@ public class SingleSortedLinkedList<T extends Comparable<T>> {
         Node<T> target = new Node<>(obj);
         Node<T> current = head;
         while (current.next != null) {
-            if (target.compareTo(current.next) < 0) {
+            if (target.value.compareTo(current.next.value) < 0) {
                 break;
             }
             current = current.next;

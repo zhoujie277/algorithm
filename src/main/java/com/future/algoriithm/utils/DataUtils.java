@@ -11,9 +11,13 @@ public class DataUtils {
     public static Student[] generateStudents(int length) {
         Student[] students = new Student[length];
         for (int i = 0; i < students.length; i++) {
-            students[i] = new Student(randScore(), randAge(), randString());
+            students[i] = newStudent();
         }
         return students;
+    }
+
+    public static Student newStudent() {
+        return new Student(randUUID(), randScore(), randAge(), randString());
     }
 
     public static String[] generateStrings(int length) {
@@ -22,6 +26,10 @@ public class DataUtils {
             array[i] = randString();
         }
         return array;
+    }
+
+    public static int randUUID() {
+        return StdRandom.uniform(10000, 1000000);
     }
 
     private static int randScore() {
@@ -45,15 +53,21 @@ public class DataUtils {
         return sb.toString();
     }
 
-    public static class Student extends Sortable {
+    public static class Student extends Sortable implements Hashable {
         public final int score;
         public final int age;
         public final String name;
+        public final int id;
 
-        public Student(int score, int age, String name) {
+        public Student(int id, int score, int age, String name) {
+            this.id = id;
             this.score = score;
             this.age = age;
             this.name = name;
+        }
+
+        public Student(int score, int age, String name) {
+            this(0, score, age, name);
         }
 
         @Override
@@ -62,6 +76,7 @@ public class DataUtils {
                     "score=" + score +
                     ", age=" + age +
                     ", name='" + name + '\'' +
+                    ", id=" + id +
                     '}';
         }
 
@@ -74,6 +89,11 @@ public class DataUtils {
         public int[] keys() {
             int[] a = {age, score};
             return a;
+        }
+
+        @Override
+        public int hashValue() {
+            return 0;
         }
     }
 

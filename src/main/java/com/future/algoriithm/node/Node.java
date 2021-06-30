@@ -1,6 +1,6 @@
 package com.future.algoriithm.node;
 
-public class Node<T extends Comparable> implements Comparable<Node<T>> {
+public class Node<T> {
     public T value;
     public Node<T> next;
 
@@ -16,9 +16,4 @@ public class Node<T extends Comparable> implements Comparable<Node<T>> {
         this.value = value;
         this.next = null;
     }
-
-    public int compareTo(Node<T> o) {
-        return value.compareTo(o.value);
-    }
-
 }

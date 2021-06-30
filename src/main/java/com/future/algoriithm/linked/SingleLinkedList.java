@@ -6,11 +6,19 @@ import com.future.algoriithm.node.Node;
 import java.util.Arrays;
 import java.util.List;
 
-public class SingleLinkedList<T extends Comparable<T>> {
+public class SingleLinkedList<T> {
     private Node<T> head;
     private int count;
 
     public SingleLinkedList() {
+    }
+
+    public Node<T> first() {
+        return head;
+    }
+
+    public boolean isEmpty() {
+        return head == null;
     }
 
     // 尾插
@@ -63,6 +71,20 @@ public class SingleLinkedList<T extends Comparable<T>> {
         return first.value;
     }
 
+    public boolean remove(T e) {
+        Node<T> prev = null;
+        Node<T> current = head;
+        while (current != null) {
+            if (current.value.equals(e)) {
+                unLink(prev, current);
+                return true;
+            }
+            prev = current;
+            current = current.next;
+        }
+        return false;
+    }
+
     private void link(Node<T> prev, Node<T> newNode) {
         if (head == null) {
             head = newNode;
@@ -73,6 +95,7 @@ public class SingleLinkedList<T extends Comparable<T>> {
     }
 
     private void unLink(Node<T> prev, Node<T> current) {
+        current.value = null;
         if (prev == null) {
             head = current.next;
         } else {

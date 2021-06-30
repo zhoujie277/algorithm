@@ -4,7 +4,7 @@ package com.future.algoriithm.node;
  * 双向链表节点
  * @param <T>
  */
-public class DualNode<T extends Comparable<T>> extends Node<T> {
+public class DualNode<T> extends Node<T> {
     public DualNode<T> prev = null;
 
     public DualNode(T value) {
