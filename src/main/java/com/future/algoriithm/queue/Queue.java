@@ -7,14 +7,16 @@ import com.future.algoriithm.node.Node;
 import java.util.Iterator;
 
 @SuppressWarnings("unused")
-public class Queue <T extends Comparable<T>> implements Printable, Iterable<T> {
-    private Node<T> front;
-    private Node<T> rear;
+public class Queue<T> implements Printable, Iterable<T> {
+    private Node<T> front = null;
+    private Node<T> rear = null;
     private int count;
+
+    public Queue(){}
 
     public void push(T t) {
         Node<T> newNode = new Node<>(t, null);
-        if (rear == null) {
+        if (front == null) {
             front = newNode;
         } else {
             rear.next = newNode;
@@ -31,11 +33,18 @@ public class Queue <T extends Comparable<T>> implements Printable, Iterable<T> {
         front = first.next;
         first.next = null;
         count--;
+        if (front == null) {
+            rear = null;
+        }
         return value;
     }
 
     public int size() {
         return count;
+    }
+
+    public boolean isEmpty() {
+        return front == null;
     }
 
     @Override

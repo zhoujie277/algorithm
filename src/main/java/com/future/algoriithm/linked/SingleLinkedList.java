@@ -5,6 +5,7 @@ import com.future.algoriithm.node.Node;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SingleLinkedList<T> {
     private Node<T> head;
@@ -69,6 +70,17 @@ public class SingleLinkedList<T> {
         head = first.next;
         first.next = null;
         return first.value;
+    }
+
+    // 反向遍历
+    public void reverseTraversal(Consumer<T> consumer) {
+        reverseTraversal(head, consumer);
+    }
+
+    public void reverseTraversal(Node<T> current, Consumer<T> consumer) {
+        if (current == null) return;
+        reverseTraversal(current.next, consumer);
+        consumer.accept(current.value);
     }
 
     public boolean remove(T e) {

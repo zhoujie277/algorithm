@@ -6,7 +6,7 @@ import com.future.algoriithm.node.Node;
 
 import java.util.Iterator;
 
-public class Stack<E extends Comparable<E>> implements Printable, Iterable<E> {
+public class Stack<E> implements Printable, Iterable<E> {
     private Node<E> top = null;
 
     public Stack() {
@@ -17,6 +17,7 @@ public class Stack<E extends Comparable<E>> implements Printable, Iterable<E> {
     }
 
     public void push(E e) {
+        if (e == null) return;
         Node<E> newNode = new Node<>(e, top);
         top = newNode;
     }

@@ -17,7 +17,11 @@ public class DataUtils {
     }
 
     public static Student newStudent() {
-        return new Student(randUUID(), randScore(), randAge(), randString());
+        return newStudent(randString());
+    }
+
+    public static Student newStudent(String name) {
+        return new Student(randUUID(), randScore(), randAge(), name);
     }
 
     public static String[] generateStrings(int length) {
@@ -53,7 +57,7 @@ public class DataUtils {
         return sb.toString();
     }
 
-    public static class Student extends Sortable implements Hashable {
+    public static class Student extends Sortable implements Hashable, Comparable<Student> {
         public final int score;
         public final int age;
         public final String name;
@@ -94,6 +98,11 @@ public class DataUtils {
         @Override
         public int hashValue() {
             return 0;
+        }
+
+        @Override
+        public int compareTo(Student o) {
+            return score - o.score;
         }
     }
 
