@@ -1,47 +1,56 @@
 package com.future.algorithm.tree;
 
-import com.future.algoriithm.tree.CompleteBinaryTree;
+import com.future.algoriithm.tree.ThreadedBinaryTree;
 import com.future.algoriithm.utils.PrintUtils;
-import edu.princeton.cs.algs4.StdRandom;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
-public class CompleteBinaryTreeTest {
+public class ThreadedBinaryTreeTest {
 
-    private CompleteBinaryTree binaryTree = null;
+    private ThreadedBinaryTree binaryTree = null;
 
     @Before
     public void setup() {
-        binaryTree = new CompleteBinaryTree();
+        binaryTree = new ThreadedBinaryTree();
+        Integer[] array = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+        binaryTree.initTree(array);
     }
 
     @Test
-    public void testArrayConvertTree() {
-        int[] permutation = StdRandom.permutation(30);
-        PrintUtils.println(permutation);
-        binaryTree.initTree(Arrays.stream(permutation).boxed().toArray());
+    public void preOrder() {
+        binaryTree.preOrder((t) -> {
+            PrintUtils.print(t + "\t");
+        });
+        PrintUtils.println();
+        testThreadedPreOrder();
+    }
+
+    public void testThreadedPreOrder() {
+        PrintUtils.println("------------------testThreadedPreOrder----------------------");
+        binaryTree.threadedPreOrder((t) -> {
+            PrintUtils.print(t + "\t");
+        });
+        PrintUtils.println();
     }
 
     @Test
-    public void testAdd() {
-        int[] ints = StdRandom.permutation(20);
-        PrintUtils.println(ints);
-        for (int anInt : ints) {
-            binaryTree.add(anInt);
-        }
+    public void inOrder() {
+        binaryTree.inOrder((t) -> {
+            PrintUtils.print(t + "\t");
+        });
+        PrintUtils.println();
+        testThreadedInOrder();
     }
 
-    @Test
-    public void testPush() {
-        int[] ints = StdRandom.permutation(20);
-        PrintUtils.println(ints);
-        for (int anInt : ints) {
-            binaryTree.add(anInt);
-        }
+    public void testThreadedInOrder() {
+        PrintUtils.println("------------------ThreadedInOrder----------------------");
+        binaryTree.threadedInOrder((t) -> {
+            PrintUtils.print(t + "\t");
+        });
+        PrintUtils.println();
     }
 
     @After
@@ -50,12 +59,12 @@ public class CompleteBinaryTreeTest {
         PrintUtils.println();
         PrintUtils.println();
         PrintUtils.println("------------------PreOrder----------------------");
-        binaryTree.preOrder((t)->{
+        binaryTree.preOrder((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
         PrintUtils.println("------------------preOrderByStack----------------------");
-        binaryTree.preOrderByStack((t)->{
+        binaryTree.preOrderByStack((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
@@ -67,13 +76,13 @@ public class CompleteBinaryTreeTest {
         PrintUtils.println();
 
         PrintUtils.println("------------------InOrder----------------------");
-        binaryTree.inOrder((t)->{
+        binaryTree.inOrder((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
 
         PrintUtils.println("------------------inOrderByStack----------------------");
-        binaryTree.inOrderByStack((t)->{
+        binaryTree.inOrderByStack((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
@@ -86,13 +95,13 @@ public class CompleteBinaryTreeTest {
         PrintUtils.println();
 
         PrintUtils.println("-----------------PostOrder-----------------------");
-        binaryTree.postOrder((t)->{
+        binaryTree.postOrder((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
 
         PrintUtils.println("------------------PostOrderByStack----------------------");
-        binaryTree.postOrderByStack((t)->{
+        binaryTree.postOrderByStack((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();

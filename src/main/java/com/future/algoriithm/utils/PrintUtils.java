@@ -1,6 +1,9 @@
 package com.future.algoriithm.utils;
 
+import com.future.algoriithm.search.HashTab;
+
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class PrintUtils {
     public static void print(int[][] a) {
@@ -43,5 +46,13 @@ public class PrintUtils {
     }
     public static <T> void println(int[] t) {
         System.out.println(Arrays.toString(t));
+    }
+
+    public static <K, V> void println(HashTab<K, V> table) {
+        Iterator<K> iterator = table.iterator();
+        while (iterator.hasNext()) {
+            K next = iterator.next();
+            println("key=" + next + ", value=" + table.get(next) + "\t");
+        }
     }
 }

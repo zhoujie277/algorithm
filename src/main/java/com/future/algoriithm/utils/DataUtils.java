@@ -2,6 +2,8 @@ package com.future.algoriithm.utils;
 
 import edu.princeton.cs.algs4.StdRandom;
 
+import java.util.Objects;
+
 /**
  * 数据工具类
  * 用于构造测试数据
@@ -57,6 +59,26 @@ public class DataUtils {
         return sb.toString();
     }
 
+    public static class Key<T> implements Hashable {
+        private T value;
+        public Key(T t) {
+            this.value = t;
+        }
+
+        @Override
+        public int hashValue() {
+            return Objects.hashCode(value);
+//            return 608374;
+        }
+
+        @Override
+        public String toString() {
+            return "Key{" +
+                    "value=" + value +
+                    '}';
+        }
+    }
+
     public static class Student extends Sortable implements Hashable, Comparable<Student> {
         public final int score;
         public final int age;
@@ -97,7 +119,8 @@ public class DataUtils {
 
         @Override
         public int hashValue() {
-            return 0;
+            return 10;
+//            return hashCode();
         }
 
         @Override

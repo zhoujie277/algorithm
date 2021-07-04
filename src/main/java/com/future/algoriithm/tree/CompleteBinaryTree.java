@@ -24,6 +24,7 @@ public class CompleteBinaryTree<E> extends AbstractBinaryTree<E> {
         initTree(array);
     }
 
+    @SuppressWarnings("all")
     public void initTree(E[] array) {
         BinaryNode<E>[] nodeArray = new BinaryNode[array.length];
         for (int i = 0; i < array.length; i++) {
@@ -60,9 +61,6 @@ public class CompleteBinaryTree<E> extends AbstractBinaryTree<E> {
      * 完全二叉树的特点：
      * 如果左子树的最小深度大于右子树的最小深度，则应该将节点插在右端，继续递归
      * 如果深度
-     *
-     * @param parent
-     * @param newNode
      */
     private void insertTail(BinaryNode<E> parent, BinaryNode<E> newNode) {
         int leftDepth = minDepth(parent.left);

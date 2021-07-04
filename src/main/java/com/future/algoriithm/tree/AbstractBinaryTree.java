@@ -26,6 +26,16 @@ public abstract class AbstractBinaryTree<E> {
         return new BinaryNode<>(e);
     }
 
+    public void removeTree(E e) {
+        innerBreadthFirstSearch(node -> {
+            if (node.left != null && node.left.equals(e)) {
+                node.left = null;
+            } else if (node.right != null || node.right.equals(e)) {
+                node.right = null;
+            }
+        });
+    }
+
     public int maxDepth(BinaryNode<E> node) {
         if (node == null) return 0;
         int leftDepth = maxDepth(node.left);
@@ -40,19 +50,65 @@ public abstract class AbstractBinaryTree<E> {
         return Math.min(leftDepth, rightDepth) + 1;
     }
 
-    public void breadthFirstSearch(Consumer<E> consumer) {
+    private boolean preOrderTraversal(BinaryNode<E> node, Consumer<E> consumer) {
+        onPreOrderTraversal(node);
+        traversal(node, consumer);
+        return true;
+    }
+
+    protected void onPreOrderTraversal(BinaryNode<E> node) {
+
+    }
+
+    private void inOrderTraversal(BinaryNode<E> node, Consumer<E> consumer) {
+        onInOrderTraversal(node);
+        traversal(node, consumer);
+    }
+
+    protected void onInOrderTraversal(BinaryNode<E> node) {
+
+    }
+
+    private void postOrderTraversal(BinaryNode<E> node, Consumer<E> consumer) {
+        onPostOrderTraversal(node);
+        traversal(node, consumer);
+    }
+
+    protected void onPostOrderTraversal(BinaryNode<E> node) {
+
+    }
+
+    private void traversal(BinaryNode<E> node, Consumer<E> consumer) {
+        onTraversal(node);
+        if (consumer != null) {
+            consumer.accept(node.value);
+        }
+    }
+
+    private void traversal(BinaryNode<E> node) {
+        traversal(node, null);
+    }
+
+    protected void onTraversal(BinaryNode<E> node) {
+    }
+
+    private void innerBreadthFirstSearch(Consumer<BinaryNode<E>> nodeConsumer) {
         Queue<BinaryNode<E>> queue = new Queue();
         queue.push(root);
         while (!queue.isEmpty()) {
             BinaryNode<E> node = queue.poll();
-            if (node.left != null) {
+            nodeConsumer.accept(node);
+            if (node.left != null && !node.lChildThreaded()) {
                 queue.push(node.left);
             }
-            if (node.right != null) {
+            if (node.right != null && !node.rChildThreaded()) {
                 queue.push(node.right);
             }
-            consumer.accept(node.value);
         }
+    }
+
+    public void breadthFirstSearch(Consumer<E> consumer) {
+        innerBreadthFirstSearch((node -> traversal(node, consumer)));
     }
 
     public Iterator<E> breadthFirstSearchIterator() {
@@ -65,9 +121,13 @@ public abstract class AbstractBinaryTree<E> {
 
     public void preOrder(BinaryNode<E> node, Consumer<E> consumer) {
         if (node == null) return;
-        consumer.accept(node.value);
-        preOrder(node.left, consumer);
-        preOrder(node.right, consumer);
+        preOrderTraversal(node, consumer);
+        if (!node.lChildThreaded()) {
+            preOrder(node.left, consumer);
+        }
+        if (!node.rChildThreaded()) {
+            preOrder(node.right, consumer);
+        }
     }
 
     public void preOrderByStack(Consumer<E> consumer) {
@@ -75,9 +135,9 @@ public abstract class AbstractBinaryTree<E> {
         stack.push(root);
         BinaryNode<E> pop;
         while ((pop = stack.pop()) != null) {
-            consumer.accept(pop.value);
-            if (pop.right != null) stack.push(pop.right);
-            if (pop.left != null) stack.push(pop.left);
+            preOrderTraversal(pop, consumer);
+            if (pop.right != null&& !pop.rChildThreaded()) stack.push(pop.right);
+            if (pop.left != null && !pop.lChildThreaded()) stack.push(pop.left);
         }
     }
 
@@ -91,9 +151,13 @@ public abstract class AbstractBinaryTree<E> {
 
     public void inOrder(BinaryNode<E> node, Consumer<E> consumer) {
         if (node == null) return;
-        inOrder(node.left, consumer);
-        consumer.accept(node.value);
-        inOrder(node.right, consumer);
+        if (!node.lChildThreaded()) {
+            inOrder(node.left, consumer);
+        }
+        inOrderTraversal(node, consumer);
+        if (!node.rChildThreaded()) {
+            inOrder(node.right, consumer);
+        }
     }
 
     public void inOrderByStack(Consumer<E> consumer) {
@@ -102,12 +166,20 @@ public abstract class AbstractBinaryTree<E> {
         while (currentNode != null || !stack.isEmpty()) {
             while (currentNode != null) {
                 stack.push(currentNode);
-                currentNode = currentNode.left;
+                if (currentNode.lChildThreaded()) {
+                    currentNode = null;
+                } else {
+                    currentNode = currentNode.left;
+                }
             }
             currentNode = stack.pop();
-            consumer.accept(currentNode.value);
+            inOrderTraversal(currentNode, consumer);
             // 把右节点压栈
-            currentNode = currentNode.right;
+            if (currentNode.rChildThreaded()) {
+                currentNode = null;
+            } else {
+                currentNode = currentNode.right;
+            }
         }
     }
 
@@ -121,9 +193,13 @@ public abstract class AbstractBinaryTree<E> {
 
     public void postOrder(BinaryNode<E> node, Consumer<E> consumer) {
         if (node == null) return;
-        postOrder(node.left, consumer);
-        postOrder(node.right, consumer);
-        consumer.accept(node.value);
+        if (!node.lChildThreaded()) {
+            postOrder(node.left, consumer);
+        }
+        if (!node.rChildThreaded()) {
+            postOrder(node.right, consumer);
+        }
+        postOrderTraversal(node, consumer);
     }
 
     public void postOrderByStack(Consumer<E> consumer) {
@@ -133,18 +209,26 @@ public abstract class AbstractBinaryTree<E> {
         while (currentNode != null || !stack.isEmpty()) {
             while (currentNode != null) {
                 stack.push(currentNode);
-                currentNode = currentNode.left;
+                if (!currentNode.lChildThreaded()) {
+                    currentNode = currentNode.left;
+                } else {
+                    currentNode = null;
+                }
             }
             currentNode = stack.peek();
-            if (currentNode.right == null || rightNode == currentNode.right) {
-                consumer.accept(currentNode.value);
+            if (currentNode.rChildThreaded() || currentNode.right == null || rightNode == currentNode.right) {
+                postOrderTraversal(currentNode, consumer);
                 // 记录上次访问过的右节点
                 rightNode = currentNode;
                 stack.pop();
                 currentNode = null;
             } else {
                 // 把右节点压栈
-                currentNode = currentNode.right;
+                if (!currentNode.rChildThreaded()) {
+                    currentNode = currentNode.right;
+                } else {
+                    currentNode = null;
+                }
             }
         }
     }
@@ -168,9 +252,14 @@ public abstract class AbstractBinaryTree<E> {
         @Override
         public E next() {
             BinaryNode<E> pop = stack.pop();
+            preOrderTraversal(pop, null);
             E oldVal = pop.value;
-            stack.push(pop.right);
-            stack.push(pop.left);
+            if(pop.right != null && !pop.rChildThreaded()) {
+                stack.push(pop.right);
+            }
+            if (pop.left != null && !pop.lChildThreaded()) {
+                stack.push(pop.left);
+            }
             return oldVal;
         }
     }
@@ -182,7 +271,11 @@ public abstract class AbstractBinaryTree<E> {
             BinaryNode<E> current = root;
             while (current != null) {
                 stack.push(current);
-                current = current.left;
+                if (!current.lChildThreaded()) {
+                    current = current.left;
+                } else {
+                    current = null;
+                }
             }
         }
 
@@ -194,11 +287,19 @@ public abstract class AbstractBinaryTree<E> {
         @Override
         public E next() {
             BinaryNode<E> pop = stack.pop();
+            inOrderTraversal(pop, null);
             E oldVal = pop.value;
             BinaryNode<E> current = pop.right;
+            if (pop.rChildThreaded()) {
+                current = null;
+            }
             while (current != null) {
                 stack.push(current);
-                current = current.left;
+                if (!current.lChildThreaded()) {
+                    current = current.left;
+                } else {
+                    current = null;
+                }
             }
             return oldVal;
         }
@@ -223,6 +324,7 @@ public abstract class AbstractBinaryTree<E> {
             // 记录上次访问过的右节点
             rightNode = currentNode;
             BinaryNode<E> pop = stack.pop();
+            postOrderTraversal(pop, null);
             E oldVal = pop.value;
             currentNode = null;
             innerNext();
@@ -233,14 +335,22 @@ public abstract class AbstractBinaryTree<E> {
             while (currentNode != null || !stack.isEmpty()) {
                 while (currentNode != null) {
                     stack.push(currentNode);
-                    currentNode = currentNode.left;
+                    if (currentNode.lChildThreaded()) {
+                        currentNode = null;
+                    } else {
+                        currentNode = currentNode.left;
+                    }
                 }
                 currentNode = stack.peek();
-                if (currentNode.right == null || rightNode == currentNode.right) {
+                if (currentNode.rChildThreaded() || currentNode.right == null || rightNode == currentNode.right) {
                     break;
                 } else {
                     // 把右节点压栈
-                    currentNode = currentNode.right;
+                    if (currentNode.rChildThreaded()) {
+                        currentNode = null;
+                    } else {
+                        currentNode = currentNode.right;
+                    }
                 }
             }
         }
@@ -261,8 +371,9 @@ public abstract class AbstractBinaryTree<E> {
         @Override
         public E next() {
             BinaryNode<E> node = queue.poll();
-            if (node.left != null) queue.push(node.left);
-            if (node.right != null) queue.push(node.right);
+            traversal(node);
+            if (node.left != null && !node.lChildThreaded()) queue.push(node.left);
+            if (node.right != null && !node.rChildThreaded()) queue.push(node.right);
             return node.value;
         }
     }
