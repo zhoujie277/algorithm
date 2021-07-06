@@ -1,8 +1,8 @@
 package com.future.datastruct.tree;
 
-import com.future.datastruct.node.BinaryNode;
 import com.future.datastruct.list.Queue;
 import com.future.datastruct.list.Stack;
+import com.future.datastruct.tree.define.Node;
 
 import java.util.Iterator;
 import java.util.function.Consumer;
@@ -25,12 +25,12 @@ import java.util.function.Consumer;
 public abstract class AbstractBinaryTree<E> {
     protected int size;
 
-    protected BinaryNode<E> root;
+    protected Node<E> root;
 
     public AbstractBinaryTree() {
     }
 
-    public BinaryNode<E> getRoot(){return root;}
+    public Node<E> getRoot(){return root;}
 
     abstract public E add(E e);
 
@@ -38,8 +38,8 @@ public abstract class AbstractBinaryTree<E> {
         return size;
     }
 
-    protected BinaryNode<E> newNode(E e) {
-        return new BinaryNode<>(e);
+    protected Node<E> newNode(E e) {
+        return new Node<>(e);
     }
 
     public void removeTree(E e) {
@@ -52,68 +52,68 @@ public abstract class AbstractBinaryTree<E> {
         });
     }
 
-    public int maxDepth(BinaryNode<E> node) {
+    public int maxDepth(Node<E> node) {
         if (node == null) return 0;
         int leftDepth = maxDepth(node.left);
         int rightDepth = maxDepth(node.right);
         return Math.max(leftDepth, rightDepth) + 1;
     }
 
-    public int minDepth(BinaryNode<E> node) {
+    public int minDepth(Node<E> node) {
         if (node == null) return 0;
         int leftDepth = minDepth(node.left);
         int rightDepth = minDepth(node.right);
         return Math.min(leftDepth, rightDepth) + 1;
     }
 
-    private boolean preOrderTraversal(BinaryNode<E> node, Consumer<E> consumer) {
+    private boolean preOrderTraversal(Node<E> node, Consumer<E> consumer) {
         onPreOrderTraversal(node);
         traversal(node, consumer);
         return true;
     }
 
-    protected void onPreOrderTraversal(BinaryNode<E> node) {
+    protected void onPreOrderTraversal(Node<E> node) {
 
     }
 
-    private void inOrderTraversal(BinaryNode<E> node, Consumer<E> consumer) {
+    private void inOrderTraversal(Node<E> node, Consumer<E> consumer) {
         onInOrderTraversal(node);
         traversal(node, consumer);
     }
 
-    protected void onInOrderTraversal(BinaryNode<E> node) {
+    protected void onInOrderTraversal(Node<E> node) {
 
     }
 
-    private void postOrderTraversal(BinaryNode<E> node, Consumer<E> consumer) {
+    private void postOrderTraversal(Node<E> node, Consumer<E> consumer) {
         onPostOrderTraversal(node);
         traversal(node, consumer);
     }
 
-    protected void onPostOrderTraversal(BinaryNode<E> node) {
+    protected void onPostOrderTraversal(Node<E> node) {
 
     }
 
-    private void traversal(BinaryNode<E> node, Consumer<E> consumer) {
+    private void traversal(Node<E> node, Consumer<E> consumer) {
         onTraversal(node);
         if (consumer != null) {
             consumer.accept(node.value);
         }
     }
 
-    private void traversal(BinaryNode<E> node) {
+    private void traversal(Node<E> node) {
         traversal(node, null);
     }
 
-    protected void onTraversal(BinaryNode<E> node) {
+    protected void onTraversal(Node<E> node) {
     }
 
-    private void innerBreadthFirstSearch(Consumer<BinaryNode<E>> nodeConsumer) {
+    private void innerBreadthFirstSearch(Consumer<Node<E>> nodeConsumer) {
         if (root == null) return;
-        Queue<BinaryNode<E>> queue = new Queue();
+        Queue<Node<E>> queue = new Queue();
         queue.push(root);
         while (!queue.isEmpty()) {
-            BinaryNode<E> node = queue.poll();
+            Node<E> node = queue.poll();
             nodeConsumer.accept(node);
             if (node.left != null && !node.lChildThreaded()) {
                 queue.push(node.left);
@@ -136,7 +136,7 @@ public abstract class AbstractBinaryTree<E> {
         preOrder(root, consumer);
     }
 
-    public void preOrder(BinaryNode<E> node, Consumer<E> consumer) {
+    public void preOrder(Node<E> node, Consumer<E> consumer) {
         if (node == null) return;
         preOrderTraversal(node, consumer);
         if (!node.lChildThreaded()) {
@@ -148,9 +148,9 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     public void preOrderByStack(Consumer<E> consumer) {
-        Stack<BinaryNode<E>> stack = new Stack<>();
+        Stack<Node<E>> stack = new Stack<>();
         stack.push(root);
-        BinaryNode<E> pop;
+        Node<E> pop;
         while ((pop = stack.pop()) != null) {
             preOrderTraversal(pop, consumer);
             if (pop.right != null && !pop.rChildThreaded()) stack.push(pop.right);
@@ -166,7 +166,7 @@ public abstract class AbstractBinaryTree<E> {
         inOrder(root, consumer);
     }
 
-    public void inOrder(BinaryNode<E> node, Consumer<E> consumer) {
+    public void inOrder(Node<E> node, Consumer<E> consumer) {
         if (node == null) return;
         if (!node.lChildThreaded()) {
             inOrder(node.left, consumer);
@@ -178,8 +178,8 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     public void inOrderByStack(Consumer<E> consumer) {
-        Stack<BinaryNode<E>> stack = new Stack<>();
-        BinaryNode<E> currentNode = root;
+        Stack<Node<E>> stack = new Stack<>();
+        Node<E> currentNode = root;
         while (currentNode != null || !stack.isEmpty()) {
             while (currentNode != null) {
                 stack.push(currentNode);
@@ -208,7 +208,7 @@ public abstract class AbstractBinaryTree<E> {
         postOrder(root, consumer);
     }
 
-    public void postOrder(BinaryNode<E> node, Consumer<E> consumer) {
+    public void postOrder(Node<E> node, Consumer<E> consumer) {
         if (node == null) return;
         if (!node.lChildThreaded()) {
             postOrder(node.left, consumer);
@@ -220,9 +220,9 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     public void postOrderByStack(Consumer<E> consumer) {
-        Stack<BinaryNode<E>> stack = new Stack<>();
-        BinaryNode<E> currentNode = root;
-        BinaryNode<E> rightNode = null;
+        Stack<Node<E>> stack = new Stack<>();
+        Node<E> currentNode = root;
+        Node<E> rightNode = null;
         while (currentNode != null || !stack.isEmpty()) {
             while (currentNode != null) {
                 stack.push(currentNode);
@@ -255,7 +255,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     private class PreOrderIterator implements Iterator<E> {
-        private final Stack<BinaryNode<E>> stack = new Stack<>();
+        private final Stack<Node<E>> stack = new Stack<>();
 
         public PreOrderIterator() {
             stack.push(root);
@@ -268,7 +268,7 @@ public abstract class AbstractBinaryTree<E> {
 
         @Override
         public E next() {
-            BinaryNode<E> pop = stack.pop();
+            Node<E> pop = stack.pop();
             preOrderTraversal(pop, null);
             E oldVal = pop.value;
             if (pop.right != null && !pop.rChildThreaded()) {
@@ -282,10 +282,10 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     private class InOrderIterator implements Iterator<E> {
-        private final Stack<BinaryNode<E>> stack = new Stack<>();
+        private final Stack<Node<E>> stack = new Stack<>();
 
         public InOrderIterator() {
-            BinaryNode<E> current = root;
+            Node<E> current = root;
             while (current != null) {
                 stack.push(current);
                 if (!current.lChildThreaded()) {
@@ -303,10 +303,10 @@ public abstract class AbstractBinaryTree<E> {
 
         @Override
         public E next() {
-            BinaryNode<E> pop = stack.pop();
+            Node<E> pop = stack.pop();
             inOrderTraversal(pop, null);
             E oldVal = pop.value;
-            BinaryNode<E> current = pop.right;
+            Node<E> current = pop.right;
             if (pop.rChildThreaded()) {
                 current = null;
             }
@@ -323,9 +323,9 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     private class PostOrderIterator implements Iterator<E> {
-        private Stack<BinaryNode<E>> stack = new Stack<>();
-        private BinaryNode<E> currentNode = root;
-        private BinaryNode<E> rightNode = null;
+        private Stack<Node<E>> stack = new Stack<>();
+        private Node<E> currentNode = root;
+        private Node<E> rightNode = null;
 
         public PostOrderIterator() {
             innerNext();
@@ -340,7 +340,7 @@ public abstract class AbstractBinaryTree<E> {
         public E next() {
             // 记录上次访问过的右节点
             rightNode = currentNode;
-            BinaryNode<E> pop = stack.pop();
+            Node<E> pop = stack.pop();
             postOrderTraversal(pop, null);
             E oldVal = pop.value;
             currentNode = null;
@@ -374,7 +374,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     private class BreathFirstSearchIterator implements Iterator<E> {
-        private final Queue<BinaryNode<E>> queue = new Queue();
+        private final Queue<Node<E>> queue = new Queue();
 
         public BreathFirstSearchIterator() {
             queue.push(root);
@@ -387,7 +387,7 @@ public abstract class AbstractBinaryTree<E> {
 
         @Override
         public E next() {
-            BinaryNode<E> node = queue.poll();
+            Node<E> node = queue.poll();
             traversal(node);
             if (node.left != null && !node.lChildThreaded()) queue.push(node.left);
             if (node.right != null && !node.rChildThreaded()) queue.push(node.right);

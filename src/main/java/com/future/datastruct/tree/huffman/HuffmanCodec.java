@@ -1,8 +1,8 @@
 package com.future.datastruct.tree.huffman;
 
-import com.future.datastruct.node.WeightNode;
+import com.future.datastruct.tree.define.WeightNode;
 import com.future.datastruct.list.Queue;
-import com.future.algoriithm.search.HashTab;
+import com.future.datastruct.list.HashTab;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;

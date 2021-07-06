@@ -1,4 +1,4 @@
-package com.future.datastruct.node;
+package com.future.datastruct.list.define;
 
 public class KVNode<K, V> extends Node<V> {
     public K key;

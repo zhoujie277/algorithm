@@ -1,9 +1,8 @@
 package com.future.datastruct.list;
 
+import com.future.utils.DataUtils;
 import com.future.utils.PrintUtils;
-import com.future.datastruct.node.Node;
-
-import java.util.Objects;
+import com.future.datastruct.list.define.Node;
 
 /**
  * 单向环形链表
@@ -115,9 +114,9 @@ public class CycleLinkedList<T extends Comparable<T>> {
         //模拟约瑟夫问题的用例
         int capacity = 20;
         int k = 6;
-        CycleLinkedList<Person> cycleLinkedList = new CycleLinkedList<Person>(capacity);
+        CycleLinkedList<DataUtils.Person> cycleLinkedList = new CycleLinkedList<DataUtils.Person>(capacity);
         for (int i = 0; i < capacity; i++) {
-            Person p = new Person("h" + i);
+            DataUtils.Person p = new DataUtils.Person("h" + i);
             cycleLinkedList.add(p);
         }
         cycleLinkedList.println();
@@ -135,36 +134,3 @@ public class CycleLinkedList<T extends Comparable<T>> {
 
 }
 
-class Person implements Comparable<Person> {
-    String name;
-
-    public Person(String name) {
-        this.name = name;
-    }
-
-    public Person() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return Objects.equals(name, person.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
-
-    @Override
-    public int compareTo(Person o) {
-        return name.compareTo(o.name);
-    }
-
-    @Override
-    public String toString() {
-        return "{" + name + '\'' + '}';
-    }
-}

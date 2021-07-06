@@ -1,6 +1,6 @@
 package com.future.datastruct.tree;
 
-import com.future.datastruct.node.BinaryNode;
+import com.future.datastruct.tree.define.Node;
 
 import java.util.function.Consumer;
 
@@ -9,37 +9,37 @@ import java.util.function.Consumer;
  */
 public class ThreadedBinaryTree<E> extends CompleteBinaryTree<E> {
 
-    private BinaryNode<E> orderPrev = null;
+    private Node<E> orderPrev = null;
 
     @Override
-    protected void onPreOrderTraversal(BinaryNode<E> node) {
+    protected void onPreOrderTraversal(Node<E> node) {
         threading(node);
     }
 
     @Override
-    protected void onInOrderTraversal(BinaryNode<E> node) {
+    protected void onInOrderTraversal(Node<E> node) {
         threading(node);
     }
 
     @Override
-    protected void onPostOrderTraversal(BinaryNode<E> node) {
+    protected void onPostOrderTraversal(Node<E> node) {
         threading(node);
     }
 
-    private void threading(BinaryNode<E> node) {
+    private void threading(Node<E> node) {
         if (node.left == null) {
-            node.lChildFlag = BinaryNode.FLAG_THREADED;
+            node.lChildFlag = Node.FLAG_THREADED;
             node.left = orderPrev;
         }
         if (orderPrev != null && orderPrev.right == null) {
-            orderPrev.rChildFlag = BinaryNode.FLAG_THREADED;
+            orderPrev.rChildFlag = Node.FLAG_THREADED;
             orderPrev.right = node;
         }
         orderPrev = node;
     }
 
     public void threadedPreOrder(Consumer<E> consumer) {
-        BinaryNode<E> current = root;
+        Node<E> current = root;
         while (current != null) {
             while (!current.lChildThreaded()) {
                 consumer.accept(current.value);
@@ -56,7 +56,7 @@ public class ThreadedBinaryTree<E> extends CompleteBinaryTree<E> {
     }
 
     public void threadedInOrder(Consumer<E> consumer) {
-        BinaryNode<E> current = root;
+        Node<E> current = root;
         while (current != null) {
             while (!current.lChildThreaded()) {
                 current = current.left;

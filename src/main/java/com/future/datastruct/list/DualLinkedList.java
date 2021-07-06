@@ -1,35 +1,38 @@
 package com.future.datastruct.list;
 
-import com.future.utils.PrintUtils;
-import com.future.utils.Printable;
-import com.future.datastruct.node.DualNode;
-import com.future.datastruct.node.Node;
+import com.future.datastruct.list.define.IDeque;
+import com.future.datastruct.list.define.DualNode;
+import com.future.datastruct.list.define.Node;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
 /**
  * 双向链表
  */
 @SuppressWarnings("unused")
-public class DualLinkedList<T extends Comparable<T>> implements Printable, Iterable<T> {
+public class DualLinkedList<T extends Comparable<T>> implements Iterable<T>, IDeque<T> {
 
     private DualNode<T> head;
     private DualNode<T> tail;
-    private int count;
+    private int size;
 
     public DualLinkedList() {
         head = tail = null;
     }
 
     public int size() {
-        return count;
+        return size;
     }
 
     public boolean isEmpty() {
         return head == null;
+    }
+
+    @Override
+    public boolean contains(T o) {
+       return indexOf(o) >= 0;
     }
 
     public T first() {
@@ -38,7 +41,7 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
 
     public boolean remove(T obj) {
         if (obj == null) return false;
-        for(DualNode<T> f = head; f != null;) {
+        for (DualNode<T> f = head; f != null; ) {
             if (f.value.equals(obj)) {
                 unLink(f);
                 return true;
@@ -48,8 +51,30 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
         return false;
     }
 
+    @Override
+    public boolean add(T t) {
+        linkLast(t);
+        return true;
+    }
+
+    @Override
+    public boolean offer(T t) {
+        return add(t);
+    }
+
+    @Override
+    public T remove() {
+        return removeLast();
+    }
+
+    @Override
     public T poll() {
         return unLinkFirst(head);
+    }
+
+    @Override
+    public T peek() {
+        return null;
     }
 
     public T pop() {
@@ -86,7 +111,7 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
             node.next = null;
         }
         node.value = null;
-        count--;
+        size--;
         return value;
     }
 
@@ -102,7 +127,7 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
         } else {
             next.prev = null;
         }
-        count--;
+        size--;
         return value;
     }
 
@@ -118,7 +143,7 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
         } else {
             head = null;
         }
-        count--;
+        size--;
         return value;
     }
 
@@ -131,7 +156,7 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
         } else {
             first.prev = newNode;
         }
-        count++;
+        size++;
     }
 
     private void linkLast(T obj) {
@@ -143,20 +168,72 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
         } else {
             last.next = newNode;
         }
-        count++;
+        size++;
     }
 
-    private T get(int index) {
+    @Override
+    public T get(int index) {
         Node<T> current = node(index);
         return current == null ? null : current.value;
     }
 
-    private Node<T> node(int index) {
-        if (index >= count) return null;
+    @Override
+    public T set(int index, T element) {
+        rangeCheck(index);
+        DualNode<T> x = node(index);
+        if (x == null) return null;
+        T oldVal = x.value;
+        x.value = element;
+        return oldVal;
+    }
+
+    @Override
+    public void add(int index, T element) {
+        rangeCheck(index);
+        if (index == size)
+            linkLast(element);
+        else {
+            linkBefore(element, node(index));
+        }
+    }
+
+    private void linkBefore(T e, DualNode<T> node) {
+        final DualNode<T> pred = node.prev;
+        final DualNode<T> newNode = new DualNode<>(e, node, pred);
+        node.prev = newNode;
+        if (pred == null)
+            head = newNode;
+        else
+            pred.next = newNode;
+        size++;
+    }
+
+    @Override
+    public T remove(int index) {
+        rangeCheck(index);
+        return unLink(node(index));
+    }
+
+    @Override
+    public int indexOf(T o) {
+        DualNode<T> node = head;
+        int index = 0;
+        while (node != null) {
+            if (node.value.equals(o)) {
+                return index;
+            }
+            index++;
+            node = (DualNode<T>) node.next;
+        }
+        return -1;
+    }
+
+    private DualNode<T> node(int index) {
+        rangeCheck(index);
         DualNode<T> current;
-        if (index > count >>> 1) {
+        if (index > size >>> 1) {
             current = tail;
-            for (int i = count - 1; i > index; i--) {
+            for (int i = size - 1; i > index; i--) {
                 current = current.prev;
             }
         } else {
@@ -165,12 +242,25 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
                 current = (DualNode<T>) current.next;
             }
         }
-       return current;
+        return current;
     }
 
     @Override
     public Iterator<T> iterator() {
         return new Itr();
+    }
+
+    @Override
+    public void clear() {
+        DualNode<T> current = head;
+        DualNode<T> next;
+        while (current != null) {
+            next = (DualNode<T>) current.next;
+            current.value = null;
+            current.next = null;
+            current.prev = null;
+            current = next;
+        }
     }
 
     public Iterator<T> reverseIterator() {
@@ -187,26 +277,92 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
     }
 
     @Override
-    public void println() {
-        PrintUtils.printf("-------------DualLinkListed(%d)------------\n", count);
-        forEach((t) -> PrintUtils.printf("%s", t.toString()));
+    public void addFirst(T t) {
+        linkFirst(t);
     }
 
-    public static void main(String[] args) {
-        DualLinkedList<Integer> dualLinkedList = new DualLinkedList<>();
-        java.util.List<Integer> list = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-        Collections.shuffle(list);
-        PrintUtils.println(list);
-        for (Integer o : list) {
-            dualLinkedList.linkLast(o);
-        }
-        dualLinkedList.println();
+    @Override
+    public void addLast(T t) {
+        linkLast(t);
     }
 
+    @Override
+    public boolean offerFirst(T t) {
+        addFirst(t);
+        return true;
+    }
+
+    @Override
+    public boolean offerLast(T t) {
+        addLast(t);
+        return true;
+    }
+
+    public T removeFirst() {
+        final DualNode<T> f = head;
+        if (f == null)
+            throw new NoSuchElementException();
+        return unLinkFirst(f);
+    }
+
+    @Override
+    public T removeLast() {
+        final DualNode<T> l = tail;
+        if (l == null)
+            throw new NoSuchElementException();
+        return unLinkLast(l);
+    }
+
+    @Override
+    public T pollFirst() {
+        final DualNode<T> t = head;
+        return (t == null) ? null : unLinkFirst(t);
+    }
+
+    @Override
+    public T pollLast() {
+        final DualNode<T> t = tail;
+        return (t == null) ? null : unLinkLast(t);
+    }
+
+    @Override
+    public T getFirst() {
+        final DualNode<T> l = head;
+        if (l == null)
+            throw new NoSuchElementException();
+        return l.value;
+    }
+
+    @Override
+    public T getLast() {
+        final DualNode<T> l = tail;
+        if (l == null)
+            throw new NoSuchElementException();
+        return l.value;
+    }
+
+    @Override
+    public T peekFirst() {
+        return head == null ? null : head.value;
+    }
+
+    @Override
+    public T peekLast() {
+        return tail == null ? null : tail.value;
+    }
+
+    private void rangeCheck(int index) {
+        if (index >= size)
+            throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+    }
+    private String outOfBoundsMsg(int index) {
+        return "Index: " + index + ", Size: " + size;
+    }
 
     private class Itr implements Iterator<T> {
 
         Node<T> current;
+
         public Itr() {
             current = head;
         }
@@ -227,6 +383,7 @@ public class DualLinkedList<T extends Comparable<T>> implements Printable, Itera
     private class ReverseIterator implements Iterator<T> {
 
         DualNode<T> current;
+
         public ReverseIterator() {
             current = tail;
         }

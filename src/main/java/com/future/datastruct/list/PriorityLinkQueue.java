@@ -1,6 +1,6 @@
 package com.future.datastruct.list;
 
-import com.future.datastruct.node.Node;
+import com.future.datastruct.list.define.Node;
 
 import java.util.Iterator;
 

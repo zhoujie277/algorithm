@@ -1,6 +1,6 @@
 package com.future.algorithm.search;
 
-import com.future.algoriithm.search.HashTab;
+import com.future.datastruct.list.HashTab;
 import com.future.utils.DataUtils;
 import com.future.utils.PrintUtils;
 import org.junit.After;

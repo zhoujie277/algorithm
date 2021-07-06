@@ -1,6 +1,6 @@
-package com.future.algoriithm.search;
+package com.future.datastruct.list;
 
-import com.future.datastruct.node.KVNode;
+import com.future.datastruct.list.define.KVNode;
 import com.future.utils.Hashable;
 
 import java.io.Serializable;

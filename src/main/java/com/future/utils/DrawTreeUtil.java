@@ -1,7 +1,7 @@
 package com.future.utils;
 
 import com.future.datastruct.list.DynamicArray;
-import com.future.datastruct.node.BinaryNode;
+import com.future.datastruct.tree.define.Node;
 import com.future.datastruct.list.Queue;
 import com.future.datastruct.tree.AbstractBinaryTree;
 import com.future.datastruct.tree.BinarySearchTree;
@@ -64,14 +64,14 @@ public class DrawTreeUtil {
         }
     }
 
-    public <T> void drawBinaryTree(AbstractBinaryTree<T> tree, BinaryNode<T> root) {
+    public <T> void drawBinaryTree(AbstractBinaryTree<T> tree, Node<T> root) {
         DynamicArray<DrawNode> drawNodes = new DynamicArray<>();
-        Queue<BinaryNode<T>> queue = new Queue<>();
+        Queue<Node<T>> queue = new Queue<>();
         int index = 0;
         queue.push(root);
         drawNodes.add(newDrawNode(rootStartPoint, rootTopPoint, initSpacingX, root.value.toString()));
         while (!queue.isEmpty()) {
-            BinaryNode<T> poll = queue.poll();
+            Node<T> poll = queue.poll();
             DrawNode drawNode = drawNodes.get(index);
             double spacingX = drawNode.spacing - 0.04;
             if (spacingX < minSpacing) {

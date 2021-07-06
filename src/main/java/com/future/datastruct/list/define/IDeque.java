@@ -1,4 +1,4 @@
-package com.future.datastruct.list;;
+package com.future.datastruct.list.define;
 
 public interface IDeque<E> extends IQueue<E> {
 

@@ -45,10 +45,25 @@ public class CircleQueueTest {
         }
         PrintUtils.println("before remove");
         PrintUtils.println(circleQueue);
+        int index = circleQueue.indexOf(12);
+        PrintUtils.println("The obj will remove at indexOf is " + index);
+
         circleQueue.remove(10);
 
         PrintUtils.println("------after remove-----");
         PrintUtils.println(circleQueue);
+
+        PrintUtils.println("------add(int index)-----");
+        circleQueue.add(0, 23);
+        circleQueue.add( 2, 27);
+        PrintUtils.println(circleQueue);
+
+        for (int i = 0; i < 3; i++) {
+            circleQueue.add(circleQueue.poll());
+        }
+        PrintUtils.println("------after offer-----");
+        PrintUtils.println(circleQueue);
+
         for (int i = 1; i < 12; i++) {
             circleQueue.add(i * 7);
         }
@@ -56,6 +71,7 @@ public class CircleQueueTest {
 
     @After
     public void println() {
+        PrintUtils.println("------iterator--------");
         PrintUtils.println(circleQueue);
         Iterator<Integer> iterator = circleQueue.iterator();
         while (iterator.hasNext()) {

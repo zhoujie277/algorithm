@@ -1,5 +1,7 @@
 package com.future.datastruct.list;
 
+import com.future.datastruct.list.define.IQueue;
+
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -35,8 +37,8 @@ public class CircleQueue<E> implements IQueue<E> {
     }
 
     @Override
-    public boolean contains(Object o) {
-        return indexOf(o) > 0;
+    public boolean contains(E o) {
+        return indexOf(o) >= 0;
     }
 
     @Override
@@ -45,18 +47,9 @@ public class CircleQueue<E> implements IQueue<E> {
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(E o) {
         int index = indexOf(o);
-        if (index > 0) {
-            for (int i = index + 1; i < index + size; i++) {
-                int dstIndex = mapIndex(i - 1);
-                int srcIndex = mapIndex(i);
-                elements[dstIndex] = elements[srcIndex];
-            }
-            size--;
-            return true;
-        }
-        return false;
+        return remove(index) != null;
     }
 
     @Override
@@ -67,6 +60,11 @@ public class CircleQueue<E> implements IQueue<E> {
     }
 
     @Override
+    public E get(int index) {
+        return (E) elements[mapIndex(index)];
+    }
+
+    @Override
     public boolean add(E e) {
         ensureCapacity(size + 1);
         elements[mapIndex(front + size)] = e;
@@ -74,11 +72,51 @@ public class CircleQueue<E> implements IQueue<E> {
         return false;
     }
 
+    @Override
     public E set(int index, E e) {
+        if (index < 0 || index >= size) return null;
         int mapIndex = mapIndex(front + index);
         Object element = elements[mapIndex];
         elements[mapIndex] = e;
         return (E) element;
+    }
+
+    @Override
+    public void add(int index, E element) {
+        if (index < 0 || index > size) return;
+        ensureCapacity(size + 1);
+        boolean moveBack = index > (size >> 1);
+        if (moveBack) {
+            for (int i = size; i > index; i--) {
+                int curIndex = mapIndex(i + front);
+                int prevIndex = mapIndex(i - 1 + front);
+                elements[curIndex] = elements[prevIndex];
+            }
+        } else {
+            // 往前移
+            for (int i = 0; i < index; i++) {
+                int curIndex = mapIndex(i + front);
+                int prevIndex = mapIndex(i - 1 + front);
+                elements[prevIndex] = elements[curIndex];
+            }
+            front = mapIndex(front - 1);
+        }
+        elements[mapIndex(index + front)] = element;
+        size++;
+    }
+
+    @Override
+    public E remove(int index) {
+        if (index < 0 || index >= size) return null;
+        int mapIndex = mapIndex(index);
+        E val = (E) elements[mapIndex];
+        for (int i = index + 1; i < index + size; i++) {
+            int dstIndex = mapIndex(i - 1);
+            int srcIndex = mapIndex(i);
+            elements[dstIndex] = elements[srcIndex];
+        }
+        size--;
+        return val;
     }
 
     @Override
@@ -114,10 +152,13 @@ public class CircleQueue<E> implements IQueue<E> {
         return (E) elements[front];
     }
 
-    private int indexOf(Object e) {
+    @Override
+    public int indexOf(E e) {
         for (int i = front; i < front + size; i++) {
             int index = mapIndex(i);
-            if (elements[index].equals(e)) return index;
+            if (elements[index].equals(e)) {
+                return (index + elements.length - front) % elements.length;
+            }
         }
         return ELEMENT_NOT_FOUND;
     }
@@ -138,9 +179,8 @@ public class CircleQueue<E> implements IQueue<E> {
     }
 
     private int mapIndex(int index) {
-        return index % elements.length;
-//        index = index + size;
-//        return index - (index > elements.length ? elements.length : 0);
+//        return index % elements.length;
+        return index - (index >= elements.length ? elements.length : 0);
     }
 
     @Override

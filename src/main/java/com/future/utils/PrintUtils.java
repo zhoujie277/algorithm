@@ -1,6 +1,6 @@
 package com.future.utils;
 
-import com.future.algoriithm.search.HashTab;
+import com.future.datastruct.list.HashTab;
 
 import java.util.Arrays;
 import java.util.Iterator;

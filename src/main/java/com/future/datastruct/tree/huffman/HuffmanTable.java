@@ -1,6 +1,6 @@
 package com.future.datastruct.tree.huffman;
 
-import com.future.algoriithm.search.HashTab;
+import com.future.datastruct.list.HashTab;
 
 import java.io.Serializable;
 import java.util.Iterator;

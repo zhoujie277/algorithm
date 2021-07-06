@@ -1,6 +1,6 @@
 package com.future.datastruct.tree;
 
-import com.future.datastruct.node.BinaryNode;
+import com.future.datastruct.tree.define.Node;
 
 /**
  * 可排序的二叉树
@@ -17,8 +17,8 @@ public class BinarySearchTree<E extends Comparable> extends AbstractBinaryTree<E
         if (root == null) {
             root = newNode(e);
         } else {
-            BinaryNode<E> parent = null;
-            BinaryNode<E> current = root;
+            Node<E> parent = null;
+            Node<E> current = root;
             while (current != null) {
                 int cmp = e.compareTo(current.value);
                 if (cmp == 0) {
@@ -44,8 +44,8 @@ public class BinarySearchTree<E extends Comparable> extends AbstractBinaryTree<E
     }
 
     public boolean remove(E e) {
-        BinaryNode<E> parent = null;
-        BinaryNode<E> current = root;
+        Node<E> parent = null;
+        Node<E> current = root;
         while (current != null) {
             int cmp = e.compareTo(current.value);
             if (cmp == 0) break;
@@ -63,7 +63,7 @@ public class BinarySearchTree<E extends Comparable> extends AbstractBinaryTree<E
             return true;
         } else {
             // 需要选择右子树最小值或者是左子树的最大值接替current的位置，
-            BinaryNode<E> successor;
+            Node<E> successor;
             int cmp = current.value.compareTo(parent.value);
             if (current.right != null) {
                 // 需要选择右子树最小值接替current的位置，
@@ -98,10 +98,10 @@ public class BinarySearchTree<E extends Comparable> extends AbstractBinaryTree<E
     /**
      * 查找并调整子树的最小值
      */
-    private BinaryNode<E> adjustFarLeftNode(BinaryNode<E> node) {
+    private Node<E> adjustFarLeftNode(Node<E> node) {
         if (node.left == null) return node;
-        BinaryNode<E> parent = node;
-        BinaryNode<E> minNode = node.left;
+        Node<E> parent = node;
+        Node<E> minNode = node.left;
         while (minNode.left != null) {
             parent = minNode;
             minNode = minNode.left;
@@ -113,10 +113,10 @@ public class BinarySearchTree<E extends Comparable> extends AbstractBinaryTree<E
     /**
      * 查找子树的最大值
      */
-    private BinaryNode<E> adjustFarRightNode(BinaryNode<E> node) {
+    private Node<E> adjustFarRightNode(Node<E> node) {
         if (node.right == null) return node;
-        BinaryNode<E> parent = node;
-        BinaryNode<E> maxNode = node.right;
+        Node<E> parent = node;
+        Node<E> maxNode = node.right;
         while (maxNode.right != null) {
             parent = maxNode;
             maxNode = maxNode.right;
@@ -125,8 +125,8 @@ public class BinarySearchTree<E extends Comparable> extends AbstractBinaryTree<E
         return maxNode;
     }
 
-    private BinaryNode<E> node(E e) {
-        BinaryNode<E> current = root;
+    private Node<E> node(E e) {
+        Node<E> current = root;
         while (current != null) {
             int cmp = e.compareTo(current.value);
             if (cmp == 0) break;

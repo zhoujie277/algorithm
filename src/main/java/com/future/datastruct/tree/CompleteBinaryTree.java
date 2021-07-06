@@ -1,6 +1,6 @@
 package com.future.datastruct.tree;
 
-import com.future.datastruct.node.BinaryNode;
+import com.future.datastruct.tree.define.Node;
 
 /**
  * 链表结构的完全二叉树
@@ -31,12 +31,12 @@ public class CompleteBinaryTree<E> extends AbstractBinaryTree<E> {
 
     @SuppressWarnings("all")
     public void initTree(E[] array) {
-        BinaryNode<E>[] nodeArray = new BinaryNode[array.length];
+        Node<E>[] nodeArray = new Node[array.length];
         for (int i = 0; i < array.length; i++) {
             nodeArray[i] = newNode(array[i]);
         }
         root = nodeArray[0];
-        BinaryNode<E> node;
+        Node<E> node;
         for (int i = 0; i < nodeArray.length / 2; i++) {
             node = nodeArray[i];
             node.left = nodeArray[2 * i + 1];
@@ -52,7 +52,7 @@ public class CompleteBinaryTree<E> extends AbstractBinaryTree<E> {
      */
     @Override
     public E add(E e) {
-        BinaryNode<E> node = newNode(e);
+        Node<E> node = newNode(e);
         if (root == null) {
             root = node;
         } else {
@@ -67,7 +67,7 @@ public class CompleteBinaryTree<E> extends AbstractBinaryTree<E> {
      * 如果左子树的最小深度大于右子树的最小深度，则应该将节点插在右端，继续递归
      * 如果深度
      */
-    private void insertTail(BinaryNode<E> parent, BinaryNode<E> newNode) {
+    private void insertTail(Node<E> parent, Node<E> newNode) {
         int leftDepth = minDepth(parent.left);
         int rightDepth = minDepth(parent.right);
         if (leftDepth > rightDepth) {
@@ -87,7 +87,7 @@ public class CompleteBinaryTree<E> extends AbstractBinaryTree<E> {
 
     public void push(E e) {
         int depth = maxDepth(root);
-        BinaryNode<E> node = newNode(e);
+        Node<E> node = newNode(e);
         int subTreeDepth = depth;
         if ((size & (size + 1)) != 0) {
             subTreeDepth -= 1;
@@ -103,7 +103,7 @@ public class CompleteBinaryTree<E> extends AbstractBinaryTree<E> {
      * 当前最大深度为depth，最后一层固定为叶子节点，若当前为满二叉树，则叶子节点的深度就是子树节点的深度；
      * 反之，则子树节点深度为叶子节点的depth - 1;
      */
-    private boolean push(BinaryNode<E> current, BinaryNode<E> newNode, int curDepth, int subTreeDepth) {
+    private boolean push(Node<E> current, Node<E> newNode, int curDepth, int subTreeDepth) {
         if (curDepth == subTreeDepth) {
             if (current.left == null) {
                 current.left = newNode;

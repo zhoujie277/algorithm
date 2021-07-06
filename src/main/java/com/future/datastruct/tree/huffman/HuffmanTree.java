@@ -1,6 +1,6 @@
 package com.future.datastruct.tree.huffman;
 
-import com.future.datastruct.node.WeightNode;
+import com.future.datastruct.tree.define.WeightNode;
 import com.future.datastruct.list.PriorityHeapQueue;
 import com.future.datastruct.list.Queue;
 

@@ -1,4 +1,4 @@
-package com.future.datastruct.node;
+package com.future.datastruct.list.define;
 
 import java.io.Serializable;
 

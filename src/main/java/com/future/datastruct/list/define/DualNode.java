@@ -1,4 +1,4 @@
-package com.future.datastruct.node;
+package com.future.datastruct.list.define;
 
 /**
  * 双向链表节点

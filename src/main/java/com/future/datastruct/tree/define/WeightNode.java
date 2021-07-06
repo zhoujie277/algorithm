@@ -1,6 +1,10 @@
-package com.future.datastruct.node;
+package com.future.datastruct.tree.define;
 
-public class WeightNode<T> extends BinaryNode<T> implements Comparable<WeightNode<T>> {
+/**
+ * 带权的结点
+ * @param <T>
+ */
+public class WeightNode<T> extends Node<T> implements Comparable<WeightNode<T>> {
     public int weight;
 
     public WeightNode(T value, int weight) {
