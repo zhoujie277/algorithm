@@ -1,6 +1,6 @@
 package com.future.algoriithm.question.expression;
 
-import com.future.algoriithm.utils.PrintUtils;
+import com.future.utils.PrintUtils;
 
 public class Calculator {
 

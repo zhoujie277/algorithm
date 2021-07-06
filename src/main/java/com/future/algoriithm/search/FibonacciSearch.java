@@ -1,6 +1,6 @@
 package com.future.algoriithm.search;
 
-import com.future.algoriithm.utils.ArrayUtils;
+import com.future.utils.ArrayUtils;
 
 public class FibonacciSearch {
 

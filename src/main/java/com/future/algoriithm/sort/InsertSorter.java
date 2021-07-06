@@ -1,6 +1,6 @@
 package com.future.algoriithm.sort;
 
-import com.future.algoriithm.utils.ArrayUtils;
+import com.future.utils.ArrayUtils;
 
 /**
  * 直接插入排序

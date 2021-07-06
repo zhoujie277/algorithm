@@ -1,8 +1,8 @@
 package com.future.algorithm.search;
 
 import com.future.algoriithm.search.HashTab;
-import com.future.algoriithm.utils.DataUtils;
-import com.future.algoriithm.utils.PrintUtils;
+import com.future.utils.DataUtils;
+import com.future.utils.PrintUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

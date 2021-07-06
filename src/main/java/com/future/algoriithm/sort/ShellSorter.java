@@ -1,9 +1,6 @@
 package com.future.algoriithm.sort;
 
-import com.future.algoriithm.utils.ArrayUtils;
-import com.future.algoriithm.utils.PrintUtils;
-
-import javax.swing.*;
+import com.future.utils.ArrayUtils;
 
 /**
  * 希尔排序，即缩小增量排序

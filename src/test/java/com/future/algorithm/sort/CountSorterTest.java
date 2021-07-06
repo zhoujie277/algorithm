@@ -2,7 +2,7 @@ package com.future.algorithm.sort;
 
 import com.future.algoriithm.sort.CountSorter;
 import com.future.algoriithm.sort.Sorter;
-import com.future.algoriithm.utils.DataUtils;
+import com.future.utils.DataUtils;
 import org.junit.Test;
 
 public class CountSorterTest {

@@ -1,8 +1,8 @@
 package com.future.algoriithm.sort;
 
-import com.future.algoriithm.utils.PrintUtils;
-import com.future.algoriithm.utils.ArrayUtils;
-import com.future.algoriithm.utils.Sortable;
+import com.future.utils.PrintUtils;
+import com.future.utils.ArrayUtils;
+import com.future.utils.Sortable;
 
 /**
  * 计数排序

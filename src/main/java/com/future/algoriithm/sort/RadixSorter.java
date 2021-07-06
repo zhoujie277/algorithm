@@ -1,7 +1,7 @@
 package com.future.algoriithm.sort;
 
-import com.future.algoriithm.utils.ArrayUtils;
-import com.future.algoriithm.utils.Sortable;
+import com.future.utils.ArrayUtils;
+import com.future.utils.Sortable;
 
 /**
  * 基数排序

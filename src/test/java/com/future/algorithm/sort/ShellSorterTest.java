@@ -1,7 +1,6 @@
 package com.future.algorithm.sort;
 
 import com.future.algoriithm.sort.ShellSorter;
-import com.future.algoriithm.utils.PrintUtils;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.BeforeClass;
 import org.junit.Test;

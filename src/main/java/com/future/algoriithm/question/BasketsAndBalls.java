@@ -1,7 +1,7 @@
 package com.future.algoriithm.question;
 
-import com.future.algoriithm.utils.PrintUtils;
-import com.future.algoriithm.utils.Printable;
+import com.future.utils.PrintUtils;
+import com.future.utils.Printable;
 
 /**
  * ou have several identical balls that you wish to place in several baskets. Each basket has the same maximum capacity.

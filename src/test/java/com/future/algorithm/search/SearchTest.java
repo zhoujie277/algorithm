@@ -3,10 +3,9 @@ package com.future.algorithm.search;
 import com.future.algoriithm.search.BinarySearch;
 import com.future.algoriithm.search.InterpolationSearch;
 import com.future.algoriithm.sort.InsertSorter;
-import com.future.algoriithm.utils.PrintUtils;
+import com.future.utils.PrintUtils;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

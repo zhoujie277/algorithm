@@ -1,8 +1,8 @@
 package com.future.algoriithm.sort;
 
-import com.future.algoriithm.utils.PrintUtils;
-import com.future.algoriithm.array.RandomArray;
-import com.future.algoriithm.utils.ArrayUtils;
+import com.future.utils.PrintUtils;
+import com.future.datastruct.list.RandomArray;
+import com.future.utils.ArrayUtils;
 
 import java.util.function.Consumer;
 

@@ -1,8 +1,7 @@
 package com.future.algoriithm.search;
 
-import com.future.algoriithm.node.KVNode;
-import com.future.algoriithm.utils.Hashable;
-import com.future.algoriithm.utils.PrintUtils;
+import com.future.datastruct.node.KVNode;
+import com.future.utils.Hashable;
 
 import java.io.Serializable;
 import java.util.Iterator;

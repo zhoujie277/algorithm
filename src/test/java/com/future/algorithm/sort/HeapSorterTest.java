@@ -1,8 +1,7 @@
 package com.future.algorithm.sort;
 
 import com.future.algoriithm.sort.HeapSorter;
-import com.future.algoriithm.sort.SimpleSorting;
-import com.future.algoriithm.utils.PrintUtils;
+import com.future.utils.PrintUtils;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.After;
 import org.junit.Before;

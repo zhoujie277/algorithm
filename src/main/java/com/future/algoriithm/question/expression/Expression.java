@@ -1,9 +1,9 @@
 package com.future.algoriithm.question.expression;
 
-import com.future.algoriithm.utils.PrintUtils;
-import com.future.algoriithm.utils.Printable;
-import com.future.algoriithm.linked.DualLinkedList;
-import com.future.algoriithm.stack.Stack;
+import com.future.utils.PrintUtils;
+import com.future.utils.Printable;
+import com.future.datastruct.list.DualLinkedList;
+import com.future.datastruct.list.Stack;
 
 import java.util.Iterator;
 

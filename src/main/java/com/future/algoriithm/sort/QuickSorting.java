@@ -1,9 +1,9 @@
 package com.future.algoriithm.sort;
 
 
-import com.future.algoriithm.utils.PrintUtils;
-import com.future.algoriithm.utils.Printable;
-import com.future.algoriithm.utils.ArrayUtils;
+import com.future.utils.PrintUtils;
+import com.future.utils.Printable;
+import com.future.utils.ArrayUtils;
 
 
 /**
