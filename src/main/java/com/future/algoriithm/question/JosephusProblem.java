@@ -1,33 +1,46 @@
 package com.future.algoriithm.question;
 
+import com.future.datastruct.list.DualCircleLinkedList;
+import com.future.utils.PrintUtils;
+import edu.princeton.cs.algs4.StdRandom;
+
 /**
  * 约瑟夫问题
- * //TODO： 回头再研究
  */
 public class JosephusProblem {
 
-    public static void test1(int capacity, int k) {
-        int count = capacity;
-        while (count > 1) {
-            count = count - count % k;
+    public static int startGame(int n, int startIndex, int space) {
+        // 初始化游戏数据
+        DualCircleLinkedList<Integer> list = new DualCircleLinkedList<>();
+        int[] permutation = StdRandom.permutation(n);
+        PrintUtils.println(permutation);
+        for (int i = 0; i < permutation.length; i++) {
+            list.add(permutation[i]);
         }
+        // 从第startIndex个人开始
+        int i = 1;
+        while (i < startIndex) {
+            list.next();
+            i++;
+        }
+
+        // start cycle
+        i = 1;
+        while (list.size() > 1) {
+            i++;
+            list.next();
+            if (i == space) {
+                PrintUtils.println("JosephusProblem eliminate data is " + list.current());
+                list.removeCurrent();
+                i = 1;
+            }
+        }
+        return list.peek();
     }
 
     public static void main(String[] args) {
-        int capacity = 20;
-        int k = 3;
-        int[] a = new int[capacity];
-        for (int i = k - 1; i < a.length; i = i + k) {
-            a[i] = 1;
-        }
+        int survivor = startGame(30, 2, 3);
+        PrintUtils.println("survivor is " + survivor);
 
-        int sum = 0;
-        for (int i = 0; i < a.length; i++) {
-            if (a[i] == 0) {
-                sum++;
-            }
-            System.out.print(a[i] + "\t");
-        }
-        System.out.printf("\n capacity=%d, k=%d, sum=%d, count=%d \n", capacity, k, sum, sum);
     }
 }

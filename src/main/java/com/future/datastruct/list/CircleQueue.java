@@ -1,44 +1,26 @@
 package com.future.datastruct.list;
 
-import com.future.datastruct.list.define.IQueue;
+import com.future.datastruct.list.define.AbstractSequence;
+import com.future.datastruct.list.define.ILinked;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 /**
- * 环形队列
+ * 环形双端队列
+ * 顺序存储结构，实现链表操作接口
+ *
+ * @author jayzhou
  */
-public class CircleQueue<E> implements IQueue<E> {
+public class CircleQueue<E> extends AbstractSequence<E> implements ILinked<E> {
 
-    protected static final int ELEMENT_NOT_FOUND = -1;
-    private static final int DEFAULT_CAPACITY = 10;
-
-    private Object[] elements;
-    private int size;
     private int front;
 
     public CircleQueue() {
-        this(DEFAULT_CAPACITY);
+        super();
     }
 
     public CircleQueue(int capacity) {
-        elements = new Object[capacity];
-        size = 0;
-    }
-
-    @Override
-    public int size() {
-        return size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
-    public boolean contains(E o) {
-        return indexOf(o) >= 0;
+        super(capacity);
     }
 
     @Override
@@ -48,7 +30,7 @@ public class CircleQueue<E> implements IQueue<E> {
 
     @Override
     public boolean remove(E o) {
-        int index = indexOf(o);
+        int index = innerIndexOf(o);
         return remove(index) != null;
     }
 
@@ -57,10 +39,12 @@ public class CircleQueue<E> implements IQueue<E> {
         for (int i = 0; i < elements.length; i++) {
             elements[i] = null;
         }
+        size = 0;
     }
 
     @Override
     public E get(int index) {
+        rangeCheck(index);
         return (E) elements[mapIndex(index)];
     }
 
@@ -74,7 +58,7 @@ public class CircleQueue<E> implements IQueue<E> {
 
     @Override
     public E set(int index, E e) {
-        if (index < 0 || index >= size) return null;
+        rangeCheck(index);
         int mapIndex = mapIndex(front + index);
         Object element = elements[mapIndex];
         elements[mapIndex] = e;
@@ -120,21 +104,35 @@ public class CircleQueue<E> implements IQueue<E> {
     }
 
     @Override
-    public boolean offer(E e) {
-        front = mapIndex(front - 1);
-        elements[front] = e;
-        size++;
-        return false;
+    public int indexOf(E o) {
+        return 0;
     }
 
     @Override
-    public E remove() {
+    public void offer(E e) {
+        front = mapIndex(front - 1);
+        elements[front] = e;
+        size++;
+    }
+
+    @Override
+    public E pop() {
         if (size == 0) return null;
         int index = mapIndex(front + size - 1);
         Object element = elements[index];
         elements[index] = null;
         size--;
         return (E) element;
+    }
+
+    @Override
+    public E last() {
+        return (E) elements[mapIndex(front + size - 1)];
+    }
+
+    @Override
+    public void push(E e) {
+        add(e);
     }
 
     @Override
@@ -153,7 +151,7 @@ public class CircleQueue<E> implements IQueue<E> {
     }
 
     @Override
-    public int indexOf(E e) {
+    public int innerIndexOf(E e) {
         for (int i = front; i < front + size; i++) {
             int index = mapIndex(i);
             if (elements[index].equals(e)) {
@@ -163,11 +161,7 @@ public class CircleQueue<E> implements IQueue<E> {
         return ELEMENT_NOT_FOUND;
     }
 
-    private void ensureCapacity(int capacity) {
-        if (capacity > elements.length) grow();
-    }
-
-    private void grow() {
+    protected void grow() {
         int len = elements.length + (elements.length >> 1);
         Object[] newArr = new Object[len];
         for (int i = front; i < front + size; i++) {
@@ -181,15 +175,6 @@ public class CircleQueue<E> implements IQueue<E> {
     private int mapIndex(int index) {
 //        return index % elements.length;
         return index - (index >= elements.length ? elements.length : 0);
-    }
-
-    @Override
-    public String toString() {
-        return "CircleQueue{" +
-                "elements=" + Arrays.toString(elements) +
-                ", size=" + size +
-                ", front=" + front +
-                '}';
     }
 
     private class Itr implements Iterator<E> {

@@ -3,7 +3,7 @@ package com.future.algoriithm.question.expression;
 import com.future.utils.PrintUtils;
 import com.future.utils.Printable;
 import com.future.datastruct.list.DualLinkedList;
-import com.future.datastruct.list.Stack;
+import com.future.datastruct.list.LinkedStack;
 
 import java.util.Iterator;
 
@@ -27,7 +27,7 @@ public class Expression implements Printable {
     }
 
     public void parse() {
-        Stack<Character> digitCache = new Stack<>();
+        LinkedStack<Character> digitCache = new LinkedStack<>();
         for (int i = 0; i < originExpr.length(); ) {
             char c = originExpr.charAt(i);
             if (!Character.isDigit(c) && c != '.') {
@@ -66,7 +66,7 @@ public class Expression implements Printable {
     }
 
     private void forEachInfixExpression(Iterator<Code> iterator, char popStack, char pushStack, DualLinkedList<Code> expr, boolean leftToRight) {
-        Stack<Code> codeStack = new Stack<>();
+        LinkedStack<Code> codeStack = new LinkedStack<>();
         Code code;
         while (iterator.hasNext()) {
             code = iterator.next();
@@ -104,7 +104,7 @@ public class Expression implements Printable {
      * 从右到左的表达式，先出栈的在表达式左边，后出栈的在表达式右边
      * 数字的出栈运算并重新入栈
      */
-    private void digitOperation(Stack<Code> digitStack, Code code, boolean leftToRight) {
+    private void digitOperation(LinkedStack<Code> digitStack, Code code, boolean leftToRight) {
         Code upCode = digitStack.pop();
         Code downCode = digitStack.pop();
         Code result;
@@ -121,8 +121,8 @@ public class Expression implements Printable {
      * 5 + (3 * 4) - 2
      */
     public float infixOperation() {
-        Stack<Code> digitStack = new Stack<>();
-        Stack<Code> operatorStack = new Stack<>();
+        LinkedStack<Code> digitStack = new LinkedStack<>();
+        LinkedStack<Code> operatorStack = new LinkedStack<>();
         Code code;
         while ((code = infixExpr.poll()) != null) {
             if (code.isDigit()) {
@@ -168,7 +168,7 @@ public class Expression implements Printable {
     }
 
     private float internalOperation(DualLinkedList<Code> expr, boolean leftToRight) {
-        Stack<Code> operationStack = new Stack<>();
+        LinkedStack<Code> operationStack = new LinkedStack<>();
         Code code;
         while ((code = (leftToRight ? expr.poll() : expr.pop())) != null) {
             if (code.isDigit()) {
@@ -180,7 +180,7 @@ public class Expression implements Printable {
         return operationStack.pop().getDecimal();
     }
 
-    private void pushDigit(Stack<Character> digitCache) {
+    private void pushDigit(LinkedStack<Character> digitCache) {
         if (digitCache.isEmpty()) return;
         Character ch;
         int bit = 1;
@@ -209,11 +209,11 @@ public class Expression implements Printable {
         PrintUtils.println("\n----------------OriginExpression---------------");
         PrintUtils.println(originExpr);
         PrintUtils.println("\n----------------InfixExpression---------------");
-        this.infixExpr.println();
+        PrintUtils.println(infixExpr);
         PrintUtils.println("\n----------------PostExpression---------------");
-        this.suffixExpr.println();
+        PrintUtils.println(suffixExpr);
         PrintUtils.println("\n----------------PrefixExpression---------------");
-        this.prefixExpr.println();
+        PrintUtils.println(prefixExpr);
         PrintUtils.println();
         PrintUtils.println();
     }

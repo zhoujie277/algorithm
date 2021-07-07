@@ -1,7 +1,7 @@
 package com.future.datastruct.tree;
 
-import com.future.datastruct.list.Queue;
-import com.future.datastruct.list.Stack;
+import com.future.datastruct.list.LinkedQueue;
+import com.future.datastruct.list.LinkedStack;
 import com.future.datastruct.tree.define.Node;
 
 import java.util.Iterator;
@@ -110,7 +110,7 @@ public abstract class AbstractBinaryTree<E> {
 
     private void innerBreadthFirstSearch(Consumer<Node<E>> nodeConsumer) {
         if (root == null) return;
-        Queue<Node<E>> queue = new Queue();
+        LinkedQueue<Node<E>> queue = new LinkedQueue();
         queue.push(root);
         while (!queue.isEmpty()) {
             Node<E> node = queue.poll();
@@ -148,7 +148,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     public void preOrderByStack(Consumer<E> consumer) {
-        Stack<Node<E>> stack = new Stack<>();
+        LinkedStack<Node<E>> stack = new LinkedStack<>();
         stack.push(root);
         Node<E> pop;
         while ((pop = stack.pop()) != null) {
@@ -178,7 +178,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     public void inOrderByStack(Consumer<E> consumer) {
-        Stack<Node<E>> stack = new Stack<>();
+        LinkedStack<Node<E>> stack = new LinkedStack<>();
         Node<E> currentNode = root;
         while (currentNode != null || !stack.isEmpty()) {
             while (currentNode != null) {
@@ -220,7 +220,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     public void postOrderByStack(Consumer<E> consumer) {
-        Stack<Node<E>> stack = new Stack<>();
+        LinkedStack<Node<E>> stack = new LinkedStack<>();
         Node<E> currentNode = root;
         Node<E> rightNode = null;
         while (currentNode != null || !stack.isEmpty()) {
@@ -255,7 +255,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     private class PreOrderIterator implements Iterator<E> {
-        private final Stack<Node<E>> stack = new Stack<>();
+        private final LinkedStack<Node<E>> stack = new LinkedStack<>();
 
         public PreOrderIterator() {
             stack.push(root);
@@ -282,7 +282,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     private class InOrderIterator implements Iterator<E> {
-        private final Stack<Node<E>> stack = new Stack<>();
+        private final LinkedStack<Node<E>> stack = new LinkedStack<>();
 
         public InOrderIterator() {
             Node<E> current = root;
@@ -323,7 +323,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     private class PostOrderIterator implements Iterator<E> {
-        private Stack<Node<E>> stack = new Stack<>();
+        private LinkedStack<Node<E>> stack = new LinkedStack<>();
         private Node<E> currentNode = root;
         private Node<E> rightNode = null;
 
@@ -374,7 +374,7 @@ public abstract class AbstractBinaryTree<E> {
     }
 
     private class BreathFirstSearchIterator implements Iterator<E> {
-        private final Queue<Node<E>> queue = new Queue();
+        private final LinkedQueue<Node<E>> queue = new LinkedQueue();
 
         public BreathFirstSearchIterator() {
             queue.push(root);

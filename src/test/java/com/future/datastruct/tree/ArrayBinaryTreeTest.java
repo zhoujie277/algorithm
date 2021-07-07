@@ -1,6 +1,6 @@
 package com.future.datastruct.tree;
 
-import com.future.datastruct.list.Stack;
+import com.future.datastruct.list.LinkedStack;
 import com.future.utils.PrintUtils;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Before;
@@ -21,7 +21,7 @@ public class ArrayBinaryTreeTest {
     }
 
     private void preOrder() {
-        Stack<Integer> stack = new Stack();
+        LinkedStack<Integer> stack = new LinkedStack();
         stack.push(0);
         while (!stack.isEmpty()) {
             Integer pop = stack.pop();

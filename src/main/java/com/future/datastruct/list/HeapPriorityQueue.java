@@ -9,22 +9,24 @@ import java.util.Iterator;
 /**
  * 优先队列
  * 二叉堆实现
+ *
+ * @author jayzhou
  */
 @SuppressWarnings("unused")
-public class PriorityHeapQueue<E extends Comparable<E>> implements Iterable<E> {
+public class HeapPriorityQueue<E extends Comparable<E>> implements Iterable<E> {
 
     private BinaryMaxHeap<E> heap;
 
-    public PriorityHeapQueue() {
+    public HeapPriorityQueue() {
         heap = new BinaryMaxHeap<>();
     }
 
-    public PriorityHeapQueue(int[] array) {
+    public HeapPriorityQueue(int[] array) {
         Integer[] arr = Arrays.stream(array).boxed().toArray(Integer[]::new);
         heap = new BinaryMaxHeap(arr);
     }
 
-    public PriorityHeapQueue(E[] array) {
+    public HeapPriorityQueue(E[] array) {
         heap = new BinaryMaxHeap(array);
     }
 

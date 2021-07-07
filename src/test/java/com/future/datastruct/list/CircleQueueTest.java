@@ -26,7 +26,7 @@ public class CircleQueueTest {
             circleQueue.add(arr[i]);
         }
 
-        Assert.assertEquals(arr[arr.length - 1], (int) circleQueue.remove());
+        Assert.assertEquals(arr[arr.length - 1], (int) circleQueue.pop());
         Assert.assertEquals(arr[0], (int) circleQueue.peek());
         Assert.assertEquals(arr[0], (int) circleQueue.poll());
 
@@ -45,7 +45,7 @@ public class CircleQueueTest {
         }
         PrintUtils.println("before remove");
         PrintUtils.println(circleQueue);
-        int index = circleQueue.indexOf(12);
+        int index = circleQueue.innerIndexOf(12);
         PrintUtils.println("The obj will remove at indexOf is " + index);
 
         circleQueue.remove(10);

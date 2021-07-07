@@ -4,16 +4,16 @@ import com.future.datastruct.list.define.AbstractSequence;
 import com.future.datastruct.list.define.ILinked;
 
 /**
- * 数组栈
+ * 数组队列
+ *
  * @author jayzhou
  */
-public class ArrayStack<E> extends AbstractSequence<E> implements ILinked<E> {
-
-    public ArrayStack() {
+public class ArrayQueue<E> extends AbstractSequence<E> implements ILinked<E> {
+    public ArrayQueue() {
         super();
     }
 
-    public ArrayStack(int capacity) {
+    public ArrayQueue(int capacity) {
         super(capacity);
     }
 
@@ -24,26 +24,26 @@ public class ArrayStack<E> extends AbstractSequence<E> implements ILinked<E> {
 
     @Override
     public void offer(E e) {
-        push(e);
+        add(e);
     }
 
     @Override
     public E peek() {
-        return (E) elements[size];
+        return (E) elements[0];
     }
 
+    @Override
     public E pop() {
-        return remove(size - 1);
+        return poll();
     }
 
     @Override
     public E poll() {
-        return pop();
+        return remove(0);
     }
 
     @Override
     public E last() {
         return peek();
     }
-
 }

@@ -1,7 +1,7 @@
 package com.future.datastruct.graph;
 
 import com.future.datastruct.list.DynamicArray;
-import com.future.datastruct.list.Queue;
+import com.future.datastruct.list.LinkedQueue;
 import com.future.utils.PrintUtils;
 
 
@@ -54,7 +54,7 @@ public class Graph<T> {
     }
 
     public void breadthFirstSearch(boolean[] isVisited, int i) {
-        Queue<Integer> queue = new Queue<>();
+        LinkedQueue<Integer> queue = new LinkedQueue<>();
         queue.push(i);
         Integer temp;
         int w;

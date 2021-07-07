@@ -6,14 +6,16 @@ import java.util.Iterator;
 
 /**
  * 链表实现的优先队列
+ *
+ * @author jayzhou
  */
 @SuppressWarnings("unused")
-public class PriorityLinkQueue<E extends Comparable<E>> implements Iterable<E> {
+public class LinkedPriorityQueue<E extends Comparable<E>> implements Iterable<E> {
 
     public Node<E> head = new Node<>();
     private int size = 0;
 
-    public PriorityLinkQueue() {
+    public LinkedPriorityQueue() {
 
     }
 

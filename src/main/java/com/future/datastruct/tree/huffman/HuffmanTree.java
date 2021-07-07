@@ -1,8 +1,8 @@
 package com.future.datastruct.tree.huffman;
 
 import com.future.datastruct.tree.define.WeightNode;
-import com.future.datastruct.list.PriorityHeapQueue;
-import com.future.datastruct.list.Queue;
+import com.future.datastruct.list.HeapPriorityQueue;
+import com.future.datastruct.list.LinkedQueue;
 
 import java.util.Iterator;
 
@@ -13,7 +13,7 @@ import java.util.Iterator;
 public class HuffmanTree<T> implements Iterable<T> {
 
     public static <T> HuffmanTree<T> createTree(WeightNode<T>[] array) {
-        PriorityHeapQueue<WeightNode<T>> queue = new PriorityHeapQueue<>(array);
+        HeapPriorityQueue<WeightNode<T>> queue = new HeapPriorityQueue<>(array);
         WeightNode<T> prev;
         WeightNode<T> current;
         int newWeight;
@@ -85,7 +85,7 @@ public class HuffmanTree<T> implements Iterable<T> {
 
     private class Itr implements Iterator<T> {
 
-        private final Queue<WeightNode<T>> queue = new Queue<>();
+        private final LinkedQueue<WeightNode<T>> queue = new LinkedQueue<>();
 
         public Itr() {
             queue.push(root);

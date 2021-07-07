@@ -2,7 +2,7 @@ package com.future.utils;
 
 import com.future.datastruct.list.DynamicArray;
 import com.future.datastruct.tree.define.Node;
-import com.future.datastruct.list.Queue;
+import com.future.datastruct.list.LinkedQueue;
 import com.future.datastruct.tree.AbstractBinaryTree;
 import com.future.datastruct.tree.BinarySearchTree;
 import edu.princeton.cs.algs4.StdDraw;
@@ -66,7 +66,7 @@ public class DrawTreeUtil {
 
     public <T> void drawBinaryTree(AbstractBinaryTree<T> tree, Node<T> root) {
         DynamicArray<DrawNode> drawNodes = new DynamicArray<>();
-        Queue<Node<T>> queue = new Queue<>();
+        LinkedQueue<Node<T>> queue = new LinkedQueue<>();
         int index = 0;
         queue.push(root);
         drawNodes.add(newDrawNode(rootStartPoint, rootTopPoint, initSpacingX, root.value.toString()));

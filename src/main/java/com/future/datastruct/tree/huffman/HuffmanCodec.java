@@ -1,7 +1,7 @@
 package com.future.datastruct.tree.huffman;
 
 import com.future.datastruct.tree.define.WeightNode;
-import com.future.datastruct.list.Queue;
+import com.future.datastruct.list.LinkedQueue;
 import com.future.datastruct.list.HashTab;
 
 import java.nio.charset.StandardCharsets;
@@ -84,7 +84,7 @@ public class HuffmanCodec {
             String s = byte2bitString(bytes[i], i < bytes.length - 1);
             builder.append(s);
         }
-        Queue<Byte> queue = new Queue<>();
+        LinkedQueue<Byte> queue = new LinkedQueue<>();
         for (int i = 0; i < builder.length(); ) {
             int count = 0;
             while (i + count <= builder.length()) {

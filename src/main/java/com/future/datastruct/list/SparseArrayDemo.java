@@ -2,6 +2,9 @@ package com.future.datastruct.list;
 
 import com.future.utils.PrintUtils;
 
+/**
+ * 稀疏矩阵
+ */
 public class SparseArrayDemo {
 
     private static int[][] initArray() {

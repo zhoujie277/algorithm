@@ -11,12 +11,12 @@ import java.util.Iterator;
 public class PriorityQueueTest {
 
     private int[] array = null;
-    private PriorityHeapQueue<Integer> queue = null;
+    private HeapPriorityQueue<Integer> queue = null;
 
     @Before
     public void setup() {
         array = StdRandom.permutation(10);
-        queue = new PriorityHeapQueue(array);
+        queue = new HeapPriorityQueue(array);
     }
 
     @Test

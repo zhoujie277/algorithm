@@ -8,6 +8,8 @@ import java.util.Iterator;
 
 /**
  * 哈希表
+ *
+ * @author jayzhou
  */
 @SuppressWarnings("unused")
 public class HashTab<K, V> implements Iterable<K>, Serializable {

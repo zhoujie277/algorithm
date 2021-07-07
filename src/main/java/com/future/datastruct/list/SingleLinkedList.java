@@ -1,93 +1,170 @@
 package com.future.datastruct.list;
 
-import com.future.utils.PrintUtils;
+import com.future.datastruct.list.define.AbstractLinked;
+import com.future.datastruct.list.define.ISequence;
 import com.future.datastruct.list.define.Node;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Iterator;
 import java.util.function.Consumer;
 
-public class SingleLinkedList<T> {
-    private Node<T> head;
-    private int count;
-
-    public SingleLinkedList() {
-    }
-
-    public Node<T> first() {
-        return head;
-    }
-
-    public boolean isEmpty() {
-        return head == null;
-    }
+/**
+ * 实现了顺序访问接口的单向链表
+ * @author jayzhou
+ */
+public class SingleLinkedList<T> extends AbstractLinked<T> implements ISequence<T> {
 
     // 尾插
-    public int push(T e) {
+    @Override
+    public void push(T e) {
         Node<T> newNode = new Node<>(e);
         Node<T> prev = null;
         Node<T> current = head;
-        while (current != null) {
+        while (!reachEnd(current)) {
             prev = current;
             current = current.next;
         }
         link(prev, newNode);
-        count++;
-        return count;
+        afterAppend(prev, newNode);
+        size++;
+    }
+
+    protected void afterAppend(Node<T> prev, Node<T> node) {
+
     }
 
     //头插
-    public int unshift(T e) {
+    @Override
+    public void offer(T e) {
         Node<T> first = head;
-        Node<T> newNode = new Node<>(e, first);
-        head = newNode;
-        count++;
-        return count;
+        head = new Node<>(e, first);
+        afterAppend(null, head);
+        size++;
     }
 
     // 尾删
+    @Override
     public T pop() {
         if (head == null) return null;
         Node<T> prev = null;
         Node<T> current = head;
-        while (current != null) {
-            if (current.next == null) {
-                //此元素是最后一个元素
-                break;
-            }
+        while (!reachEnd(current)) {
             prev = current;
             current = current.next;
         }
-        prev.next = null;
-        count--;
-        return current.value;
+        //此元素是最后一个元素
+        beforeRemove(prev, current);
+        T val = current.value;
+        current.value = null;
+        if (prev != null) {
+            prev.next = null;
+        }
+        size--;
+        return val;
     }
 
-    // 头删
-    public T shift() {
+    protected void beforeRemove(Node<T> prev, Node<T> node) {
+
+    }
+
+    protected boolean reachEnd(Node<T> node) {
+        return node == null;
+    }
+
+    @Override
+    public T poll() {
         if (head == null) return null;
+        beforeRemove(null, head);
         Node<T> first = head;
         head = first.next;
         first.next = null;
         return first.value;
     }
 
+    @Override
+    public T last() {
+        if (head == null) return null;
+        Node<T> current = head;
+        while (!reachEnd(current.next)) {
+            current = current.next;
+        }
+        return current.value;
+    }
+
     // 反向遍历
+    @SuppressWarnings("unused")
     public void reverseTraversal(Consumer<T> consumer) {
         reverseTraversal(head, consumer);
     }
 
     public void reverseTraversal(Node<T> current, Consumer<T> consumer) {
-        if (current == null) return;
+        if (reachEnd(current)) return;
         reverseTraversal(current.next, consumer);
         consumer.accept(current.value);
     }
 
+    @Override
+    public T get(int index) {
+        rangeCheck(index);
+        Node<T> node = node(index);
+        return node.value;
+    }
+
+    @Override
+    public T set(int index, T element) {
+        rangeCheck(index);
+        Node<T> node = node(index);
+        T oldVal = node.value;
+        node.value = element;
+        return oldVal;
+    }
+
+    @Override
+    public void add(int index, T element) {
+        rangeCheck(index);
+        Node<T> tNode = new Node<>(element);
+        if (index == 0) {
+            tNode.next = head;
+            head = tNode;
+            afterAppend(null, head);
+            size++;
+            return;
+        }
+        Node<T> parent = node(index - 1);
+        tNode.next = parent.next;
+        parent.next = tNode;
+        afterAppend(parent, tNode);
+        size++;
+    }
+
+    @Override
+    public T remove(int index) {
+        rangeCheck(index);
+        T val;
+        if (index == 0) {
+            beforeRemove(null, head);
+            val = head.value;
+            head = head.next;
+        } else {
+            Node<T> parent = node(index - 1);
+            beforeRemove(parent, parent.next);
+            val = parent.next.value;
+            parent.next = parent.next.next;
+        }
+        return val;
+    }
+
+    @Override
+    public int indexOf(T o) {
+        return innerIndexOf(o);
+    }
+
+    @Override
     public boolean remove(T e) {
         Node<T> prev = null;
         Node<T> current = head;
-        while (current != null) {
+        while (!reachEnd(current)) {
             if (current.value.equals(e)) {
+                beforeRemove(prev, current);
                 unLink(prev, current);
                 return true;
             }
@@ -97,7 +174,7 @@ public class SingleLinkedList<T> {
         return false;
     }
 
-    private void link(Node<T> prev, Node<T> newNode) {
+    protected void link(Node<T> prev, Node<T> newNode) {
         if (head == null) {
             head = newNode;
         }
@@ -115,19 +192,13 @@ public class SingleLinkedList<T> {
         }
     }
 
-    public void println() {
-        Node<T> current = head;
-        while (current != null) {
-            PrintUtils.print(current.value + "\t");
-            current = current.next;
-        }
-    }
-
+    // 反转链表
+    @SuppressWarnings("unused")
     public void reverse() {
         Node<T> last = null;
         Node<T> current = head;
         Node<T> next;
-        while (current != null) {
+        while (!reachEnd(current)) {
             next = current.next;
             current.next = last;
             last = current;
@@ -136,18 +207,31 @@ public class SingleLinkedList<T> {
         head = last;
     }
 
-    public static void main(String[] args) {
-        SingleLinkedList<Integer> linkedList = new SingleLinkedList<>();
-        List<Integer> data = Arrays.asList(2, 9, 12, 3, 45, 6, 7);
-        for (Integer i : data) {
-            linkedList.push(i);
+    @Override
+    public Iterator<T> reverseIterator() {
+        return new ReverseItr();
+    }
+
+    private class ReverseItr implements Iterator<T> {
+        private Node<T> newHead = null;
+        public ReverseItr() {
+            Node<T> cur = head;
+            while (cur != null) {
+                newHead = new Node<>(cur.value, newHead);
+                cur = cur.next;
+            }
         }
-        linkedList.println();
-        linkedList.reverse();
-        PrintUtils.println();
-        linkedList.println();
-        linkedList.reverse();
-        PrintUtils.println();
-        linkedList.println();
+
+        @Override
+        public boolean hasNext() {
+            return newHead != null;
+        }
+
+        @Override
+        public T next() {
+            T val = newHead.value;
+            newHead = newHead.next;
+            return val;
+        }
     }
 }

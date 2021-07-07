@@ -1,6 +1,6 @@
 package com.future.datastruct.list;
 
-import com.future.datastruct.list.define.IList;
+import com.future.datastruct.list.define.AbstractSequence;
 import com.future.utils.PrintUtils;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.After;
@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public class IListTest {
 
-    private IList<Integer> list = new DynamicArray<>();
+    private AbstractSequence<Integer> list = new DynamicArray<>();
 
     @Before
     public void setup() {

@@ -19,4 +19,6 @@ public class DualNode<T> extends Node<T> {
         super(value, next);
         this.prev = prev;
     }
+
+
 }
