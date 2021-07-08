@@ -1,7 +1,6 @@
 package com.future.datastruct.tree;
 
-import com.future.datastruct.tree.define.Node;
-
+import java.util.Iterator;
 import java.util.function.Consumer;
 
 /**
@@ -11,28 +10,33 @@ public class ThreadedBinaryTree<E> extends CompleteBinaryTree<E> {
 
     private Node<E> orderPrev = null;
 
-    @Override
-    protected void onPreOrderTraversal(Node<E> node) {
-        threading(node);
+    public void preOrderThread() {
+        iteratorThreading(preOrderNodeIterator());
     }
 
-    @Override
-    protected void onInOrderTraversal(Node<E> node) {
-        threading(node);
+    public void inOrderThread() {
+        iteratorThreading(inOrderNodeIterator());
     }
 
-    @Override
-    protected void onPostOrderTraversal(Node<E> node) {
-        threading(node);
+    public void postOrderThread() {
+        iteratorThreading(postOrderNodeIterator());
+    }
+
+    private void iteratorThreading(Iterator<Node<E>> nodeIterator) {
+        orderPrev = null;
+        while (nodeIterator.hasNext()) {
+            Node<E> node = nodeIterator.next();
+            threading(node);
+        }
     }
 
     private void threading(Node<E> node) {
         if (node.left == null) {
-            node.lChildFlag = Node.FLAG_THREADED;
+            node.lChildFlag = BinaryTree.Node.FLAG_THREADED;
             node.left = orderPrev;
         }
         if (orderPrev != null && orderPrev.right == null) {
-            orderPrev.rChildFlag = Node.FLAG_THREADED;
+            orderPrev.rChildFlag = BinaryTree.Node.FLAG_THREADED;
             orderPrev.right = node;
         }
         orderPrev = node;

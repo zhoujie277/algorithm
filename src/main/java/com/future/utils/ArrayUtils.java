@@ -1,5 +1,7 @@
 package com.future.utils;
 
+import java.util.Arrays;
+
 public class ArrayUtils {
     public static void swap(int[] arr, int i, int j) {
         if (i == j) return;
@@ -64,7 +66,7 @@ public class ArrayUtils {
         int result = array[0].keyAt(keyIndex);
         for (int i = 0; i < array.length; i++) {
             int key = array[i].keyAt(keyIndex);
-            result = max ? Math.max(result, key): Math.min(result, key);
+            result = max ? Math.max(result, key) : Math.min(result, key);
         }
         return result;
     }
@@ -79,9 +81,13 @@ public class ArrayUtils {
         return max;
     }
 
-    public static void fill(int[] array ,int value) {
+    public static void fill(int[] array, int value) {
         for (int i = 0; i < array.length; i++) {
             array[i] = value;
         }
+    }
+
+    public static Integer[] convert(int[] array) {
+        return Arrays.stream(array).boxed().toArray(Integer[]::new);
     }
 }

@@ -82,6 +82,11 @@ public abstract class AbstractLinked<E> extends AbstractList<E> implements ILink
     }
 
     @Override
+    public Iterator<E> reverseIterator() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Linked{" + "size=").append(size).append('[');

@@ -17,6 +17,7 @@ public class LinkedStack<E> extends AbstractLinked<E> {
     public void push(E e) {
         if (e == null) return;
         head = new Node<>(e, head);
+        size++;
     }
 
     @Override
@@ -26,6 +27,7 @@ public class LinkedStack<E> extends AbstractLinked<E> {
         E value = first.value;
         head = first.next;
         first.next = null;
+        size--;
         return value;
     }
 

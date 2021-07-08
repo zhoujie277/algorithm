@@ -1,6 +1,6 @@
 package com.future.datastruct.tree.huffman;
 
-import com.future.datastruct.tree.define.WeightNode;
+import com.future.datastruct.tree.BinaryTree;
 import com.future.datastruct.list.HeapPriorityQueue;
 import com.future.datastruct.list.LinkedQueue;
 
@@ -10,7 +10,7 @@ import java.util.Iterator;
  * 哈夫曼树
  */
 @SuppressWarnings("unused")
-public class HuffmanTree<T> implements Iterable<T> {
+public class HuffmanTree<T> extends BinaryTree<T> implements Iterable<T> {
 
     public static <T> HuffmanTree<T> createTree(WeightNode<T>[] array) {
         HeapPriorityQueue<WeightNode<T>> queue = new HeapPriorityQueue<>(array);
@@ -83,6 +83,16 @@ public class HuffmanTree<T> implements Iterable<T> {
         return new Itr();
     }
 
+    @Override
+    public T add(T element) {
+        throw new UnsupportedOperationException("哈夫曼树不允许添加元素");
+    }
+
+    @Override
+    public T remove(T element) {
+        throw new UnsupportedOperationException("哈夫曼树不允许删除元素");
+    }
+
     private class Itr implements Iterator<T> {
 
         private final LinkedQueue<WeightNode<T>> queue = new LinkedQueue<>();
@@ -108,6 +118,39 @@ public class HuffmanTree<T> implements Iterable<T> {
                 }
             }
             return node != null ? node.value : null;
+        }
+    }
+
+    /**
+     * 带权的结点
+     * @param <T>
+     */
+    protected static class WeightNode<T> extends Node<T> implements Comparable<WeightNode<T>> {
+        public int weight;
+
+        public WeightNode(T value, int weight) {
+            this.weight = weight;
+            this.value = value;
+        }
+
+        public WeightNode(T value, int weight, WeightNode<T> left, WeightNode<T> right) {
+            this.weight = weight;
+            this.left = left;
+            this.right = right;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "WeightNode{" +
+                    "value=" + value +
+                    ", weight=" + weight +
+                    '}';
+        }
+
+        @Override
+        public int compareTo(WeightNode<T> o) {
+            return o.weight - weight;
         }
     }
 }

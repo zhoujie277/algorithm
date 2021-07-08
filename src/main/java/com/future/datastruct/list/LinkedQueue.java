@@ -23,6 +23,7 @@ public class LinkedQueue<T> extends AbstractLinked<T> {
             rear.next = newNode;
         }
         rear = newNode;
+        size++;
     }
 
     @Override

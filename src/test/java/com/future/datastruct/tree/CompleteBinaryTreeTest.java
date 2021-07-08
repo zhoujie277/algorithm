@@ -1,33 +1,40 @@
 package com.future.datastruct.tree;
 
+import com.future.utils.ArrayUtils;
+import com.future.utils.DrawTreeUtil;
 import com.future.utils.PrintUtils;
 import edu.princeton.cs.algs4.StdRandom;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.runners.MethodSorters;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
+@FixMethodOrder(MethodSorters.JVM)
 public class CompleteBinaryTreeTest {
 
-    private CompleteBinaryTree binaryTree = null;
+    private CompleteBinaryTree<Integer> binaryTree = null;
+    private Integer[] originArray = null;
 
     @Before
     public void setup() {
-        binaryTree = new CompleteBinaryTree();
+        int len = StdRandom.uniform(10, 40);
+        int[] permutation = StdRandom.permutation(len);
+        PrintUtils.println("setup array");
+        PrintUtils.println(permutation);
+        originArray = ArrayUtils.convert(permutation);
+        binaryTree = new CompleteBinaryTree<>(originArray);
     }
 
     @Test
-    public void testArrayConvertTree() {
-        int[] permutation = StdRandom.permutation(30);
-        PrintUtils.println(permutation);
-        binaryTree.initTree(Arrays.stream(permutation).boxed().toArray());
+    public void testProperty() {
+        Assert.assertEquals(binaryTree.size(), originArray.length);
+        PrintUtils.print("leafCount=");
+        PrintUtils.println(binaryTree.leafCount());
     }
 
     @Test
     public void testAdd() {
-        int[] ints = StdRandom.permutation(18);
+        int[] ints = StdRandom.permutation(50, 60);
         PrintUtils.println(ints);
         for (int anInt : ints) {
             binaryTree.add(anInt);
@@ -35,12 +42,28 @@ public class CompleteBinaryTreeTest {
     }
 
     @Test
+    public void testAfterAdd() {
+        Assert.assertEquals(binaryTree.size(), originArray.length);
+        PrintUtils.println(binaryTree.leafCount());
+        PrintUtils.print("binaryTree.isCompleteBinaryTree()=");
+        PrintUtils.println(binaryTree.isCompleteBinaryTree());
+        DrawTreeUtil.drawTree(binaryTree.getDrawableTree());
+
+    }
+
+    @Test
     public void testPush() {
-        int[] ints = StdRandom.permutation(20);
+        int[] ints = StdRandom.permutation(70, 80);
         PrintUtils.println(ints);
         for (int anInt : ints) {
             binaryTree.add(anInt);
         }
+    }
+
+    @Test
+    public void testAfterPush() {
+        Assert.assertEquals(binaryTree.size(), originArray.length);
+        PrintUtils.println(binaryTree.leafCount());
     }
 
     @After

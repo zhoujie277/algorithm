@@ -1,6 +1,5 @@
 package com.future.datastruct.tree.huffman;
 
-import com.future.datastruct.tree.define.WeightNode;
 import com.future.datastruct.list.LinkedQueue;
 import com.future.datastruct.list.HashTab;
 
@@ -21,7 +20,7 @@ public class HuffmanCodec {
             }
             countTab.put(bytes[j], count + 1);
         }
-        WeightNode<Byte>[] nodes = new WeightNode[countTab.size()];
+        HuffmanTree.WeightNode<Byte>[] nodes = new HuffmanTree.WeightNode[countTab.size()];
         Iterator<Byte> iterator1 = countTab.iterator();
         int i = 0;
         while (iterator1.hasNext()) {
