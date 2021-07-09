@@ -1,5 +1,8 @@
 package com.future.datastruct.tree;
 
+import com.future.utils.PrintUtils;
+
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -57,14 +60,14 @@ public class CompleteBinaryTree<E> extends BinaryTree<E> {
      */
     @Override
     public E add(E e) {
-        E oldVal = null;
         if (root == null) {
             root = newNode(e);
         } else {
-            oldVal = insertTail(e);
+            E oldVal = insertTail(e);
+            if (oldVal != null) return oldVal;
         }
         size++;
-        return oldVal;
+        return null;
     }
 
     @Override
@@ -170,6 +173,7 @@ public class CompleteBinaryTree<E> extends BinaryTree<E> {
             parent.left = null;
         }
         tail.parent = null;
+        size--;
         return oldVal;
     }
 
@@ -185,18 +189,6 @@ public class CompleteBinaryTree<E> extends BinaryTree<E> {
         }
         return null;
     }
-
-    @SuppressWarnings("all")
-    public E[] toArray() {
-        Object[] array = new Object[size];
-        int index = 0;
-        Iterator<Node<E>> nodeIterator = breadthFirstSearchNodeIterator();
-        while (nodeIterator.hasNext()) {
-            array[index++] = nodeIterator.next();
-        }
-        return (E[]) array;
-    }
-
     /**
      * 叶子结点个数
      * 因 n = n0 + n1 + n2 且 n0 = n2 + 1;

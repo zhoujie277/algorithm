@@ -36,8 +36,9 @@ public class PrintUtils {
     }
 
     public static <T> void println(T[] t) {
+        System.out.println();
         for (int i = 0; i < t.length; i++) {
-            System.out.println(t[i].toString());
+            System.out.print(t[i].toString() + " ");
         }
         System.out.println();
     }

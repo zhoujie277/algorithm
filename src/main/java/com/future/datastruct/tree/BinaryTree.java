@@ -3,7 +3,7 @@ package com.future.datastruct.tree;
 import com.future.datastruct.list.LinkedQueue;
 import com.future.datastruct.list.LinkedStack;
 import com.future.datastruct.tree.define.ITree;
-import com.future.utils.DrawTreeUtil;
+import com.future.utils.drawtree.IDrawableTree;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -174,6 +174,27 @@ public abstract class BinaryTree<E> implements ITree<E> {
         });
     }
 
+    public void flip() {
+        Iterator<Node<E>> nodeIterator = preOrderNodeIterator();
+        while (nodeIterator.hasNext()) {
+            Node<E> node = nodeIterator.next();
+            Node<E> left = node.left;
+            node.left = node.right;
+            node.right = left;
+        }
+    }
+
+    @SuppressWarnings("all")
+    public E[] toArray() {
+        Object[] array = new Object[size];
+        int index = 0;
+        Iterator<E> iterator = breadthFirstSearchIterator();
+        while (iterator.hasNext()) {
+            array[index++] = iterator.next();
+        }
+        return (E[]) array;
+    }
+
     private void traversal(Node<E> node, Consumer<E> consumer) {
         if (consumer != null) {
             consumer.accept(node.value);
@@ -237,6 +258,7 @@ public abstract class BinaryTree<E> implements ITree<E> {
     public Iterator<E> preOrderIterator() {
         return new PreOrderIterator();
     }
+
     protected Iterator<Node<E>> preOrderNodeIterator() {
         return new PreOrderNodeIterator();
     }
@@ -283,6 +305,7 @@ public abstract class BinaryTree<E> implements ITree<E> {
     public Iterator<E> inOrderIterator() {
         return new InOrderIterator();
     }
+
     protected Iterator<Node<E>> inOrderNodeIterator() {
         return new InOrderNodeIterator();
     }
@@ -336,6 +359,7 @@ public abstract class BinaryTree<E> implements ITree<E> {
     public Iterator<E> postOrderIterator() {
         return new PostOrderIterator();
     }
+
     protected Iterator<Node<E>> postOrderNodeIterator() {
         return new PostOrderNodeIterator();
     }
@@ -355,7 +379,7 @@ public abstract class BinaryTree<E> implements ITree<E> {
 
         @Override
         public E next() {
-           return nodeIterator.next().value;
+            return nodeIterator.next().value;
         }
     }
 
@@ -383,7 +407,7 @@ public abstract class BinaryTree<E> implements ITree<E> {
 
         @Override
         public E next() {
-           return nodeIterator.next().value;
+            return nodeIterator.next().value;
         }
     }
 
@@ -591,18 +615,51 @@ public abstract class BinaryTree<E> implements ITree<E> {
         public String toString() {
             return value.toString();
         }
+
+        protected Node<T> newNode(T value) {
+            return new Node<>(value);
+        }
+
+        protected Node<T> copy() {
+            Node<T> node = newNode(this.value);
+            node.lChildFlag = this.lChildFlag;
+            node.rChildFlag = this.rChildFlag;
+            if (this.left != null) {
+                node.left = this.left.copy();
+                node.left.parent = node;
+            }
+            if (this.right != null) {
+                node.right = this.right.copy();
+                node.right.parent = node;
+            }
+            return node;
+        }
     }
 
     @SuppressWarnings("all")
-    public DrawTreeUtil.IDrawableTree getDrawableTree() {
-        return new DrawableTree();
+    public IDrawableTree getDrawableTree(boolean copy) {
+        return new DrawableTree(copy);
+    }
+    public IDrawableTree getDrawableTree() {
+        return new DrawableTree(true);
     }
 
-    private class DrawableTree implements DrawTreeUtil.IDrawableTree<Node<E>> {
+
+    private class DrawableTree implements IDrawableTree<Node<E>> {
+
+        private Node<E> newRoot;
+
+        public DrawableTree(boolean copy) {
+            if (copy) {
+                newRoot = root.copy();
+            } else {
+                newRoot = root;
+            }
+        }
 
         @Override
         public Node<E> root() {
-            return root;
+            return newRoot;
         }
 
         @Override

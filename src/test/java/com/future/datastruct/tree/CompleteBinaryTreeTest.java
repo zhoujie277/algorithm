@@ -1,12 +1,14 @@
 package com.future.datastruct.tree;
 
 import com.future.utils.ArrayUtils;
-import com.future.utils.DrawTreeUtil;
+import com.future.utils.drawtree.DrawTreeUtil;
 import com.future.utils.PrintUtils;
+import com.future.utils.drawtree.IDrawableTree;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.*;
 import org.junit.runners.MethodSorters;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 @FixMethodOrder(MethodSorters.JVM)
@@ -14,71 +16,87 @@ public class CompleteBinaryTreeTest {
 
     private CompleteBinaryTree<Integer> binaryTree = null;
     private Integer[] originArray = null;
+    private IDrawableTree initTree;
 
     @Before
     public void setup() {
-        int len = StdRandom.uniform(10, 40);
-        int[] permutation = StdRandom.permutation(len);
+        int len = StdRandom.uniform(6, 12);
+        int[] permutation = StdRandom.permutation(100, len);
         PrintUtils.println("setup array");
         PrintUtils.println(permutation);
         originArray = ArrayUtils.convert(permutation);
         binaryTree = new CompleteBinaryTree<>(originArray);
+        initTree = binaryTree.getDrawableTree();
     }
 
-    @Test
     public void testProperty() {
-        Assert.assertEquals(binaryTree.size(), originArray.length);
         PrintUtils.print("leafCount=");
         PrintUtils.println(binaryTree.leafCount());
     }
 
-    @Test
-    public void testAdd() {
-        int[] ints = StdRandom.permutation(50, 60);
-        PrintUtils.println(ints);
+    public IDrawableTree<Object> testAdd() {
+        int[] ints = StdRandom.permutation(40, 5);
+        PrintUtils.println("add " + Arrays.toString(ints));
         for (int anInt : ints) {
             binaryTree.add(anInt);
+        }
+        return binaryTree.getDrawableTree();
+    }
+
+    public IDrawableTree<Object> testPush() {
+        int[] ints = StdRandom.permutation(70, 3);
+        PrintUtils.println("push " + Arrays.toString(ints));
+        for (int anInt : ints) {
+            binaryTree.add(anInt);
+        }
+        return binaryTree.getDrawableTree();
+    }
+
+    public IDrawableTree testRemove() {
+        int[] permutation = StdRandom.permutation(40, 10);
+        PrintUtils.println("即将要删除 " + Arrays.toString(permutation));
+        for (int i = 0; i < permutation.length; i++) {
+            Integer remove = binaryTree.remove(permutation[i]);
+            if (remove != null) {
+                PrintUtils.println(permutation[i] + "被删除成功");
+            }
+        }
+        return binaryTree.getDrawableTree();
+    }
+
+    @Test
+    public void testEnter() {
+        IDrawableTree<Object> addTree = testAdd();
+        IDrawableTree removeTree = testRemove();
+        IDrawableTree<Object> pushTree = testPush();
+        testProperty();
+//        println();
+        Object[] integers = binaryTree.toArray();
+        DrawTreeUtil.drawTree(integers, initTree, addTree, removeTree, pushTree);
+        try {
+            Thread.sleep(200000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     @Test
-    public void testAfterAdd() {
-        Assert.assertEquals(binaryTree.size(), originArray.length);
-        PrintUtils.println(binaryTree.leafCount());
-        PrintUtils.print("binaryTree.isCompleteBinaryTree()=");
-        PrintUtils.println(binaryTree.isCompleteBinaryTree());
-        DrawTreeUtil.drawTree(binaryTree.getDrawableTree());
-
+    public void testPrintln() {
+        PrintUtils.println("/");
     }
 
-    @Test
-    public void testPush() {
-        int[] ints = StdRandom.permutation(70, 80);
-        PrintUtils.println(ints);
-        for (int anInt : ints) {
-            binaryTree.add(anInt);
-        }
-    }
-
-    @Test
-    public void testAfterPush() {
-        Assert.assertEquals(binaryTree.size(), originArray.length);
-        PrintUtils.println(binaryTree.leafCount());
-    }
-
-    @After
     public void println() {
         PrintUtils.println();
         PrintUtils.printf("-------------------size = %d -----------------", binaryTree.size());
         PrintUtils.println();
         PrintUtils.println();
         PrintUtils.println("------------------PreOrder----------------------");
-        binaryTree.preOrder((t)->{
+        binaryTree.preOrder((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
         PrintUtils.println("------------------preOrderByStack----------------------");
-        binaryTree.preOrderByStack((t)->{
+        binaryTree.preOrderByStack((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
@@ -90,13 +108,13 @@ public class CompleteBinaryTreeTest {
         PrintUtils.println();
 
         PrintUtils.println("------------------InOrder----------------------");
-        binaryTree.inOrder((t)->{
+        binaryTree.inOrder((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
 
         PrintUtils.println("------------------inOrderByStack----------------------");
-        binaryTree.inOrderByStack((t)->{
+        binaryTree.inOrderByStack((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
@@ -109,13 +127,13 @@ public class CompleteBinaryTreeTest {
         PrintUtils.println();
 
         PrintUtils.println("-----------------PostOrder-----------------------");
-        binaryTree.postOrder((t)->{
+        binaryTree.postOrder((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
 
         PrintUtils.println("------------------PostOrderByStack----------------------");
-        binaryTree.postOrderByStack((t)->{
+        binaryTree.postOrderByStack((t) -> {
             PrintUtils.print(t + ", ");
         });
         PrintUtils.println();
@@ -133,5 +151,7 @@ public class CompleteBinaryTreeTest {
             PrintUtils.print(iterator.next() + ", ");
         }
         PrintUtils.println();
+
     }
+
 }
