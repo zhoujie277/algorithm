@@ -567,7 +567,7 @@ public abstract class BinaryTree<E> implements ITree<E> {
     /**
      * 二叉树节点
      */
-    protected static class Node<T> {
+    protected static class Node<T> implements Cloneable {
         public static final byte FLAG_CHILD = 0;
         public static final byte FLAG_THREADED = 1;
 
@@ -616,12 +616,12 @@ public abstract class BinaryTree<E> implements ITree<E> {
             return value.toString();
         }
 
-        protected Node<T> newNode(T value) {
+        protected Node<T> instance(T value) {
             return new Node<>(value);
         }
 
         protected Node<T> copy() {
-            Node<T> node = newNode(this.value);
+            Node<T> node = instance(this.value);
             node.lChildFlag = this.lChildFlag;
             node.rChildFlag = this.rChildFlag;
             if (this.left != null) {

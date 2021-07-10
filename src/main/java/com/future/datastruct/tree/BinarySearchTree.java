@@ -72,13 +72,13 @@ public class BinarySearchTree<E extends Comparable<E>> extends BinaryTree<E> {
         } else if (p.parent == null) {
             root = null;
         } else {
-            // 删除结点是度为0的结点
-            fixAfterDeletion(p);
             if (p.parent.left == p) {
                 p.parent.left = null;
             } else {
                 p.parent.right = null;
             }
+            // 删除结点是度为0的结点
+            fixAfterDeletion(p);
             p.parent = null;
         }
         size--;
