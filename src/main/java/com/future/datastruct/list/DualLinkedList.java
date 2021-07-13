@@ -257,4 +257,26 @@ public class DualLinkedList<T> extends AbstractLinked<T> implements ISequence<T>
         }
     }
 
+    /**
+     * 双向链表节点
+     * @param <T>
+     */
+    protected static class DualNode<T> extends Node<T> {
+        public DualNode<T> prev = null;
+
+        public DualNode(T value) {
+            super(value);
+        }
+
+        public DualNode(T value, DualNode<T> next) {
+            super(value, next);
+        }
+
+        public DualNode(T value, Node<T> next, DualNode<T> prev) {
+            super(value, next);
+            this.prev = prev;
+        }
+
+
+    }
 }

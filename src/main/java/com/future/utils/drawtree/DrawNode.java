@@ -45,25 +45,6 @@ class DrawNode {
         return offset;
     }
 
-    public int printLine2(int offset) {
-        int offsetLeft = Math.max(0, leftLinePos - offset);
-        for (int i = 0; i < offsetLeft; i++) {
-            PrintUtils.print(" ");
-        }
-        if (offsetLeft > 0) {
-            PrintUtils.print("/");
-        }
-        int offsetRight = Math.max(0, rightLinePos - offset);
-        for (int i = offsetLeft + 1; i < offsetRight; i++) {
-            PrintUtils.print(" ");
-        }
-        if (offsetRight > 0) {
-            PrintUtils.print("\\");
-            return rightLinePos;
-        }
-        return Math.max(leftLinePos, offset);
-    }
-
     public int print(int offset) {
         int factor = 3;
 

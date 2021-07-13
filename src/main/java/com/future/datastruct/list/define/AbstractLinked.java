@@ -1,5 +1,6 @@
 package com.future.datastruct.list.define;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -120,4 +121,28 @@ public abstract class AbstractLinked<E> extends AbstractList<E> implements ILink
         }
     }
 
+    protected static class Node<T> implements Serializable {
+        public T value;
+        public Node<T> next;
+
+        public Node() {
+        }
+
+        public Node(T value, Node<T> next) {
+            this.value = value;
+            this.next = next;
+        }
+
+        public Node(T value) {
+            this.value = value;
+            this.next = null;
+        }
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "value=" + value +
+                    '}';
+        }
+    }
 }

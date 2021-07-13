@@ -140,6 +140,11 @@ public class BinarySearchTree<E extends Comparable<E>> extends BinaryTree<E> {
         }
     }
 
+    @Override
+    public boolean contains(E element) {
+        return node(element) != null;
+    }
+
     private Node<E> node(E e) {
         Node<E> current = root;
         while (current != null) {

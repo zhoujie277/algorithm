@@ -1,7 +1,5 @@
 package com.future.datastruct.list;
 
-import com.future.datastruct.list.define.Node;
-
 
 /**
  * 单向有序链表

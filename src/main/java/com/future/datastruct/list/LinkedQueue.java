@@ -1,7 +1,6 @@
 package com.future.datastruct.list;
 
 import com.future.datastruct.list.define.AbstractLinked;
-import com.future.datastruct.list.define.Node;
 
 /**
  * 链表队列

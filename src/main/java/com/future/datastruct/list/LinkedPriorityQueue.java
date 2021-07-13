@@ -1,6 +1,5 @@
 package com.future.datastruct.list;
 
-import com.future.datastruct.list.define.Node;
 
 import java.util.Iterator;
 
@@ -74,6 +73,31 @@ public class LinkedPriorityQueue<E extends Comparable<E>> implements Iterable<E>
             E val = current.value;
             current = current.next;
             return val;
+        }
+    }
+
+    private static class Node<T> {
+        public T value;
+        public Node<T> next;
+
+        public Node() {
+        }
+
+        public Node(T value, Node<T> next) {
+            this.value = value;
+            this.next = next;
+        }
+
+        public Node(T value) {
+            this.value = value;
+            this.next = null;
+        }
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "value=" + value +
+                    '}';
         }
     }
 }

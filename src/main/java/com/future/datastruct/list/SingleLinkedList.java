@@ -2,7 +2,6 @@ package com.future.datastruct.list;
 
 import com.future.datastruct.list.define.AbstractLinked;
 import com.future.datastruct.list.define.ISequence;
-import com.future.datastruct.list.define.Node;
 
 import java.util.Iterator;
 import java.util.function.Consumer;
