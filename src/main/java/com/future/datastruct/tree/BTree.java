@@ -68,6 +68,7 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
     private int elementSize;
     private Node<E> root;
     private final int degree;
+    private int height;
 
     public BTree(int degree) {
         this.degree = degree;
@@ -76,13 +77,7 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
     @Override
     public boolean contains(E element) {
         if (element == null || root == null) return false;
-        Node<E> node = root;
-        while (node != null) {
-            int index = node.indexOf(element);
-            if (index > 0) break;
-            node = node.children(~index);
-        }
-        return node != null;
+        return node(element) != null;
     }
 
     @Override
@@ -90,6 +85,7 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
         if (root == null) {
             root = newNode();
             root.add(new Entry<>(element));
+            height++;
         } else {
             Node<E> current = null;
             Node<E> child = root;
@@ -112,6 +108,7 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
                     parent.tail = current;
                     if (current == root) {
                         root = parent;
+                        height++;
                     }
                 }
                 Node<E> left = newNode(parent);
@@ -133,7 +130,120 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
 
     @Override
     public E remove(E element) {
-        return null;
+        Node<E> node = root;
+        int index = 0;
+        while (node != null) {
+            index = node.indexOf(element);
+            if (index >= 0) break;
+            node = node.children(~index);
+        }
+        if (index < 0 || node == null) return null;
+        Entry<E> entry = node.entry(index);
+        Node<E> predecessor = predecessor(entry);
+        //没有前驱，则说明删除的是叶子结点的元素
+        if (predecessor == null) predecessor = node;
+        E oldVal = entry.element;
+        entry.element = predecessor.last().element;
+        // delete predecessor's entry
+        predecessor.removeLastEntry();
+        Node<E> current = predecessor;
+        while (current.lowerLimit()) {
+            Node<E> parent = current.parent;
+            Node<E> mergeNode = underflow(parent, current);
+            if (parent == root && mergeNode != null) {
+                root = mergeNode;
+                height--;
+                break;
+            }
+            current = parent;
+        }
+        elementSize--;
+        return oldVal;
+    }
+
+    private Node<E> predecessor(Entry<E> entry) {
+        if (entry.prev == null) return null;
+        Node<E> current = entry.prev;
+        while (current.tail != null) {
+            current = current.tail;
+        }
+        return current;
+    }
+
+    private Node<E> underflow(Node<E> parent, Node<E> current) {
+        int indexOfParent = current.indexOfParent();
+        int entryIndex = (indexOfParent == parent.size) ? indexOfParent - 1 : indexOfParent;
+        Entry<E> parentEntry = parent.entry(entryIndex);
+        // 先问兄弟元素可不可以旋转解决
+        Node<E> leftChild = sibling(parent, indexOfParent - 1);
+        if (leftChild != null && leftChild.abundant()) {
+            Entry<E> siblingEntry = leftChild.last();
+            Entry<E> newEntry = new Entry<>(parentEntry.element);
+            newEntry.prev = leftChild.tail;
+            leftChild.tail = siblingEntry.prev;
+            current.add(newEntry);
+            parentEntry.element = siblingEntry.element;
+            leftChild.removeLastEntry();
+            return null;
+        }
+        Node<E> rightChild;
+        if (indexOfParent + 1 == parent.size) {
+            rightChild = parent.tail;
+        } else {
+            rightChild = sibling(parent, indexOfParent + 1);
+        }
+        if (rightChild != null && rightChild.abundant()) {
+            Entry<E> siblingEntry = rightChild.first();
+            Entry<E> newEntry = new Entry<>(parentEntry.element);
+            newEntry.prev = current.tail;
+            current.tail = siblingEntry.prev;
+            current.add(newEntry);
+            parentEntry.element = siblingEntry.element;
+            rightChild.removeFirstEntry();
+            return null;
+        }
+
+        // merge 统一往右边merge
+        if (leftChild != null) {
+            merge(leftChild, parentEntry.element, current);
+            parent.removeEntry(indexOfParent - 1);
+            current.fixChildren();
+            return current;
+        }
+
+        // right merge
+        if (rightChild != null) {
+            merge(current, parentEntry.element, rightChild);
+            parent.removeEntry(indexOfParent);
+            rightChild.fixChildren();
+        }
+        return rightChild;
+    }
+
+    private void merge(Node<E> current, E parentElement, Node<E> rightChild) {
+        Entry<E> newEntry = new Entry<>(parentElement);
+        newEntry.prev = current.tail;
+        rightChild.add(0, newEntry);
+        for (int i = 0; i < current.size; i++) {
+            rightChild.add(0, current.entry(i));
+        }
+    }
+
+    private Node<E> sibling(Node<E> parent, int indexOfParent) {
+        Entry<E> entry = parent.entry(indexOfParent);
+        if (entry == null) return null;
+        if (entry.prev == null) return null;
+        return entry.prev;
+    }
+
+    private Node<E> node(E element) {
+        Node<E> node = root;
+        while (node != null) {
+            int index = node.indexOf(element);
+            if (index > 0) break;
+            node = node.children(~index);
+        }
+        return node;
     }
 
     @Override
@@ -154,12 +264,12 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
 
     @Override
     public int height() {
-        return 0;
+        return height;
     }
 
     @Override
     public int depth() {
-        return 0;
+        return height;
     }
 
     protected Node<E> newNode() {
@@ -168,6 +278,16 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
 
     protected Node<E> newNode(Node<E> parent) {
         return new Node<>(parent, degree);
+    }
+
+    @Override
+    public String toString() {
+        return "BTree{" +
+                "elementSize=" + elementSize +
+                ", root=" + root +
+                ", degree=" + degree +
+                ", height=" + height +
+                '}';
     }
 
     private final static class Entry<E extends Comparable<E>> implements Comparable<E> {
@@ -199,6 +319,7 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
         int size;
         Node<E> parent;
         Node<E> tail;
+        private int degree;
 
         public Node(int degree) {
             this(null, degree);
@@ -206,12 +327,14 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
 
         public Node(Node<E> parent, int degree) {
             this.parent = parent;
+            this.degree = degree;
             entries = new Entry[degree - 1];
             tail = null;
             size = 0;
         }
 
         public int indexOf(E element) {
+            // m阶b树的查找，m≥10，可采用二分查找提高效率
             for (int i = 0; i < size; i++) {
                 int cmp = entries[i].compareTo(element);
                 if (cmp == 0)
@@ -220,6 +343,51 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
                     return ~i;
             }
             return ~size;
+        }
+
+        public void removeFirstEntry() {
+            removeEntry(0);
+        }
+
+        public void removeLastEntry() {
+            Entry<E> lastEntry = entries[size - 1];
+            lastEntry.element = null;
+            lastEntry.prev = null;
+            entries[--size] = null;
+        }
+
+        public void removeEntry(int index) {
+            System.arraycopy(entries, index + 1, entries, index, size - index - 1);
+            entries[--size] = null;
+        }
+
+        @SuppressWarnings("unused")
+        public Entry<E> first() {
+            return entries[0];
+        }
+
+        public Entry<E> last() {
+            return entries[size - 1];
+        }
+
+        public int indexOfParent() {
+            if (parent.tail == this) return parent.size;
+            for (int i = 0; i < parent.size; i++) {
+                if (parent.entries[i].prev == this) {
+                    return i;
+                }
+            }
+            throw new VerifyError("没在父结点中找到自己，父结点的prev指向有错误");
+        }
+
+        public Entry<E> entry(int index) {
+            if (index < 0 || index >= size) return null;
+            return entries[index];
+        }
+
+        public void setEntry(int index, Entry<E> entry) {
+            if (index < 0 || index >= size) return;
+            entries[index] = entry;
         }
 
         public Node<E> children(int index) {
@@ -241,21 +409,21 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
             if (midIndex == elementIndex) {
                 midValue = entry;
 
-                move(0, midIndex, left);
-                move(midIndex, size, this);
+                moveEntry(0, midIndex, left);
+                moveEntry(midIndex, size, this);
             } else if (elementIndex < midIndex) {
                 midValue = entries[midIndex - 1];
 
-                move(0, elementIndex, midIndex - 1, entry, left);
+                moveEntry(0, elementIndex, midIndex - 1, entry, left);
                 if (elementIndex == midIndex - 1) {
                     left.entries[elementIndex] = entry;
                     left.size++;
                 }
-                move(midIndex, size, this);
+                moveEntry(midIndex, size, this);
             } else {
                 midValue = entries[midIndex];
-                move(0, midIndex, left);
-                move(midIndex + 1, elementIndex, size, entry, this);
+                moveEntry(0, midIndex, left);
+                moveEntry(midIndex + 1, elementIndex, size, entry, this);
                 if (elementIndex == oldSize) {
                     entries[midIndex - 1] = entry;
                     size++;
@@ -265,7 +433,7 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
             return midValue;
         }
 
-        private void move(int start, int mid, int end, Entry<E> entry, Node<E> dst) {
+        private void moveEntry(int start, int mid, int end, Entry<E> entry, Node<E> dst) {
             int j = 0;
             for (int i = start; i < end; i++) {
                 if (i == mid) {
@@ -281,7 +449,7 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
             dst.size = j;
         }
 
-        private void move(int start, int end, Node<E> dst) {
+        private void moveEntry(int start, int end, Node<E> dst) {
             int j = 0;
             for (int i = start; i < end; i++) {
                 dst.entries[j] = entries[i];
@@ -291,16 +459,26 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
             dst.size = j;
         }
 
+        public boolean abundant() {
+            return size > ((degree + 1) >>> 1) - 1;
+        }
+
+        // degree阶B树的下限，ceil(degree/2) - 1;
+        public boolean lowerLimit() {
+            return size < ((degree + 1) >>> 1) - 1;
+        }
+
         public boolean full() {
             return size == entries.length;
         }
 
         public int add(Entry<E> entry) {
-            return add(0, entry);
+            entries[size] = entry;
+            size++;
+            return size;
         }
 
         public int add(int index, Entry<E> entry) {
-            if (full()) throw new IndexOutOfBoundsException("该结点元素已满，不能再插入");
             System.arraycopy(entries, index, entries, index + 1, size - index);
             entries[index] = entry;
             size++;

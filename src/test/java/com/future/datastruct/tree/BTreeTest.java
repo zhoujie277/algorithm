@@ -26,5 +26,12 @@ public class BTreeTest {
         }
         Assert.assertEquals(bTree.size(), len);
         Assert.assertFalse(bTree.isEmpty());
+
+//        bTree.remove(74);
+//        bTree.remove(64);
+//        bTree.remove(93);
+        bTree.remove(5);
+        bTree.remove(15);
+        PrintUtils.println(bTree);
     }
 }
