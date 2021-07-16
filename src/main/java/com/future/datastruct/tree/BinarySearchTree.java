@@ -67,7 +67,7 @@ public class BinarySearchTree<E extends Comparable<E>> extends BinaryTree<E> {
             } else {
                 p.parent.right = replacement;
             }
-            fixAfterDeletion(p);
+            fixAfterDeletion(replacement);
             p.left = p.right = p.parent = null;
         } else if (p.parent == null) {
             root = null;

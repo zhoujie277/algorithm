@@ -6,4 +6,8 @@ public interface IDrawableTree<E> {
     E left(E node);
 
     E right(E node);
+
+    default boolean isRed(E node) {
+        return false;
+    }
 }

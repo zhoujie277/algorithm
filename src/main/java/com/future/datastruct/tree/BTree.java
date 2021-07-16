@@ -5,7 +5,7 @@ import com.future.datastruct.tree.define.ITree;
 import java.util.Arrays;
 
 /**
- * B树。（一种说法：Balanced-Tree）
+ * B树。（Balanced-Tree）
  * B树是一棵平衡的多路查找树，多用于文件系统、数据库的实现
  * B树的性质：
  * 1、一个结点可以存储多个数据，可以拥有多个子结点（分为3阶B树，4阶B树，m阶B树等等）
@@ -177,12 +177,14 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
         // 先问兄弟元素可不可以旋转解决
         Node<E> leftChild = sibling(parent, indexOfParent - 1);
         if (leftChild != null && leftChild.abundant()) {
+            // rightRotate
             Entry<E> siblingEntry = leftChild.last();
             Entry<E> newEntry = new Entry<>(parentEntry.element);
             newEntry.prev = leftChild.tail;
             leftChild.tail = siblingEntry.prev;
-            current.add(newEntry);
             parentEntry.element = siblingEntry.element;
+            current.add(newEntry);
+            //todo 此处可优化，有可旋转元素时，不删除entry，等到合并时，再删除entry，可提升内存使用率
             leftChild.removeLastEntry();
             return null;
         }
@@ -193,12 +195,13 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
             rightChild = sibling(parent, indexOfParent + 1);
         }
         if (rightChild != null && rightChild.abundant()) {
+            // leftRotate
             Entry<E> siblingEntry = rightChild.first();
             Entry<E> newEntry = new Entry<>(parentEntry.element);
             newEntry.prev = current.tail;
             current.tail = siblingEntry.prev;
-            current.add(newEntry);
             parentEntry.element = siblingEntry.element;
+            current.add(newEntry);
             rightChild.removeFirstEntry();
             return null;
         }
@@ -319,12 +322,13 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
         int size;
         Node<E> parent;
         Node<E> tail;
-        private int degree;
+        private final int degree;
 
         public Node(int degree) {
             this(null, degree);
         }
 
+        @SuppressWarnings("all")
         public Node(Node<E> parent, int degree) {
             this.parent = parent;
             this.degree = degree;
@@ -385,6 +389,7 @@ public class BTree<E extends Comparable<E>> implements ITree<E> {
             return entries[index];
         }
 
+        @SuppressWarnings("unused")
         public void setEntry(int index, Entry<E> entry) {
             if (index < 0 || index >= size) return;
             entries[index] = entry;

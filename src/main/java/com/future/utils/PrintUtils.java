@@ -27,6 +27,19 @@ public class PrintUtils {
         System.out.print(s);
     }
 
+    public static void red(Object s) {
+        // ANSI 转义序列
+        System.out.print("\u001b[91m");
+        System.out.print(s);
+        System.out.print("\u001b[0m");
+    }
+
+    public static void info(Object s) {
+        System.out.print("\u001b[32m");
+        System.out.println(s);
+        System.out.print("\u001b[0m");
+    }
+
     public static void printf(String s, Object... args) {
         System.out.printf(s, args);
     }

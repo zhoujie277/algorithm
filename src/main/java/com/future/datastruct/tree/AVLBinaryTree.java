@@ -57,7 +57,7 @@ package com.future.datastruct.tree;
  *
  * @author jayzhou
  */
-public class AVLBinaryTree<E extends Comparable<E>> extends BinarySearchTree<E> {
+public class AVLBinaryTree<E extends Comparable<E>> extends BinaryBalancedTree<E> {
 
     /**
      * 修复删除之后导致的失衡
@@ -122,39 +122,11 @@ public class AVLBinaryTree<E extends Comparable<E>> extends BinarySearchTree<E> 
         }
     }
 
-    private void leftRotate(AVLNode<E> g) {
-        AVLNode<E> p = (AVLNode<E>) g.right;
-        g.right = p.left;
-        if (p.left != null) {
-            p.left.parent = g;
-        }
-        p.left = g;
-        updateRotate(g, p);
-    }
-
-    private void rightRotate(AVLNode<E> g) {
-        AVLNode<E> p = (AVLNode<E>) g.left;
-        g.left = p.right;
-        if (p.right != null) {
-            p.right.parent = g;
-        }
-        p.right = g;
-        updateRotate(g, p);
-    }
-
-    private void updateRotate(AVLNode<E> g, AVLNode<E> p) {
-        if (g.parent == null) {
-            root = p;
-            p.parent = null;
-        } else if (g.parent.left == g) {
-            g.parent.left = p;
-        } else if (g.parent.right == g) {
-            g.parent.right = p;
-        }
-        p.parent = g.parent;
-        g.parent = p;
-        updateNodeHeight(g);
-        updateNodeHeight(p);
+    @Override
+    protected void updateRotate(Node<E> g, Node<E> p) {
+        super.updateRotate(g, p);
+        updateNodeHeight((AVLNode<E>) g);
+        updateNodeHeight((AVLNode<E>) p);
     }
 
     protected AVLNode<E> tallerSubTree(AVLNode<E> node) {

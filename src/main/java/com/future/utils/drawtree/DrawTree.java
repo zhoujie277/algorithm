@@ -124,6 +124,7 @@ class DrawTree<E> {
         while (!queue.isEmpty()) {
             E poll = queue.poll();
             DrawNode drawNode = drawQueue.poll();
+            drawNode.red = tree.isRed(poll);
             size++;
             E left = tree.left(poll);
             E right = tree.right(poll);

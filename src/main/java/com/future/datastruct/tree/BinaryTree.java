@@ -641,11 +641,11 @@ public abstract class BinaryTree<E> implements ITree<E> {
         return new DrawableTree(copy);
     }
     public IDrawableTree getDrawableTree() {
-        return new DrawableTree(true);
+        return getDrawableTree(true);
     }
 
 
-    private class DrawableTree implements IDrawableTree<Node<E>> {
+    protected class DrawableTree implements IDrawableTree<Node<E>> {
 
         private Node<E> newRoot;
 
@@ -673,7 +673,6 @@ public abstract class BinaryTree<E> implements ITree<E> {
             if (rightNotNull(node)) return node.right;
             return null;
         }
-
     }
 }
 

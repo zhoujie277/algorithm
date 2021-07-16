@@ -6,6 +6,7 @@ class DrawNode {
     double x;
     double y;
     String value;
+    boolean red;
 
     DrawNode left;
     DrawNode right;
@@ -83,7 +84,11 @@ class DrawNode {
         for (int i = offsetLeftPos; i < valueOffsetPos; i++) {
             PrintUtils.print("-");
         }
-        PrintUtils.print(value);
+        if (!red) {
+            PrintUtils.print(value);
+        } else {
+            PrintUtils.red(value);
+        }
         for (int i = valueRightOffsetPos; i < offsetRightPos; i++) {
             PrintUtils.print("-");
         }
