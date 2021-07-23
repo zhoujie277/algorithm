@@ -1,6 +1,6 @@
 package com.future.utils;
 
-import com.future.datastruct.list.HashTab;
+import com.future.datastruct.map.HashTable;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -40,6 +40,24 @@ public class PrintUtils {
         System.out.print("\u001b[0m");
     }
 
+    public static void debug(Object s) {
+        System.out.print("\u001b[36m");
+        System.out.println(s);
+        System.out.print("\u001b[0m");
+    }
+
+    public static void warning(Object s) {
+        System.out.print("\u001b[93m");
+        System.out.println(s);
+        System.out.print("\u001b[0m");
+    }
+
+    public static void error(Object s) {
+        System.out.print("\u001b[91m");
+        System.out.println(s);
+        System.out.print("\u001b[0m");
+    }
+
     public static void printf(String s, Object... args) {
         System.out.printf(s, args);
     }
@@ -55,14 +73,16 @@ public class PrintUtils {
         }
         System.out.println();
     }
+
     public static <T> void print(int[] t) {
         System.out.println(Arrays.toString(t));
     }
+
     public static <T> void println(int[] t) {
         System.out.println(Arrays.toString(t));
     }
 
-    public static <K, V> void println(HashTab<K, V> table) {
+    public static <K, V> void println(HashTable<K, V> table) {
         Iterator<K> iterator = table.iterator();
         while (iterator.hasNext()) {
             K next = iterator.next();

@@ -1,6 +1,6 @@
 package com.future.algorithm.search;
 
-import com.future.datastruct.list.HashTab;
+import com.future.datastruct.map.HashTable;
 import com.future.utils.DataUtils;
 import com.future.utils.PrintUtils;
 import org.junit.After;
@@ -15,13 +15,13 @@ import java.util.Set;
 
 public class HashTabTest {
     private int count = 20;
-    private HashTab<DataUtils.Key<Integer>, DataUtils.Student> hashTab;
+    private HashTable<DataUtils.Key<Integer>, DataUtils.Student> hashTab;
     private HashMap<DataUtils.Key<Integer>, DataUtils.Student> javaMap;
 
     @Before
     public void testAdd() {
         javaMap = new HashMap<>();
-        hashTab = new HashTab<>();
+        hashTab = new HashTable<>();
         for (int i = 0; i < count; i++) {
             DataUtils.Student student = DataUtils.newStudent();
             DataUtils.Key<Integer> key = new DataUtils.Key<>(student.id);

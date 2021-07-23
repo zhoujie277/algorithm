@@ -2,14 +2,14 @@ package com.future.datastruct.heap;
 
 import com.future.utils.ArrayUtils;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * 二叉大顶堆
+ * 二叉堆
  */
-@SuppressWarnings("unused")
-public class BinaryMaxHeap<T extends Comparable<T>> implements Iterable<T> {
+public class BinaryHeap<T extends Comparable<T>> implements IHeap<T> {
 
     private static final int DEFAULT_INIT_CAPACITY = 8;
     private static final int DEFAULT_MIN_CAPACITY = 4;
@@ -17,33 +17,59 @@ public class BinaryMaxHeap<T extends Comparable<T>> implements Iterable<T> {
     private Object[] elements;
     private int size;
 
-    public BinaryMaxHeap() {
+    public BinaryHeap() {
         this(DEFAULT_INIT_CAPACITY);
     }
 
-    public BinaryMaxHeap(int capacity) {
+    public BinaryHeap(int capacity) {
         if (capacity < DEFAULT_MIN_CAPACITY) capacity = DEFAULT_MIN_CAPACITY;
         elements = new Object[capacity];
         size = 0;
     }
 
-    public BinaryMaxHeap(T[] array) {
+    public BinaryHeap(T[] array) {
         size = array.length;
         elements = new Object[size];
         ArrayUtils.copy(array, elements);
         heapify();
     }
 
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
-    public void insert(T t) {
+    @Override
+    public void clear() {
+        size = 0;
+        Arrays.fill(elements, null);
+    }
+
+    @Override
+    public void add(T element) {
         ensureCapacity();
-        siftUp(size, t);
+        siftUp(size, element);
         size++;
     }
 
+    @Override
+    public T get() {
+        return findLargest();
+    }
+
+    @Override
+    public T remove() {
+        return delMax();
+    }
+
+    @Override
+    public T replace(T element) {
+        T oldVal = valueAt(0);
+        siftDown(0, element);
+        return oldVal;
+    }
+
+    @Override
     public int size() {
         return size;
     }
@@ -97,13 +123,14 @@ public class BinaryMaxHeap<T extends Comparable<T>> implements Iterable<T> {
     }
 
     private void heapify() {
+        // 自下而上的下滤
         for (int i = (size >> 1) - 1; i >= 0; i--) {
             siftDown(i, (T) elements[i]);
         }
     }
 
     private T valueAt(int index) {
-        if (index >= size) return null;
+        if (index >= size) throw new ArrayIndexOutOfBoundsException("indexOutOfBounds:" + index);
         return (T) elements[index];
     }
 
@@ -126,12 +153,12 @@ public class BinaryMaxHeap<T extends Comparable<T>> implements Iterable<T> {
     }
 
     public class HeapItr implements Iterator<T> {
-        private BinaryMaxHeap<T> copy;
+        private final BinaryHeap<T> copy;
 
         public HeapItr() {
-            copy = new BinaryMaxHeap(size);
+            copy = new BinaryHeap<>(size);
             for (int i = 0; i < size; i++) {
-                copy.insert((T) elements[i]);
+                copy.add((T) elements[i]);
             }
         }
 
@@ -143,8 +170,7 @@ public class BinaryMaxHeap<T extends Comparable<T>> implements Iterable<T> {
         @Override
         public T next() {
             if (copy.isEmpty()) throw new NoSuchElementException();
-            T val = (T) copy.delMax();
-            return val;
+            return (T) copy.delMax();
         }
     }
 }

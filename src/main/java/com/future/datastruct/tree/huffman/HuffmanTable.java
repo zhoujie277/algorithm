@@ -1,6 +1,6 @@
 package com.future.datastruct.tree.huffman;
 
-import com.future.datastruct.list.HashTab;
+import com.future.datastruct.map.HashTable;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -9,13 +9,13 @@ import java.util.Iterator;
  * 哈夫曼码表
  */
 public class HuffmanTable<K> implements Iterable<K> , Serializable {
-    private HashTab<K, String> encodeTable;
-    private HashTab<String, K> decodeTable;
+    private HashTable<K, String> encodeTable;
+    private HashTable<String, K> decodeTable;
 
 
     public HuffmanTable() {
-        this.encodeTable = new HashTab<>();
-        this.decodeTable = new HashTab<>();
+        this.encodeTable = new HashTable<>();
+        this.decodeTable = new HashTable<>();
     }
 
     public void put(K key, String value) {

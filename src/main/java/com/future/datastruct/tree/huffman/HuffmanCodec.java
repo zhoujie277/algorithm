@@ -1,7 +1,7 @@
 package com.future.datastruct.tree.huffman;
 
 import com.future.datastruct.list.LinkedQueue;
-import com.future.datastruct.list.HashTab;
+import com.future.datastruct.map.HashTable;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
@@ -12,7 +12,7 @@ import java.util.Iterator;
 public class HuffmanCodec {
 
     public static HuffmanTable<Byte> createHuffmanTable(byte[] bytes) {
-        HashTab<Byte, Integer> countTab = new HashTab<>();
+        HashTable<Byte, Integer> countTab = new HashTable<>();
         for (int j = 0; j < bytes.length; j++) {
             Integer count = countTab.get(bytes[j]);
             if (count == null) {

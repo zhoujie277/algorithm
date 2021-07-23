@@ -59,16 +59,10 @@ public class DataUtils {
         return sb.toString();
     }
 
-    public static class Key<T> implements Hashable {
+    public static class Key<T> {
         private T value;
         public Key(T t) {
             this.value = t;
-        }
-
-        @Override
-        public int hashValue() {
-            return Objects.hashCode(value);
-//            return 608374;
         }
 
         @Override
@@ -79,7 +73,7 @@ public class DataUtils {
         }
     }
 
-    public static class Student extends Sortable implements Hashable, Comparable<Student> {
+    public static class Student extends Sortable implements Comparable<Student> {
         public final int score;
         public final int age;
         public final String name;
@@ -115,12 +109,6 @@ public class DataUtils {
         public int[] keys() {
             int[] a = {age, score};
             return a;
-        }
-
-        @Override
-        public int hashValue() {
-            return 10;
-//            return hashCode();
         }
 
         @Override

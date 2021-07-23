@@ -1,6 +1,6 @@
 package com.future.datastruct.list;
 
-import com.future.datastruct.heap.BinaryMaxHeap;
+import com.future.datastruct.heap.BinaryHeap;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -15,19 +15,19 @@ import java.util.Iterator;
 @SuppressWarnings("unused")
 public class HeapPriorityQueue<E extends Comparable<E>> implements Iterable<E> {
 
-    private BinaryMaxHeap<E> heap;
+    private BinaryHeap<E> heap;
 
     public HeapPriorityQueue() {
-        heap = new BinaryMaxHeap<>();
+        heap = new BinaryHeap<>();
     }
 
     public HeapPriorityQueue(int[] array) {
         Integer[] arr = Arrays.stream(array).boxed().toArray(Integer[]::new);
-        heap = new BinaryMaxHeap(arr);
+        heap = new BinaryHeap(arr);
     }
 
     public HeapPriorityQueue(E[] array) {
-        heap = new BinaryMaxHeap(array);
+        heap = new BinaryHeap(array);
     }
 
     public int size() {
