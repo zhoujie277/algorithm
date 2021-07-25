@@ -1,6 +1,6 @@
 package com.future.algoriithm.sort;
 
-import com.future.utils.ArrayUtils;
+import com.future.utils.NumberUtils;
 
 /**
  * 希尔排序，即缩小增量排序
@@ -18,48 +18,86 @@ import com.future.utils.ArrayUtils;
  * 间隔大的时候，挪的次数比较少，当间隔比较小的时候，挪的距离又比较小
  * <p>
  * 总之：思想是尽量保证直接插入排序时尽可能保证容量小，当容量大时，其中元素尽量有序，这样就可以减少移动次数和比较次数
+ *
+ * @author jayzhou
  */
-public class ShellSorter {
+public class ShellSorter<E extends Comparable<E>> extends Sorter<E> {
 
-    @SuppressWarnings("all")
-    public static void sort(int[] array) {
-        for (int gap = array.length >>> 1; gap > 0; gap >>>= 1) {
-            for (int i = gap; i < array.length; i++) {
-                for (int j = i; j >= gap && array[j] < array[j - gap]; j -= gap) {
-                    ArrayUtils.swap(array, j, j - gap);
+    public static final int KNUTH_SEQUENCE = VERSION_DEFAULT << 1;
+    public static final int BINARY_SEQUENCE = VERSION_DEFAULT << 2;
+    public static final int BINARY_SEQUENCE_OPT = VERSION_DEFAULT << 4;
+
+    public ShellSorter() {
+    }
+
+    public ShellSorter(int version) {
+        super(version);
+    }
+
+    @Override
+    protected void sort() {
+        if (version == VERSION_DEFAULT) {
+            shellSort();
+        } else if (version == KNUTH_SEQUENCE) {
+            knuthSort();
+        } else if (version == BINARY_SEQUENCE) {
+            binarySort();
+        } else if (version == BINARY_SEQUENCE_OPT) {
+            binarySortOpt();
+        }
+    }
+
+    private void shellSort() {
+        int half = elements.length >> 1;
+        int step = (NumberUtils.findLastBinary(half) >> 1);
+        for (int gap = step; gap > 0; gap >>>= 1) {
+            for (int i = gap; i < elements.length; i++) {
+                for (int j = i; j >= gap && compare(j, j - gap) < 0; j -= gap) {
+                    swap(j, j - gap);
                 }
             }
         }
     }
 
-    public static void sortOpt(int[] array) {
-        int temp, j;
-        for (int gap = array.length >>> 1; gap > 0; gap >>>= 1) {
-            for (int i = gap; i < array.length; i++) {
-                temp = array[i];
-                for (j = i; j >= gap && temp < array[j - gap]; j -= gap) {
-                    array[j] = array[j - gap];
-                }
-                if (temp != array[i]) {
-                    array[j] = temp;
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("all")
-    public static void sortGapOpt(int[] array) {
+    private void knuthSort() {
         //knuth序列 3h + 1
         int h = 1;
-        while (h <= array.length / 3) {
+        while (h <= elements.length / 3) {
             h = 3 * h + 1;
         }
         for (int gap = h; gap > 0; gap = (gap - 1) / 3) {
-            for (int i = gap; i < array.length; i++) {
-                for (int j = i; j >= gap && array[j] < array[j - gap]; j -= gap) {
-                    ArrayUtils.swap(array, j, j - gap);
+            for (int i = gap; i < elements.length; i++) {
+                for (int j = i; j >= gap && compare(j, j - gap) < 0; j -= gap) {
+                    swap(j, j - gap);
                 }
             }
         }
     }
+
+    public void binarySort() {
+        for (int gap = elements.length >>> 1; gap > 0; gap >>>= 1) {
+            for (int i = gap; i < elements.length; i++) {
+                for (int j = i; j >= gap && compare(j, j - gap) < 0; j -= gap) {
+                    swap(j, j - gap);
+                }
+            }
+        }
+    }
+
+    public void binarySortOpt() {
+        E temp;
+        int j;
+        for (int gap = elements.length >>> 1; gap > 0; gap >>>= 1) {
+            for (int i = gap; i < elements.length; i++) {
+                temp = elements[i];
+                for (j = i; j >= gap && compare(temp, elements[j - gap]) < 0; j -= gap) {
+                    move(j - gap, j);
+                }
+                if (temp != elements[i]) {
+                    elements[j] = temp;
+                }
+            }
+        }
+    }
+
 }

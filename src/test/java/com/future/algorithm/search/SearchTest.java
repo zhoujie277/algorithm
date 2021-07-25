@@ -2,7 +2,6 @@ package com.future.algorithm.search;
 
 import com.future.algoriithm.search.BinarySearch;
 import com.future.algoriithm.search.InterpolationSearch;
-import com.future.algoriithm.sort.InsertSorter;
 import com.future.utils.PrintUtils;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Assert;
@@ -15,10 +14,21 @@ public class SearchTest {
     private static int[] randomArray = null;
     private static int findTarget = 0;
 
+    public static void directSearch(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            for (int j = i; j > 0 && array[j] < array[j - 1]; j--) {
+                array[j] = array[j] ^ array[j - 1];
+                array[j - 1] = array[j] ^ array[j - 1];
+                array[j] = array[j] ^ array[j - 1];
+            }
+        }
+    }
+
+
     @BeforeClass
     public static void setup() {
         array = StdRandom.permutation(100);
-        InsertSorter.directInsertOpt(array);
+        directSearch(array);
         findTarget = StdRandom.uniform(200);
         PrintUtils.println(array);
         PrintUtils.println("need to find target is " + findTarget);

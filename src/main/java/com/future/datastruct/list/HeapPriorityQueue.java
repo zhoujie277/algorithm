@@ -43,7 +43,7 @@ public class HeapPriorityQueue<E extends Comparable<E>> implements Iterable<E> {
     }
 
     public void push(E e) {
-        heap.insert(e);
+        heap.add(e);
     }
 
     @Override

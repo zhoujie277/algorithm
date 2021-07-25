@@ -14,7 +14,7 @@ import com.future.utils.Sortable;
  */
 public class RadixSorter {
 
-    public static class RadixNumberSorter implements Sorter {
+    public static class RadixNumberSorter implements ISorter {
 
         private int findBit(int[] array) {
             int max = ArrayUtils.max(array);

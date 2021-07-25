@@ -2,6 +2,7 @@ package com.future.utils;
 
 import java.util.Arrays;
 
+@SuppressWarnings("all")
 public class ArrayUtils {
     public static void swap(int[] arr, int i, int j) {
         if (i == j) return;
@@ -89,5 +90,25 @@ public class ArrayUtils {
 
     public static Integer[] convert(int[] array) {
         return Arrays.stream(array).boxed().toArray(Integer[]::new);
+    }
+
+    /**
+     * 二分查找
+     * [low, high] 左闭右闭的数据区间，当 low > high即结束
+     * 这种二分查找方式比[left,right)左闭右开的方式的好处在于
+     * 返回值可以返回目标元素应该插入的位置
+     */
+    public static <E extends Comparable<E>> int binarySearch(E[] elements, E value) {
+        int low = 0, high = elements.length - 1;
+        while (low <= high) {
+            int mid = (low + high) >> 1;
+            if (elements[mid] == value) return mid;
+            if (value.compareTo(elements[mid]) < 0) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return ~low;
     }
 }
