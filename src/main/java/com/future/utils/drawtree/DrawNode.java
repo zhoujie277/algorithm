@@ -47,7 +47,7 @@ class DrawNode {
     }
 
     public int print(int offset) {
-        int factor = 4;
+        int factor = 5;
 
         if (parent == null) {
             valuePos = factor * consoleColumn;

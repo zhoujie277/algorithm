@@ -6,7 +6,6 @@ import com.future.utils.drawtree.PrintTreeUtil;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -314,11 +313,11 @@ public class HashTable<K, V> implements IMap<K, V>, Serializable {
     }
 
     @Override
-    public Iterator<K> iterator() {
+    public IMapIterator<K, V> iterator() {
         return new KeyItr();
     }
 
-    private class KeyItr implements Iterator<K> {
+    private class KeyItr implements IMapIterator<K, V> {
 
         private int index;
         private Node<K, V> current;
@@ -351,6 +350,11 @@ public class HashTable<K, V> implements IMap<K, V>, Serializable {
                 current = findNext();
             }
             return val;
+        }
+
+        @Override
+        public V value() {
+            return current.value;
         }
     }
 

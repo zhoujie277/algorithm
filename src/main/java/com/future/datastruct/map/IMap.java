@@ -1,5 +1,7 @@
 package com.future.datastruct.map;
 
+import java.util.Iterator;
+
 public interface IMap<K, V> extends Iterable<K> {
     boolean containsKey(K key);
 
@@ -17,4 +19,17 @@ public interface IMap<K, V> extends Iterable<K> {
 
     V remove(K key);
 
+    @Override
+    IMapIterator<K, V> iterator();
+
+    interface IMapIterator<K, V> extends Iterator<K> {
+        @Override
+        boolean hasNext();
+
+        @Override
+        K next();
+
+        V value();
+
+    }
 }

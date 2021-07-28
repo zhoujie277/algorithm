@@ -10,7 +10,7 @@ import java.util.Iterator;
  */
 public abstract class AbstractSequence<E> extends AbstractList<E> implements ISequence<E> {
 
-    private static final int DEFAULT_CAPACITY = 10;
+    private static final int DEFAULT_CAPACITY = 8;
     protected Object[] elements;
 
     public AbstractSequence() {
@@ -20,12 +20,15 @@ public abstract class AbstractSequence<E> extends AbstractList<E> implements ISe
     public AbstractSequence(int capacity) {
         this.elements = new Object[capacity];
     }
+
+    @SuppressWarnings("unchecked")
     @Override
     public E get(int index) {
         rangeCheck(index);
         return (E) elements[index];
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public E set(int index, E element) {
         rangeCheck(index);
@@ -60,7 +63,12 @@ public abstract class AbstractSequence<E> extends AbstractList<E> implements ISe
     }
 
     protected void grow() {
-        int len = elements.length + (elements.length >> 1);
+        int len;
+        if (elements.length < DEFAULT_CAPACITY) {
+            len = (elements.length << 1);
+        } else {
+            len = elements.length + (elements.length >> 1);
+        }
         Object[] newArr = new Object[len];
         ArrayUtils.copy(elements, newArr);
         elements = newArr;
@@ -89,6 +97,7 @@ public abstract class AbstractSequence<E> extends AbstractList<E> implements ISe
         return remove(index) != null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public E remove(int index) {
         rangeCheck(index);
@@ -123,6 +132,7 @@ public abstract class AbstractSequence<E> extends AbstractList<E> implements ISe
             return currentIndex < size;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public E next() {
             E val = (E) elements[currentIndex];
@@ -144,6 +154,7 @@ public abstract class AbstractSequence<E> extends AbstractList<E> implements ISe
             return currentIndex >= 0;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public E next() {
             E val = (E) elements[currentIndex];

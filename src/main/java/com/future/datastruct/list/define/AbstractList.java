@@ -6,7 +6,7 @@ import java.util.Iterator;
  * 线性表结构的抽象类
  * @param <E>
  */
-public abstract class AbstractList<E> implements IDataObject<E> {
+public abstract class AbstractList<E> implements IList<E> {
 
     protected static final int ELEMENT_NOT_FOUND = -1;
 

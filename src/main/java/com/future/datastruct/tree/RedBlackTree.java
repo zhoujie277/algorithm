@@ -44,36 +44,36 @@ import com.future.utils.drawtree.IDrawableTree;
  * 相对于AVL树，红黑树牺牲了部分平衡性以换取插入/删除操作时少量的旋转操作，整体来说性能优于AVL树。
  * 红黑树的平均统计性能优于AVL树，实际应用更多选择红黑树。
  */
-public class RedBlackTree<E extends Comparable<E>> extends BinaryBalancedTree<E> {
+public class RedBlackTree<K extends Comparable<K>> extends BinaryBalancedTree<K> {
 
     private static final byte RED = 1;
     private static final byte BLACK = 0;
 
-    private RBNode<E> parentOf(Node<E> node) {
-        return node == null ? null : (RBNode<E>) node.parent;
+    private RBNode<K> parentOf(Node<K> node) {
+        return node == null ? null : (RBNode<K>) node.parent;
     }
 
-    private byte colorOf(Node<E> node) {
-        return node == null ? BLACK : ((RBNode<E>) node).color;
+    private byte colorOf(Node<K> node) {
+        return node == null ? BLACK : ((RBNode<K>) node).color;
     }
 
-    private RBNode<E> leftOf(Node<E> node) {
-        return node == null ? null : (RBNode<E>) node.left;
+    private RBNode<K> leftOf(Node<K> node) {
+        return node == null ? null : (RBNode<K>) node.left;
     }
 
-    private RBNode<E> rightOf(Node<E> node) {
-        return node == null ? null : (RBNode<E>) node.right;
+    private RBNode<K> rightOf(Node<K> node) {
+        return node == null ? null : (RBNode<K>) node.right;
     }
 
-    private void setColor(Node<E> node, byte color) {
-        ((RBNode<E>) node).color = color;
+    private void setColor(Node<K> node, byte color) {
+        ((RBNode<K>) node).color = color;
     }
 
     @Override
-    protected void fixAfterInsertion(Node<E> node) {
+    protected void fixAfterInsertion(Node<K> node) {
         while (node != null && node != root && colorOf(parentOf(node)) == RED) {
             if (leftOf(parentOf(parentOf(node))) == parentOf(node)) {
-                RBNode<E> uncle = rightOf(parentOf(parentOf(node)));
+                RBNode<K> uncle = rightOf(parentOf(parentOf(node)));
                 if (colorOf(uncle) == RED) {
                     setColor(parentOf(node), BLACK);
                     setColor(uncle, BLACK);
@@ -89,7 +89,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinaryBalancedTree<E>
                     rightRotate(parentOf(parentOf(node)));
                 }
             } else {
-                RBNode<E> uncle = leftOf(parentOf(parentOf(node)));
+                RBNode<K> uncle = leftOf(parentOf(parentOf(node)));
                 if (colorOf(uncle) == RED) {
                     setColor(parentOf(node), BLACK);
                     setColor(uncle, BLACK);
@@ -110,7 +110,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinaryBalancedTree<E>
     }
 
     @Override
-    protected void fixAfterDeletion(Node<E> node) {
+    protected void fixAfterDeletion(Node<K> node) {
         if (colorOf(node) == RED) {
             setColor(node, BLACK);
             return;
@@ -120,7 +120,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinaryBalancedTree<E>
             // 被删除之前处于黑平衡状态，所以其父结点必定有两个子结点
             boolean leftChild = (node.parent.left == null) || leftOf(parentOf(node)) == node;
             if (leftChild) {
-                Node<E> sib = rightOf(parentOf(node));
+                Node<K> sib = rightOf(parentOf(node));
                 if (colorOf(sib) == RED) {
                     // 二叉结构虽然旋转，但是B树结构始终不变，仅仅是颜色交换
                     setColor(sib, BLACK);
@@ -146,7 +146,7 @@ public class RedBlackTree<E extends Comparable<E>> extends BinaryBalancedTree<E>
                 }
             } else {
                 // right node
-                Node<E> sib = leftOf(parentOf(node));
+                Node<K> sib = leftOf(parentOf(node));
                 if (colorOf(sib) == RED) {
                     // 二叉结构虽然旋转，但是B树结构始终不变，仅仅是颜色交换
                     setColor(sib, BLACK);
@@ -176,17 +176,18 @@ public class RedBlackTree<E extends Comparable<E>> extends BinaryBalancedTree<E>
     }
 
     @Override
-    protected Node<E> newNode(E e) {
+    protected Node<K> newNode(K e) {
         return new RBNode<>(e);
     }
 
-    private static class RBNode<E> extends Node<E> {
-
+    private static class RBNode<K> extends Node<K> {
         byte color;
+//        V value;
 
-        public RBNode(E value) {
-            super(value);
+        public RBNode(K key) {
+            super(key);
             this.color = RED;
+//            this.value = value;
         }
     }
 
@@ -203,9 +204,9 @@ public class RedBlackTree<E extends Comparable<E>> extends BinaryBalancedTree<E>
         }
 
         @Override
-        public boolean isRed(Node<E> node) {
+        public boolean isRed(Node<K> node) {
             if (node instanceof RBNode) {
-                return ((RBNode<E>) node).color == RED;
+                return ((RBNode<K>) node).color == RED;
             }
             return false;
         }

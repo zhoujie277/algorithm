@@ -1,6 +1,6 @@
 package com.future.datastruct.list.define;
 
-public interface IDataObject<E> extends Iterable<E> {
+public interface IList<E> extends Iterable<E> {
     int size();
 
     boolean isEmpty();

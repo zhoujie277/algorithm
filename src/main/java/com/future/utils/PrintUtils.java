@@ -58,6 +58,24 @@ public class PrintUtils {
         System.out.print("\u001b[0m");
     }
 
+    public static void printKey(Object obj, String key) {
+        String str = obj.toString();
+        int cursor = 0;
+        int index = 0;
+        while (cursor < str.length() && (index = str.indexOf(key, cursor)) >= 0) {
+            System.out.print(str.substring(cursor, index));
+            System.out.print("\u001b[36m");
+            System.out.print(key);
+            System.out.print("\u001b[0m");
+            cursor = index + key.length();
+        }
+        System.out.print(str.substring(cursor));
+        System.out.println();
+    }
+
+    private static void str(String str, String subStr) {
+    }
+
     public static void printf(String s, Object... args) {
         System.out.printf(s, args);
     }

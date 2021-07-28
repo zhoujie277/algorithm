@@ -93,7 +93,7 @@ public class BinaryHeap<T extends Comparable<T>> implements IHeap<T> {
         while (k > 0) {
             parent = (k - 1) >>> 1;
             T parentEle = valueAt(parent);
-            if (parentEle != null && t.compareTo(parentEle) > 0) {
+            if (parentEle != null && t.compareTo(parentEle) < 0) {
                 elements[k] = parentEle;
                 k = parent;
             } else {
@@ -104,24 +104,24 @@ public class BinaryHeap<T extends Comparable<T>> implements IHeap<T> {
     }
 
     private void siftDown(int k, T t) {
-        int half = size >>> 1, left, right, largest;
+        int half = size >>> 1, right, smaller;
         while (k < half) {
-            left = (k << 1) + 1;
-            right = left + 1;
-            largest = left;
-            if (right < size && valueAt(left).compareTo(valueAt(right)) < 0) {
-                largest = right;
+            smaller = (k << 1) + 1;
+            right = smaller + 1;
+            if (right < size && valueAt(smaller).compareTo(valueAt(right)) > 0) {
+                smaller = right;
             }
-            if (valueAt(largest).compareTo(t) < 0) {
+            if (valueAt(smaller).compareTo(t) > 0) {
                 break;
             } else {
-                elements[k] = valueAt(largest);
-                k = largest;
+                elements[k] = valueAt(smaller);
+                k = smaller;
             }
         }
         elements[k] = t;
     }
 
+    @SuppressWarnings("all")
     private void heapify() {
         // 自下而上的下滤
         for (int i = (size >> 1) - 1; i >= 0; i--) {
@@ -129,6 +129,7 @@ public class BinaryHeap<T extends Comparable<T>> implements IHeap<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private T valueAt(int index) {
         if (index >= size) throw new ArrayIndexOutOfBoundsException("indexOutOfBounds:" + index);
         return (T) elements[index];
@@ -141,7 +142,12 @@ public class BinaryHeap<T extends Comparable<T>> implements IHeap<T> {
 
     private void grow() {
         int oldCap = elements.length;
-        int newCap = oldCap + (oldCap >> 1);
+        int newCap;
+        if (oldCap < DEFAULT_INIT_CAPACITY) {
+            newCap = oldCap << 1;
+        } else {
+            newCap = oldCap + (oldCap >> 1);
+        }
         Object[] newArr = new Object[newCap];
         ArrayUtils.copy(elements, newArr);
         elements = newArr;
@@ -155,6 +161,7 @@ public class BinaryHeap<T extends Comparable<T>> implements IHeap<T> {
     public class HeapItr implements Iterator<T> {
         private final BinaryHeap<T> copy;
 
+        @SuppressWarnings("unchecked")
         public HeapItr() {
             copy = new BinaryHeap<>(size);
             for (int i = 0; i < size; i++) {
@@ -170,7 +177,7 @@ public class BinaryHeap<T extends Comparable<T>> implements IHeap<T> {
         @Override
         public T next() {
             if (copy.isEmpty()) throw new NoSuchElementException();
-            return (T) copy.delMax();
+            return copy.delMax();
         }
     }
 }

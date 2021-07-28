@@ -1,4 +1,4 @@
-package com.future.datastruct.graph;
+package com.future.datastruct.graph.experiment;
 
 import com.future.datastruct.list.DynamicArray;
 import com.future.datastruct.list.LinkedQueue;
@@ -6,17 +6,17 @@ import com.future.utils.PrintUtils;
 
 
 /**
- * 图
+
  * 该类是一个邻接矩阵实现的无向图
  */
-public class Graph<T> {
+public class IntegerGraph<T> {
     private DynamicArray<T> vertexList;
-    private int[][] edges = null;
-    private int numOfEdges = 0;
+    private int[][] edges;
+    private int numOfEdges;
     // 该顶点是否被访问过
     private boolean[] isVisited;
 
-    public Graph(int n) {
+    public IntegerGraph(int n) {
         edges = new int[n][n];
         vertexList = new DynamicArray<>(n);
         numOfEdges = 0;
@@ -121,7 +121,7 @@ public class Graph<T> {
     public static void main(String[] args) {
         int n = 5;
         String[] vertex = {"A", "B", "C", "D", "E"};
-        Graph<String> graph = new Graph<>(n);
+        IntegerGraph<String> graph = new IntegerGraph<>(n);
         for (String v : vertex) {
             graph.insert(v);
         }
