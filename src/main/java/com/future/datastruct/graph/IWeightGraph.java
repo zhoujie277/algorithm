@@ -25,8 +25,6 @@ public interface IWeightGraph<V, E> extends IGraph<V> {
 
     void addVertices(V... vertices);
 
-    boolean removeVertex(V vertex);
-
     boolean addEdge(V from, V to);
 
     boolean removeEdge(V from, V to);

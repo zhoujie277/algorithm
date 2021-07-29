@@ -42,11 +42,6 @@ public interface IGraph<V> {
     void addVertices(V... vertices);
 
     /**
-     * 删除顶点
-     */
-    boolean removeVertex(V vertex);
-
-    /**
      * 添加边
      */
     boolean addEdge(V from, V to);

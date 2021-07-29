@@ -12,6 +12,7 @@ import java.util.Objects;
  *
  * @author jayzhou
  */
+@SuppressWarnings("unused")
 public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> extends MatrixGraph<V> implements IWeightGraph<V, E> {
 
     public WeightMatrixGraph(int cap) {
@@ -22,10 +23,12 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
         super(cap, directed);
     }
 
+    @SuppressWarnings("unchecked")
     public WeightMatrixGraph(V... vertices) {
         super(vertices);
     }
 
+    @SuppressWarnings("unchecked")
     public WeightMatrixGraph(boolean directed, V... vertices) {
         super(directed, vertices);
     }
@@ -38,6 +41,7 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
         return addEdgeWeight(fromVertexIndex, toVertexIndex, weightedEdge);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void addReverseEdge(int fromIndex, int toIndex, Object edge) {
         E element = ((WeightedEdge) edge).weight;
@@ -60,6 +64,7 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private Edge<V, E>[] prim() {
         if (vertices.length < 2) return null;
         Edge<V, E>[] result = new Edge[numOfVertex - 1];
@@ -86,6 +91,7 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     private Edge<V, E>[] kruskal() {
         BinaryHeap<WeightedEdge> heap = new BinaryHeap<>(numOfEdge);
         for (Object[] edge : edges) {
@@ -128,6 +134,7 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
             this.weight = weight;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;

@@ -92,6 +92,23 @@ public class GraphTest {
     }
 
     @Test
+    public void testListGraph() {
+        IWeightGraph<Integer, Edge> graph = new ListGraph<>(false, GraphData.VERTICES_09);
+        addWeightedEdge(graph, GraphData.MST_01);
+        Assert.assertTrue(graph.isConnected());
+        System.out.println(graph);
+        IWeightGraph.Edge<Integer, Edge>[] primEdges = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_PRIM);
+        for (IWeightGraph.Edge<Integer, Edge> primEdge : primEdges) {
+            System.out.println(primEdge);
+        }
+        System.out.println("---------------------");
+        IWeightGraph.Edge<Integer, Edge>[] kruskal = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_KRUSKAL);
+        for (IWeightGraph.Edge<Integer, Edge> edge : kruskal) {
+            System.out.println(edge);
+        }
+    }
+
+    @Test
     public void testCyclic() {
         IWeightGraph<Integer, Edge> graph = new WeightMatrixGraph<>(GraphData.VERTICES_09);
         addWeightedEdge(graph, GraphData.MST_01);

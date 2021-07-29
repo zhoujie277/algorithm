@@ -88,20 +88,6 @@ public class MatrixGraph<V> implements IGraph<V> {
         }
     }
 
-    @Override
-    public boolean removeVertex(V vertex) {
-        if (vertex == null) return false;
-        int vertexIndex = getVertexIndex(vertex);
-        if (vertexIndex == -1) return false;
-        for (int i = 0; i < edges.length; i++) {
-            edges[vertexIndex][i] = null;
-            edges[i][vertexIndex] = null;
-        }
-        System.arraycopy(vertices, vertexIndex + 1, vertices, vertexIndex, vertices.length - vertexIndex);
-        unionFindSet.remove(vertexIndex);
-        return true;
-    }
-
     private void resetUnionFindSet() {
         for (int i = 0; i < edges.length; i++) {
             for (int j = 0; j < edges[i].length; j++) {
@@ -198,9 +184,8 @@ public class MatrixGraph<V> implements IGraph<V> {
 
     @Override
     public boolean isConnected() {
-        int r = unionFindSet.find(0);
         for (int i = 1; i < vertices.length; i++) {
-            if (unionFindSet.find(i) != r) {
+            if (!unionFindSet.isConnected(i, 0)) {
                 return false;
             }
         }
@@ -299,7 +284,7 @@ public class MatrixGraph<V> implements IGraph<V> {
         return new Vertex<>(element, index);
     }
 
-    protected static class Vertex<V> implements Comparable<Vertex<V>> {
+    protected static class Vertex<V> {
         DynamicArray<Integer> fromVertices = new DynamicArray<>(2);
         DynamicArray<Integer> toVertices = new DynamicArray<>(2);
         V element;
@@ -330,11 +315,6 @@ public class MatrixGraph<V> implements IGraph<V> {
         public String toString() {
             return "Vertex{" + element +
                     '}';
-        }
-
-        @Override
-        public int compareTo(Vertex<V> o) {
-            return index - o.index;
         }
     }
 }
