@@ -46,8 +46,8 @@ import com.future.utils.drawtree.IDrawableTree;
  */
 public class RedBlackTree<K extends Comparable<K>> extends BinaryBalancedTree<K> {
 
-    private static final byte RED = 1;
-    private static final byte BLACK = 0;
+    private static final byte RED = 0;
+    private static final byte BLACK = 1;
 
     private RBNode<K> parentOf(Node<K> node) {
         return node == null ? null : (RBNode<K>) node.parent;

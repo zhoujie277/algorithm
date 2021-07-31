@@ -6,6 +6,7 @@ import com.future.utils.PrintUtils;
 import edu.princeton.cs.algs4.StdRandom;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class PrintTreeUtil {
     public static void main(String[] args) {
@@ -51,41 +52,39 @@ public class PrintTreeUtil {
             this.tree = instance;
         }
 
-        @Override
-        public Object root() {
+        private Object getField(Object inObject, String name) {
+            Class<?> aClass = inObject.getClass();
             try {
-                Class<?> aClass = tree.getClass();
-                Field root = aClass.getDeclaredField("root");
-                root.setAccessible(true);
-                return root.get(tree);
+                java.util.List<Field> array = new java.util.ArrayList<>();
+                do {
+                    array.addAll(Arrays.asList(aClass.getDeclaredFields()));
+                    aClass = aClass.getSuperclass();
+                } while (aClass != null);
+                for (Field field : array) {
+                    if (field.getName().equals(name)) {
+                        field.setAccessible(true);
+                        return field.get(inObject);
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        public Object root() {
+            return getField(tree, "root");
         }
 
         @Override
         public Object left(Object node) {
-            try {
-                Field left = node.getClass().getDeclaredField("left");
-                left.setAccessible(true);
-                return left.get(node);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
+            return getField(node, "left");
         }
 
         @Override
         public Object right(Object node) {
-            try {
-                Field right = node.getClass().getDeclaredField("right");
-                right.setAccessible(true);
-                return right.get(node);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
+            return getField(node, "right");
         }
 
         @Override
@@ -97,7 +96,6 @@ public class PrintTreeUtil {
                 byte v = (byte) o;
                 return v == 0;
             } catch (Exception e) {
-                e.printStackTrace();
             }
             return false;
         }
@@ -148,6 +146,7 @@ public class PrintTreeUtil {
 
     private static class ProxyIndexHeap extends ProxyHeap {
         protected int[] indexes;
+
         public ProxyIndexHeap(Object heap) {
             super(heap);
             try {

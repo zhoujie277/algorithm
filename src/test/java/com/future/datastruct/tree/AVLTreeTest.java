@@ -1,9 +1,7 @@
 package com.future.datastruct.tree;
 
 import com.future.utils.PrintUtils;
-import com.future.utils.drawtree.IDrawableTree;
 import com.future.utils.drawtree.PrintTreeUtil;
-import edu.princeton.cs.algs4.LinkedQueue;
 import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,11 +29,10 @@ public class AVLTreeTest {
             PrintUtils.println("add element:" + array[i]);
             avlTree.add(array[i]);
             assertBalanced();
-            PrintTreeUtil.printTree(avlTree.getDrawableTree(false));
+            PrintTreeUtil.printTree(avlTree);
             PrintUtils.println();
         }
-        IDrawableTree addTree = avlTree.getDrawableTree(false);
-        PrintTreeUtil.printTree(addTree);
+        PrintTreeUtil.printTree(avlTree);
 
         PrintUtils.println("====================测试删除=========================");
         PrintUtils.println("====================================================");
@@ -50,21 +47,21 @@ public class AVLTreeTest {
             Integer remove = avlTree.remove(delete);
             if (remove != null) {
                 assertBalanced();
-                PrintTreeUtil.printTree(avlTree.getDrawableTree(false));
+                PrintTreeUtil.printTree(avlTree);
                 PrintUtils.println();
                 PrintUtils.println();
             }
         }
-        PrintTreeUtil.printTree(avlTree.getDrawableTree(false));
+        PrintTreeUtil.printTree(avlTree);
     }
 
     private void assertBalanced() {
         Iterator<BinaryTree.Node<Integer>> nodeIterator = avlTree.breadthFirstSearchNodeIterator();
         while (nodeIterator.hasNext()) {
             AVLBinaryTree.AVLNode<Integer> node = (AVLBinaryTree.AVLNode<Integer>) nodeIterator.next();
-            Assert.assertTrue(!avlTree.notBalanced(node));
+            Assert.assertFalse(avlTree.notBalanced(node));
             int h = Math.max(avlTree.getHeight(node.left), avlTree.getHeight(node.right)) + 1;
-            Assert.assertTrue(node.height == h);
+            Assert.assertEquals(node.height, h);
         }
     }
 }

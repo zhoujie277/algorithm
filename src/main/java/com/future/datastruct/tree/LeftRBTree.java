@@ -90,12 +90,14 @@ public class LeftRBTree<K extends Comparable<K>, V> {
             } else {
                 node.parent.right = replacement;
             }
-            fixAfterDeletion(replacement);
+            if (node.color == BLACK)
+                fixAfterDeletion(replacement);
             node.parent = node.left = node.right = null;
         } else if (node.parent == null) {
             root = null;
         } else {
-            fixAfterDeletion(node);
+            if (node.color == BLACK)
+                fixAfterDeletion(node);
             if (node.parent.left == node) {
                 node.parent.left = null;
             } else {
@@ -137,7 +139,46 @@ public class LeftRBTree<K extends Comparable<K>, V> {
     }
 
     private void fixAfterDeletion(Node<K, V> node) {
-
+        while (node != root && node.color == BLACK) {
+            if (leftOf(parentOf(node)) == node) {
+                Node<K, V> sib = rightOf(parentOf(node));
+                if (colorOf(leftOf(sib)) == RED) {
+                    sib = rotateRight(sib);
+                    setColor(sib, colorOf(parentOf(node)));
+                    setColor(parentOf(node), BLACK);
+                    setColor(rightOf(sib), BLACK);
+                    rotateLeft(parentOf(node));
+                    node = root;
+                } else {
+                    setColor(parentOf(node), RED);
+                    setColor(sib, BLACK);
+                    node = rotateLeft(parentOf(node));
+                }
+            } else {
+                Node<K, V> sib = leftOf(parentOf(node));
+                if (colorOf(sib) == BLACK) {
+                    if (colorOf(leftOf(sib)) == RED) {
+                        setColor(leftOf(sib), BLACK);
+                        rotateRight(parentOf(node));
+                        node = root;
+                    } else {
+                        setColor(sib, RED);
+                        node = parentOf(node);
+                    }
+                } else {
+                    if (colorOf(leftOf(rightOf(sib))) == RED) {
+                        setColor(leftOf(rightOf(sib)), BLACK);
+                    } else {
+                        setColor(sib, BLACK);
+                        setColor(leftOf(sib), RED);
+                    }
+                    sib = rotateLeft(sib);
+                    rotateRight(parentOf(sib));
+                    node = root;
+                }
+            }
+        }
+        setColor(node, BLACK);
     }
 
     private Node<K, V> parentOf(Node<K, V> node) {
