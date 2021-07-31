@@ -10,4 +10,8 @@ public interface IDrawableTree<E> {
     default boolean isRed(E node) {
         return false;
     }
+
+    default String string(E node) {
+        return node.toString();
+    }
 }

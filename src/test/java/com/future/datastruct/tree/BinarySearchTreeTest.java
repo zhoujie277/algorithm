@@ -46,7 +46,7 @@ public class BinarySearchTreeTest {
         IDrawableTree removeTree = searchTree.getDrawableTree();
         traversal();
         Object[] integers = searchTree.toArray();
-        DrawTreeUtil.drawTree(ArrayUtils.convert(array), addTree, removeTree);
+        DrawTreeUtil.drawTree(ArrayUtils.wrap(array), addTree, removeTree);
         try {
             Thread.sleep(200000);
         } catch (InterruptedException e) {

@@ -103,7 +103,7 @@ public class DrawTreeUtil {
 
     public static void main(String[] args) {
         int[] array = StdRandom.permutation(10);
-        Integer[] convert = ArrayUtils.convert(array);
+        Integer[] convert = ArrayUtils.wrap(array);
         BinarySearchTree<Integer> searchTree = new BinarySearchTree<>();
         for (int j : array) {
             searchTree.add(j);

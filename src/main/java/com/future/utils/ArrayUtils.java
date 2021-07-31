@@ -88,7 +88,7 @@ public class ArrayUtils {
         }
     }
 
-    public static Integer[] convert(int[] array) {
+    public static Integer[] wrap(int[] array) {
         return Arrays.stream(array).boxed().toArray(Integer[]::new);
     }
 

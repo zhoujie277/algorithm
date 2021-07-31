@@ -119,7 +119,7 @@ class DrawTree<E> {
         LinkedQueue<DrawNode> drawQueue = new LinkedQueue<>();
         E root = tree.root();
         queue.push(root);
-        DrawNode drawRoot = new DrawNode(root.toString());
+        DrawNode drawRoot = new DrawNode(tree.string(root));
         drawQueue.push(drawRoot);
         while (!queue.isEmpty()) {
             E poll = queue.poll();
@@ -130,13 +130,13 @@ class DrawTree<E> {
             E right = tree.right(poll);
             if (left != null) {
                 queue.push(left);
-                drawNode.left = new DrawNode(left.toString());
+                drawNode.left = new DrawNode(tree.string(left));
                 drawNode.left.parent = drawNode;
                 drawQueue.push(drawNode.left);
             }
             if (right != null) {
                 queue.push(right);
-                drawNode.right = new DrawNode(right.toString());
+                drawNode.right = new DrawNode(tree.string(right));
                 drawNode.right.parent = drawNode;
                 drawQueue.push(drawNode.right);
             }

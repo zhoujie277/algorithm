@@ -24,7 +24,7 @@ public class CompleteBinaryTreeTest {
         int[] permutation = StdRandom.permutation(100, len);
         PrintUtils.println("setup array");
         PrintUtils.println(permutation);
-        originArray = ArrayUtils.convert(permutation);
+        originArray = ArrayUtils.wrap(permutation);
         binaryTree = new CompleteBinaryTree<>(originArray);
         initTree = binaryTree.getDrawableTree();
     }
