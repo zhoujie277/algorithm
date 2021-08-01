@@ -1,6 +1,8 @@
 package com.future.datastruct.graph;
 
 import com.future.datastruct.heap.BinaryHeap;
+import com.future.datastruct.heap.BinaryIndexHeap;
+import com.future.datastruct.list.DynamicArray;
 import com.future.datastruct.list.LinkedQueue;
 import com.future.datastruct.list.LinkedStack;
 import com.future.datastruct.set.RBTreeSet;
@@ -14,7 +16,7 @@ import java.util.Objects;
  *
  * @author jayzhou
  */
-public class ListGraph<V, E extends IWeightGraph.IWeightedEdge<E>> implements IWeightGraph<V, E> {
+public class ListGraph<V, E extends IWeightedEdge<E>> implements IWeightGraph<V, E> {
 
     private final TreeUnionFind<Integer> unionFind = new TreeUnionFind<>();
     private final boolean directed;
@@ -109,6 +111,7 @@ public class ListGraph<V, E extends IWeightGraph.IWeightedEdge<E>> implements IW
         if (!directed) {
             removeEdge(toIndex, fromIndex);
         }
+        numOfEdge--;
         return false;
     }
 
@@ -192,12 +195,12 @@ public class ListGraph<V, E extends IWeightGraph.IWeightedEdge<E>> implements IW
     }
 
     @Override
-    public IWeightGraph.Edge<V, E>[] minimalSpanningTree() {
+    public EdgeInfo<V, E>[] minimalSpanningTree() {
         return minimalSpanningTree(MINIMAL_SPANNING_TREE_PRIM);
     }
 
     @Override
-    public IWeightGraph.Edge<V, E>[] minimalSpanningTree(byte strategy) {
+    public EdgeInfo<V, E>[] minimalSpanningTree(byte strategy) {
         if (strategy == MINIMAL_SPANNING_TREE_PRIM) {
             return prim();
         } else if (strategy == MINIMAL_SPANNING_TREE_KRUSKAL) {
@@ -206,11 +209,101 @@ public class ListGraph<V, E extends IWeightGraph.IWeightedEdge<E>> implements IW
         return null;
     }
 
+    @Override
+    public PathInfo<V, E> shortestPath(V from, V to) {
+        return null;
+    }
+
+    @Override
+    public PathInfo<V, E>[] shortestPath(V from) {
+        return dijkstra(from, null);
+    }
+
     @SuppressWarnings("unchecked")
-    private IWeightGraph.Edge<V, E>[] prim() {
+    private PathInfo<V, E>[] dijkstra(V from, V to) {
+        int firstPickupVex = indexOfVertex(from);
+        if (firstPickupVex == -1) return null;
+        BinaryIndexHeap<Path<E>> heap = new BinaryIndexHeap<>();
+        Path<E>[] paths = new Path[numOfVertex];
+        slack(firstPickupVex, firstPickupVex, paths, heap);
+
+        int length = 0;
+        for (int i = 0; i < numOfVertex - 1; i++) {
+            Path<E> pickupPath = heap.remove();
+            if (pickupPath == null) break;
+//            PrintTreeUtil.printIndexHeap(heap);
+//            PrintUtils.debug("remove----" + pickupPath);
+            length++;
+            slack(pickupPath.adjVex, firstPickupVex, paths, heap);
+        }
+
+        PathInfo<V, E>[] pathInfos = new PathInfo[length];
+        for (int i = 0, j = 0; i < paths.length; i++) {
+            if (paths[i] != null) {
+                V toVertex = vertices[i].element;
+                E weight = paths[i].weight;
+                DynamicArray<Integer> integers = paths[i].vertices;
+                V[] vexes = (V[]) new Object[integers.size()];
+                for (int k = 0; k < vexes.length; k++) {
+                    vexes[k] = vertices[integers.get(k)].element;
+                }
+                pathInfos[j++] = new PathInfo<>(toVertex, weight, vexes);
+            }
+        }
+        return pathInfos;
+    }
+
+    /**
+     * 松弛操作
+     */
+    private void slack(int pickupVex, int firstVex, Path<E>[] paths, BinaryIndexHeap<Path<E>> heap) {
+        Vertex<V, E> vertex = vertices[pickupVex];
+        Edge<E> p = vertex.firstEdge;
+        Path<E> pickupPath = paths[pickupVex];
+        while (p != null) {
+            if (p.adjVex == firstVex) {
+                p = p.next;
+                continue;
+            }
+            Path<E> path = paths[p.adjVex];
+            if (path == null) {
+                path = paths[p.adjVex] = new Path<>(p);
+                if (pickupPath != null) {
+                    path.weight = pickupPath.weight.add(path.weight);
+                    path.addVertices(pickupPath.vertices);
+                } else {
+                    path.addVertex(pickupVex);
+                }
+                path.addVertex(p.adjVex);
+                path.queueIndex = heap.insert(path);
+//                PrintTreeUtil.printIndexHeap(heap);
+//                PrintUtils.debug("insert----" + path);
+            } else {
+                E newWeight = p.weight.add(pickupPath.weight);
+                if (path.weight.compareTo(newWeight) > 0) {
+                    path.weight = newWeight;
+                    path.vertices.clear();
+                    path.addVertices(pickupPath.vertices);
+                    path.addVertex(p.adjVex);
+                    heap.update(path.queueIndex, path);
+//                    PrintTreeUtil.printIndexHeap(heap);
+//                    PrintUtils.debug("update----" + path);
+                }
+            }
+            p = p.next;
+        }
+    }
+
+    @Override
+    public PathInfo<V, E>[] shortestPath() {
+        return new PathInfo[0];
+    }
+
+    @SuppressWarnings("unchecked")
+    private EdgeInfo<V, E>[] prim() {
         RBTreeSet<Integer> treeSet = new RBTreeSet<>();
         BinaryHeap<Edge<E>> heap = new BinaryHeap<>();
-        IWeightGraph.Edge<V, E>[] result = new IWeightGraph.Edge[numOfVertex - 1];
+        EdgeInfo<V, E>[] result = new EdgeInfo[numOfVertex - 1];
         int resultIndex = 0;
         int vexIndex = 0;
         treeSet.add(0);
@@ -235,19 +328,21 @@ public class ListGraph<V, E extends IWeightGraph.IWeightedEdge<E>> implements IW
     }
 
     @SuppressWarnings("unchecked")
-    private IWeightGraph.Edge<V, E>[] kruskal() {
-        TreeUnionFind<Integer> unionFind = new TreeUnionFind<>();
-        BinaryHeap<Edge<E>> heap = new BinaryHeap<>();
-        IWeightGraph.Edge<V, E>[] result = new IWeightGraph.Edge[numOfVertex - 1];
-        int resultIndex = 0;
-        for (int vexIndex = 0; vexIndex < numOfVertex; vexIndex++) {
+    private EdgeInfo<V, E>[] kruskal() {
+        int edgeNum = directed ? numOfEdge : (numOfEdge << 1);
+        Edge<E>[] edges = new Edge[edgeNum];
+        for (int vexIndex = 0, edgeIndex = 0; vexIndex < numOfVertex; vexIndex++) {
             Vertex<V, E> vertex = vertices[vexIndex];
             Edge<E> e = vertex.firstEdge;
             while (e != null) {
-                heap.add(e);
+                edges[edgeIndex++] = e;
                 e = e.next;
             }
         }
+        BinaryHeap<Edge<E>> heap = new BinaryHeap<>(edges);
+        TreeUnionFind<Integer> unionFind = new TreeUnionFind<>();
+        EdgeInfo<V, E>[] result = new EdgeInfo[numOfVertex - 1];
+        int resultIndex = 0;
         do {
             Edge<E> edge = heap.remove();
             if (unionFind.isConnected(edge.fromVex, edge.adjVex)) continue;
@@ -257,10 +352,10 @@ public class ListGraph<V, E extends IWeightGraph.IWeightedEdge<E>> implements IW
         return result;
     }
 
-    private IWeightGraph.Edge<V, E> replaceEdge(Edge<E> edge) {
+    private EdgeInfo<V, E> replaceEdge(Edge<E> edge) {
         V toVex = vertices[edge.adjVex].element;
         V fromVex = vertices[edge.fromVex].element;
-        return new IWeightGraph.Edge<>(fromVex, toVex, edge.weight);
+        return new EdgeInfo<>(fromVex, toVex, edge.weight);
     }
 
     private int indexOfVertex(V data) {
@@ -380,6 +475,44 @@ public class ListGraph<V, E extends IWeightGraph.IWeightedEdge<E>> implements IW
         @Override
         public int compareTo(Edge<E> o) {
             return weight.compareTo(o.weight);
+        }
+    }
+
+    private static class Path<E extends IWeightedEdge<E>> implements Comparable<Path<E>> {
+        int adjVex;
+        E weight;
+        BinaryIndexHeap.ElementIndex queueIndex;
+        DynamicArray<Integer> vertices = new DynamicArray<>(3);
+
+        public Path(int adjVex, E weight) {
+            this.adjVex = adjVex;
+            this.weight = weight;
+            this.queueIndex = null;
+        }
+
+        public Path(Edge<E> edge) {
+            this(edge.adjVex, edge.weight);
+            this.queueIndex = null;
+        }
+
+        @Override
+        public int compareTo(Path<E> o) {
+            return weight.compareTo(o.weight);
+        }
+
+        public void addVertex(int vertexIndex) {
+            vertices.add(vertexIndex);
+        }
+
+        public void addVertices(DynamicArray<Integer> vertices) {
+            this.vertices.addAll(vertices);
+        }
+
+        @Override
+        public String toString() {
+            return "{" + adjVex +
+                    "," + weight +
+                    '}';
         }
     }
 }

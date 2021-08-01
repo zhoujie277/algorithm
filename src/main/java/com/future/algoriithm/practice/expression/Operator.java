@@ -1,4 +1,4 @@
-package com.future.algoriithm.question.expression;
+package com.future.algoriithm.practice.expression;
 
 /**
  * @author zhoujie

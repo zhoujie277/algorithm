@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author jayzhou
  */
 @SuppressWarnings("unused")
-public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> extends MatrixGraph<V> implements IWeightGraph<V, E> {
+public class WeightMatrixGraph<V, E extends IWeightedEdge<E>> extends MatrixGraph<V> implements IWeightGraph<V, E> {
 
     public WeightMatrixGraph(int cap) {
         super(cap);
@@ -50,12 +50,12 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
     }
 
     @Override
-    public Edge<V, E>[] minimalSpanningTree() {
+    public EdgeInfo<V, E>[] minimalSpanningTree() {
         return minimalSpanningTree(MINIMAL_SPANNING_TREE_PRIM);
     }
 
     @Override
-    public Edge<V, E>[] minimalSpanningTree(byte strategy) {
+    public EdgeInfo<V, E>[] minimalSpanningTree(byte strategy) {
         if (strategy == MINIMAL_SPANNING_TREE_PRIM) {
             return prim();
         } else if (strategy == MINIMAL_SPANNING_TREE_KRUSKAL) {
@@ -64,10 +64,25 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
         return null;
     }
 
+    @Override
+    public PathInfo<V, E> shortestPath(V from, V to) {
+        return null;
+    }
+
+    @Override
+    public PathInfo<V, E>[] shortestPath(V from) {
+        return new PathInfo[0];
+    }
+
+    @Override
+    public PathInfo<V, E>[] shortestPath() {
+        return new PathInfo[0];
+    }
+
     @SuppressWarnings("unchecked")
-    private Edge<V, E>[] prim() {
+    private EdgeInfo<V, E>[] prim() {
         if (vertices.length < 2) return null;
-        Edge<V, E>[] result = new Edge[numOfVertex - 1];
+        EdgeInfo<V, E>[] result = new EdgeInfo[numOfVertex - 1];
         RBTreeSet<Integer> simpleSet = new RBTreeSet<>();
         BinaryHeap<WeightedEdge> heap = new BinaryHeap<>(numOfEdge);
         int resultIndex = 0;
@@ -92,7 +107,7 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
     }
 
     @SuppressWarnings("unchecked")
-    private Edge<V, E>[] kruskal() {
+    private EdgeInfo<V, E>[] kruskal() {
         BinaryHeap<WeightedEdge> heap = new BinaryHeap<>(numOfEdge);
         for (Object[] edge : edges) {
             for (Object value : edge) {
@@ -102,7 +117,7 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
                 }
             }
         }
-        Edge<V, E>[] result = new Edge[numOfVertex - 1];
+        EdgeInfo<V, E>[] result = new EdgeInfo[numOfVertex - 1];
         int index = 0;
         TreeUnionFind<Integer> unionFind = new TreeUnionFind<>();
         do {
@@ -115,8 +130,8 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
         return result;
     }
 
-    private Edge<V, E> replaceEdge(WeightedEdge innerEdge) {
-        return new Edge<>(vertices[innerEdge.fromIndex].element, vertices[innerEdge.toIndex].element, innerEdge.weight);
+    private EdgeInfo<V, E> replaceEdge(WeightedEdge innerEdge) {
+        return new EdgeInfo<>(vertices[innerEdge.fromIndex].element, vertices[innerEdge.toIndex].element, innerEdge.weight);
     }
 
     private WeightedEdge newWeightedEdge(int from, int to, E weight) {
@@ -153,6 +168,11 @@ public class WeightMatrixGraph<V, E extends IWeightGraph.IWeightedEdge<E>> exten
         @Override
         public int compareTo(WeightedEdge o) {
             return weight.compareTo(o.weight);
+        }
+
+        @Override
+        public WeightedEdge add(WeightedEdge edge) {
+            return null;
         }
 
         @Override

@@ -1,4 +1,4 @@
-package com.future.algoriithm.question.expression;
+package com.future.algoriithm.practice.expression;
 
 class MaskCode {
     public static final int DIGIT = 0;

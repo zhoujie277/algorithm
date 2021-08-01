@@ -1,4 +1,4 @@
-package com.future.algoriithm.question;
+package com.future.algoriithm.practice;
 
 import com.future.datastruct.list.DualCircleLinkedList;
 import com.future.utils.PrintUtils;

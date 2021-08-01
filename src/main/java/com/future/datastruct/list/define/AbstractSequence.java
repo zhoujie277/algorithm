@@ -74,6 +74,12 @@ public abstract class AbstractSequence<E> extends AbstractList<E> implements ISe
         elements = newArr;
     }
 
+    public void addAll(AbstractSequence<E> sequence) {
+        for (int i = 0; i < sequence.size; i++) {
+            add(sequence.get(i));
+        }
+    }
+
     @Override
     public boolean add(E o) {
         ensureCapacity(size + 1);

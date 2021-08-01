@@ -1,5 +1,6 @@
 package com.future.utils.drawtree;
 
+import com.future.datastruct.heap.BinaryIndexHeap;
 import com.future.datastruct.tree.BinarySearchTree;
 import com.future.utils.ArrayUtils;
 import com.future.utils.PrintUtils;
@@ -123,37 +124,40 @@ public class PrintTreeUtil {
 
         @Override
         public Integer root() {
-            return 0;
+            return size > 0 ? 0 : null;
         }
 
         @Override
         public Integer left(Integer node) {
+            if (node == null) return null;
             int index = (node << 1) + 1;
             return index < size ? index : null;
         }
 
         @Override
         public Integer right(Integer node) {
+            if (node == null) return null;
             int index = (node << 1) + 2;
             return index < size ? index : null;
         }
 
         @Override
         public String string(Integer node) {
+            if (node == null) return "";
             return elements[node].toString();
         }
     }
 
     private static class ProxyIndexHeap extends ProxyHeap {
-        protected int[] indexes;
+        protected BinaryIndexHeap.ElementIndex[] indexes;
 
         public ProxyIndexHeap(Object heap) {
             super(heap);
             try {
                 Class<?> aClass = heap.getClass();
-                Field array = aClass.getDeclaredField("indexes");
+                Field array = aClass.getDeclaredField("elementIndexes");
                 array.setAccessible(true);
-                this.indexes = (int[]) array.get(heap);
+                this.indexes = (BinaryIndexHeap.ElementIndex[]) array.get(heap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -161,7 +165,8 @@ public class PrintTreeUtil {
 
         @Override
         public String string(Integer node) {
-            int index = indexes[node];
+            if (node == null) return "";
+            int index = indexes[node].get();
             return elements[index].toString();
         }
     }

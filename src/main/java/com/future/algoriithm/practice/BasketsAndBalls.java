@@ -1,4 +1,4 @@
-package com.future.algoriithm.question;
+package com.future.algoriithm.practice;
 
 import com.future.utils.PrintUtils;
 import com.future.utils.Printable;

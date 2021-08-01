@@ -18,22 +18,35 @@ public class BinaryIndexHeapTest {
         PrintUtils.println(convert);
         BinaryIndexHeap<Integer> heap = new BinaryIndexHeap<>(convert);
         PrintTreeUtil.printIndexHeap(heap);
+        PrintUtils.println(heap);
 
         int size = heap.size();
-        Assert.assertEquals(size, permutation.length);
+        Assert.assertEquals(permutation.length, size);
 
-        int index = heap.removeIndex();
-        Assert.assertEquals(index, 9);
+        int element = heap.remove();
+        Assert.assertEquals(1, element);
         PrintTreeUtil.printIndexHeap(heap);
+        PrintUtils.println(heap);
 
-        index = heap.getIndex();
-        PrintUtils.println("\nindex=" + index);
-        Assert.assertEquals(heap.get(index), heap.get());
-
-        int update = heap.update(index, 54);
+        BinaryIndexHeap.ElementIndex maxIndex = heap.getElementIndex();
+        PrintUtils.println("\nmaxIndex=" + maxIndex);
+        int update = heap.update(maxIndex, 54);
         Assert.assertEquals(12, update);
         PrintTreeUtil.printIndexHeap(heap);
+        PrintUtils.println(heap);
 
+        heap.add(26);
+        PrintTreeUtil.printIndexHeap(heap);
+        PrintUtils.println(heap);
+    }
+
+    @Test
+    public void testSame() {
+        int[] permutation = new int[]{4, 8, 8, 8, 88, 8, 3, 8, 2, 8, 8, 1, 8};
+        Integer[] convert = ArrayUtils.wrap(permutation);
+        PrintUtils.println(convert);
+        BinaryIndexHeap<Integer> heap = new BinaryIndexHeap<>(convert);
+        PrintTreeUtil.printIndexHeap(heap);
     }
 
     @Test
@@ -45,11 +58,22 @@ public class BinaryIndexHeapTest {
         heap.clear();
     }
 
+    @Test
+    public void testEmpty() {
+        BinaryIndexHeap<Integer> heap = new BinaryIndexHeap<>();
+        int[] array = new int[]{23, 33, 45, 63, 12, 20, 41};
+        for (int i : array) {
+            heap.add(i);
+        }
+
+        PrintTreeUtil.printIndexHeap(heap);
+    }
+
     private class Person {
         String name;
     }
 
-    private class Student extends Person{
+    private class Student extends Person {
         int age;
     }
 

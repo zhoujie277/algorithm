@@ -9,6 +9,42 @@ import java.util.Objects;
 
 public class GraphTest {
 
+    static class Edge implements IWeightedEdge<Edge> {
+        int distance;
+
+        Edge(int weight) {
+            this.distance = weight;
+        }
+
+        @Override
+        public int compareTo(Edge o) {
+            return distance - o.distance;
+        }
+
+        @Override
+        public Edge add(Edge edge) {
+            return new Edge(distance + edge.distance);
+        }
+
+        @Override
+        public String toString() {
+            return distance + "";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Edge edge = (Edge) o;
+            return distance == edge.distance;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(distance);
+        }
+    }
+
     @Test
     public void testMatrixGraph() {
         IGraph<String> graph = new MatrixGraph<>(GraphData.VERTICES_AI);
@@ -43,50 +79,19 @@ public class GraphTest {
         return graph;
     }
 
-    static class Edge implements IWeightGraph.IWeightedEdge<Edge> {
-        int distance;
-
-        Edge(int weight) {
-            this.distance = weight;
-        }
-
-        @Override
-        public int compareTo(Edge o) {
-            return distance - o.distance;
-        }
-
-        @Override
-        public String toString() {
-            return distance + "";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Edge edge = (Edge) o;
-            return distance == edge.distance;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(distance);
-        }
-    }
-
     @Test
     public void testMinimalSpanningTree() {
         IWeightGraph<Integer, Edge> graph = new WeightMatrixGraph<>(GraphData.VERTICES_09);
         addWeightedEdge(graph, GraphData.MST_01);
         Assert.assertTrue(graph.isConnected());
         System.out.println(graph);
-        IWeightGraph.Edge<Integer, Edge>[] primEdges = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_PRIM);
-        for (IWeightGraph.Edge<Integer, Edge> primEdge : primEdges) {
+        IWeightGraph.EdgeInfo<Integer, Edge>[] primEdges = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_PRIM);
+        for (IWeightGraph.EdgeInfo<Integer, Edge> primEdge : primEdges) {
             System.out.println(primEdge);
         }
         System.out.println("---------------------");
-        IWeightGraph.Edge<Integer, Edge>[] kruskal = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_KRUSKAL);
-        for (IWeightGraph.Edge<Integer, Edge> edge : kruskal) {
+        IWeightGraph.EdgeInfo<Integer, Edge>[] kruskal = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_KRUSKAL);
+        for (IWeightGraph.EdgeInfo<Integer, Edge> edge : kruskal) {
             System.out.println(edge);
         }
     }
@@ -97,13 +102,13 @@ public class GraphTest {
         addWeightedEdge(graph, GraphData.MST_01);
         Assert.assertTrue(graph.isConnected());
         System.out.println(graph);
-        IWeightGraph.Edge<Integer, Edge>[] primEdges = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_PRIM);
-        for (IWeightGraph.Edge<Integer, Edge> primEdge : primEdges) {
+        IWeightGraph.EdgeInfo<Integer, Edge>[] primEdges = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_PRIM);
+        for (IWeightGraph.EdgeInfo<Integer, Edge> primEdge : primEdges) {
             System.out.println(primEdge);
         }
         System.out.println("---------------------");
-        IWeightGraph.Edge<Integer, Edge>[] kruskal = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_KRUSKAL);
-        for (IWeightGraph.Edge<Integer, Edge> edge : kruskal) {
+        IWeightGraph.EdgeInfo<Integer, Edge>[] kruskal = graph.minimalSpanningTree(IWeightGraph.MINIMAL_SPANNING_TREE_KRUSKAL);
+        for (IWeightGraph.EdgeInfo<Integer, Edge> edge : kruskal) {
             System.out.println(edge);
         }
     }
@@ -118,5 +123,16 @@ public class GraphTest {
         addEdge(acyclic, GraphData.ACyclic);
         Assert.assertFalse(acyclic.hasCyclic());
         Assert.assertTrue(acyclic.isConnected());
+    }
+
+    @Test
+    public void testShortestPath() {
+        IWeightGraph<String, Edge> graph = new ListGraph<>(false, GraphData.VERTICES_AF);
+        addWeightedEdge(graph, GraphData.SP);
+        System.out.println(graph);
+        IWeightGraph.PathInfo<String, Edge>[] as = graph.shortestPath("A");
+        for (IWeightGraph.PathInfo<String, Edge> a : as) {
+            PrintUtils.println(a);
+        }
     }
 }

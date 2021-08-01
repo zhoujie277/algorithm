@@ -1,5 +1,6 @@
 package com.future.datastruct.graph;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -11,9 +12,26 @@ public interface IWeightGraph<V, E> extends IGraph<V> {
 
     boolean addEdge(V from, V to, E edge);
 
-    Edge<V, E>[] minimalSpanningTree();
+    EdgeInfo<V, E>[] minimalSpanningTree();
 
-    Edge<V, E>[] minimalSpanningTree(byte strategy);
+    EdgeInfo<V, E>[] minimalSpanningTree(byte strategy);
+
+    /**
+     * 获取两点之间的最短路径
+     */
+    PathInfo<V, E> shortestPath(V from, V to);
+
+    /**
+     * 获取某点到其它所有点的最短路径
+     */
+    PathInfo<V, E>[] shortestPath(V from);
+
+    /**
+     * 获取任意两顶点之间的最短路径
+     *
+     * @return
+     */
+    PathInfo<V, E>[] shortestPath();
 
     int numOfVertices();
 
@@ -37,22 +55,43 @@ public interface IWeightGraph<V, E> extends IGraph<V> {
 
     boolean hasCyclic(V v);
 
+    /**
+     * 是不是有向图
+     */
     boolean isDirected();
 
+    /**
+     * 是不是连通图
+     */
     boolean isConnected();
 
-    interface IWeightedEdge<E> extends Comparable<E> {
-        @Override
-        int compareTo(E o);
+    class PathInfo<V, E>  {
+        public final V adjVex;
+        public final E weight;
+        public final V[] vertices;
 
+        public PathInfo(V to, E weight, V[] vertices) {
+            this.adjVex = to;
+            this.weight = weight;
+            this.vertices = vertices;
+        }
+
+        @Override
+        public String toString() {
+            return "PathInfo{" +
+                    "adjVex=" + adjVex +
+                    ", weight=" + weight +
+                    ", vertices=" + Arrays.toString(vertices) +
+                    '}';
+        }
     }
 
-    class Edge<V, E> {
+    class EdgeInfo<V, E> {
         public final V from;
         public final V to;
         public final E weight;
 
-        public Edge(V from, V to, E weight) {
+        public EdgeInfo(V from, V to, E weight) {
             this.from = from;
             this.to = to;
             this.weight = weight;
