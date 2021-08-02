@@ -9,6 +9,8 @@ import java.util.Iterator;
 public interface IWeightGraph<V, E> extends IGraph<V> {
     byte MINIMAL_SPANNING_TREE_PRIM = 1;
     byte MINIMAL_SPANNING_TREE_KRUSKAL = 2;
+    byte SHORTEST_PATH_DIJKSTRA = 3;
+    byte SHORTEST_PATH_BELLMAN_FORD = 4;
 
     boolean addEdge(V from, V to, E edge);
 
@@ -24,14 +26,14 @@ public interface IWeightGraph<V, E> extends IGraph<V> {
     /**
      * 获取某点到其它所有点的最短路径
      */
-    PathInfo<V, E>[] shortestPath(V from);
+    PathInfo<V, E>[] shortestPath(V from, int type);
 
     /**
      * 获取任意两顶点之间的最短路径
      *
      * @return
      */
-    PathInfo<V, E>[] shortestPath();
+    PathInfo<V, E>[][] shortestPath();
 
     int numOfVertices();
 

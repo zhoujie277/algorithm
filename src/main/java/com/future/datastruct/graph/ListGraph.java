@@ -7,6 +7,7 @@ import com.future.datastruct.list.LinkedQueue;
 import com.future.datastruct.list.LinkedStack;
 import com.future.datastruct.set.RBTreeSet;
 import com.future.datastruct.union.TreeUnionFind;
+import com.future.utils.PrintUtils;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -211,92 +212,182 @@ public class ListGraph<V, E extends IWeightedEdge<E>> implements IWeightGraph<V,
 
     @Override
     public PathInfo<V, E> shortestPath(V from, V to) {
+        int toVex = indexOfVertex(to);
+        Path<E>[] dijkstra = dijkstra(from, toVex);
+        if (dijkstra == null) return null;
+        for (Path<E> path : dijkstra) {
+            if (path != null && path.adjVex == toVex) {
+                return pathToPathInfo(path);
+            }
+        }
         return null;
     }
 
     @Override
-    public PathInfo<V, E>[] shortestPath(V from) {
-        return dijkstra(from, null);
+    public PathInfo<V, E>[] shortestPath(V from, int type) {
+        Path<E>[] paths;
+        if (type == SHORTEST_PATH_BELLMAN_FORD) {
+            paths = bellmanFord(from);
+        } else {
+            paths = dijkstra(from, null);
+        }
+        if (paths == null) return null;
+        return pathToPathInfo(paths, numOfVertex - 1);
     }
 
     @SuppressWarnings("unchecked")
-    private PathInfo<V, E>[] dijkstra(V from, V to) {
+    private Path<E>[] dijkstra(V from, Integer toVex) {
         int firstPickupVex = indexOfVertex(from);
         if (firstPickupVex == -1) return null;
+        RBTreeSet<Integer> redundant = new RBTreeSet<>();
         BinaryIndexHeap<Path<E>> heap = new BinaryIndexHeap<>();
         Path<E>[] paths = new Path[numOfVertex];
-        slack(firstPickupVex, firstPickupVex, paths, heap);
-
-        int length = 0;
-        for (int i = 0; i < numOfVertex - 1; i++) {
-            Path<E> pickupPath = heap.remove();
-            if (pickupPath == null) break;
-//            PrintTreeUtil.printIndexHeap(heap);
-//            PrintUtils.debug("remove----" + pickupPath);
-            length++;
-            slack(pickupPath.adjVex, firstPickupVex, paths, heap);
-        }
-
-        PathInfo<V, E>[] pathInfos = new PathInfo[length];
-        for (int i = 0, j = 0; i < paths.length; i++) {
-            if (paths[i] != null) {
-                V toVertex = vertices[i].element;
-                E weight = paths[i].weight;
-                DynamicArray<Integer> integers = paths[i].vertices;
-                V[] vexes = (V[]) new Object[integers.size()];
-                for (int k = 0; k < vexes.length; k++) {
-                    vexes[k] = vertices[integers.get(k)].element;
+        paths[firstPickupVex] = new Path<>(firstPickupVex);
+        paths[firstPickupVex].addVertex(firstPickupVex);
+        for (Path<E> path = paths[firstPickupVex]; path != null; ) {
+            if (toVex != null && path.adjVex == toVex) break;
+            redundant.add(path.adjVex);
+            Vertex<V, E> vertex = vertices[path.adjVex];
+            Edge<E> edge = vertex.firstEdge;
+            while (edge != null) {
+                Edge<E> e = edge;
+                edge = edge.next;
+                if (redundant.contains(e.adjVex)) continue;
+                Path<E> p = slack(e, paths);
+                if (p == null || p.weight == null) continue;
+                if (p.queueIndex == null) {
+                    p.queueIndex = heap.insert(p);
+                } else {
+                    heap.update(p.queueIndex);
                 }
-                pathInfos[j++] = new PathInfo<>(toVertex, weight, vexes);
+            }
+            path = heap.remove();
+        }
+        paths[firstPickupVex] = null;
+        return paths;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Path<E>[] bellmanFord(V from) {
+        int firstVex = indexOfVertex(from);
+        if (firstVex == -1) return null;
+        Path<E>[] paths = new Path[numOfVertex];
+        paths[firstVex] = new Path<>(firstVex, null);
+        paths[firstVex].addVertex(firstVex);
+        for (int j = 0; j < numOfVertex - 1; j++) {
+            for (Vertex<V, E> vertex : vertices) {
+                Edge<E> e = vertex.firstEdge;
+                while (e != null) {
+                    slack(e, paths);
+                    e = e.next;
+                }
+            }
+        }
+        paths[firstVex] = null;
+        return paths;
+    }
+
+    /**
+     * 松弛操作
+     * 对一条边进行松弛操作
+     */
+    private Path<E> slack(Edge<E> edge, Path<E>[] paths) {
+        // path等于空为无穷大，weight等于空表示权为0
+        Path<E> inDegreePath = paths[edge.fromVex];
+        if (inDegreePath == null) return null;
+        Path<E> path = paths[edge.adjVex];
+        E newWeight = inDegreePath.weight != null ? inDegreePath.weight.add(edge.weight) : edge.weight;
+        if (newWeight == null) throw new NullPointerException();
+        if (path == null) {
+            path = new Path<>(edge.adjVex, newWeight);
+            path.addVertices(inDegreePath.vertices);
+            path.addVertex(edge.adjVex);
+            paths[edge.adjVex] = path;
+        } else {
+            if (path.weight != null && path.weight.compareTo(newWeight) > 0) {
+                path.weight = newWeight;
+                path.vertices.clear();
+                path.addVertices(inDegreePath.vertices);
+                path.addVertex(edge.adjVex);
+            }
+        }
+        return path;
+    }
+
+    @SuppressWarnings("unchecked")
+    private PathInfo<V, E>[] pathToPathInfo(Path<E>[] paths, int length) {
+        PathInfo<V, E>[] pathInfos = new PathInfo[length];
+        for (int vex = 0, j = 0; vex < paths.length; vex++) {
+            if (paths[vex] != null) {
+                pathInfos[j++] = pathToPathInfo(paths[vex]);
             }
         }
         return pathInfos;
     }
 
-    /**
-     * 松弛操作
-     */
-    private void slack(int pickupVex, int firstVex, Path<E>[] paths, BinaryIndexHeap<Path<E>> heap) {
-        Vertex<V, E> vertex = vertices[pickupVex];
-        Edge<E> p = vertex.firstEdge;
-        Path<E> pickupPath = paths[pickupVex];
-        while (p != null) {
-            if (p.adjVex == firstVex) {
-                p = p.next;
-                continue;
-            }
-            Path<E> path = paths[p.adjVex];
-            if (path == null) {
-                path = paths[p.adjVex] = new Path<>(p);
-                if (pickupPath != null) {
-                    path.weight = pickupPath.weight.add(path.weight);
-                    path.addVertices(pickupPath.vertices);
-                } else {
-                    path.addVertex(pickupVex);
-                }
-                path.addVertex(p.adjVex);
-                path.queueIndex = heap.insert(path);
-//                PrintTreeUtil.printIndexHeap(heap);
-//                PrintUtils.debug("insert----" + path);
-            } else {
-                E newWeight = p.weight.add(pickupPath.weight);
-                if (path.weight.compareTo(newWeight) > 0) {
-                    path.weight = newWeight;
-                    path.vertices.clear();
-                    path.addVertices(pickupPath.vertices);
-                    path.addVertex(p.adjVex);
-                    heap.update(path.queueIndex, path);
-//                    PrintTreeUtil.printIndexHeap(heap);
-//                    PrintUtils.debug("update----" + path);
-                }
-            }
-            p = p.next;
+    @SuppressWarnings("unchecked")
+    private PathInfo<V, E> pathToPathInfo(Path<E> path) {
+        V toVertex = vertices[path.adjVex].element;
+        DynamicArray<Integer> integers = path.vertices;
+        V[] vexes = (V[]) new Object[integers.size()];
+        for (int k = 0; k < vexes.length; k++) {
+            vexes[k] = vertices[integers.get(k)].element;
         }
+        return new PathInfo<>(toVertex, path.weight, vexes);
     }
 
     @Override
-    public PathInfo<V, E>[] shortestPath() {
-        return new PathInfo[0];
+    public PathInfo<V, E>[][] shortestPath() {
+        Path<E>[][] floyd = floyd();
+        PathInfo<V, E>[][] vePathInfo = new PathInfo[numOfVertex][numOfVertex];
+        for (int i = 0; i < floyd.length; i++) {
+            for (int j = 0; j < floyd[i].length; j++) {
+                if (floyd[i][j] != null) {
+                    vePathInfo[i][j] = pathToPathInfo(floyd[i][j]);
+                }
+            }
+        }
+        return vePathInfo;
+    }
+
+    private Path<E>[][] floyd() {
+        Path<E>[][] paths = new Path[numOfVertex][numOfVertex];
+        for (int i = 0; i < vertices.length; i++) {
+            Edge<E> e = vertices[i].firstEdge;
+            while (e != null) {
+                paths[i][e.adjVex] = new Path<>(e.adjVex, e.weight);
+                paths[i][e.adjVex].addVertex(i);
+                paths[i][e.adjVex].addVertex(e.adjVex);
+                e = e.next;
+            }
+        }
+        PrintUtils.println(paths);
+        // path == null 表示路径无穷大
+        // path != null && path.weight == null 表示权为0
+        for (int k = 0; k < numOfVertex; k++) {
+            for (int i = 0; i < numOfVertex; i++) {
+                // optimize
+                if (i == k || paths[i][k] == null) continue;
+                for (int j = 0; j < numOfVertex; j++) {
+//                    if (i == j || paths[i][k] == null || paths[k][j] == null) continue;
+                    if (i == j || paths[k][j] == null) continue;
+                    E newWeight = paths[i][k].weight.add(paths[k][j].weight);
+                    if (paths[i][j] == null) {
+                        paths[i][j] = new Path<>(j, newWeight);
+                        paths[i][j].addVertex(i);
+                        paths[i][j].addVertex(j);
+                    } else if (paths[i][j].weight.compareTo(newWeight) > 0) {
+                        paths[i][j].weight = newWeight;
+                        paths[i][j].vertices.clear();
+                        paths[i][j].addVertices(paths[i][k].vertices);
+                        paths[i][j].addVertices(paths[k][j].vertices, 1);
+                    }
+                }
+            }
+        }
+        PrintUtils.println("--------------------");
+        PrintUtils.println(paths);
+        return paths;
     }
 
     @SuppressWarnings("unchecked")
@@ -340,6 +431,7 @@ public class ListGraph<V, E extends IWeightedEdge<E>> implements IWeightGraph<V,
             }
         }
         BinaryHeap<Edge<E>> heap = new BinaryHeap<>(edges);
+        // 这里只适用于无向图或者有向图的来回权重是一样的
         TreeUnionFind<Integer> unionFind = new TreeUnionFind<>();
         EdgeInfo<V, E>[] result = new EdgeInfo[numOfVertex - 1];
         int resultIndex = 0;
@@ -484,14 +576,13 @@ public class ListGraph<V, E extends IWeightedEdge<E>> implements IWeightGraph<V,
         BinaryIndexHeap.ElementIndex queueIndex;
         DynamicArray<Integer> vertices = new DynamicArray<>(3);
 
+        public Path(int adjVex) {
+            this.adjVex = adjVex;
+        }
+
         public Path(int adjVex, E weight) {
             this.adjVex = adjVex;
             this.weight = weight;
-            this.queueIndex = null;
-        }
-
-        public Path(Edge<E> edge) {
-            this(edge.adjVex, edge.weight);
             this.queueIndex = null;
         }
 
@@ -506,6 +597,12 @@ public class ListGraph<V, E extends IWeightedEdge<E>> implements IWeightGraph<V,
 
         public void addVertices(DynamicArray<Integer> vertices) {
             this.vertices.addAll(vertices);
+        }
+
+        public void addVertices(DynamicArray<Integer> vertices, int start) {
+            for (int j = start; j < vertices.size(); j++) {
+                this.vertices.add(vertices.get(j));
+            }
         }
 
         @Override

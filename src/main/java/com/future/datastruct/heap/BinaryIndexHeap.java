@@ -8,10 +8,11 @@ import java.util.Iterator;
  * 索引小顶堆
  * 索引堆在实际使用过程中最麻烦的是，删除时候的逻辑复杂度相比普通二叉堆增加了，
  * 外面使用该索引堆的时候，需要知道索引，而删除的时候，为了不浪费空间，元素需要移动，则元素索引则会改变。
- * 此时，有三种做法。
+ * 此时，有四种做法。
  * 一：继承约定的IndexHeapElement；此做法管理了index的维护和更新，使用者得到简便，不用关心索引。负面影响就是必须得继承，在使用上会受限；比如普通的Integer就存不了
  * 二：在remove的时候采用事件通知；通知让外面管理了index的对象需要更新索引，此做法暴露细节太多，外面使用不便
- * 三：使用IndexHeapElement包装实际对象E；该做法好处在于使用方便，如果使用者关心索引，则获取IndexReference对象，不关心，则如同使用普通堆一样，这里采用第三种做法。
+ * 三：使用IndexHeapElement包装实际对象E；该做法好处在于使用方便，如果使用者关心索引，则获取IndexHeapElement对象，不关心，则如同使用普通堆一样。
+ * 四：采用ElementIndex对象包装index，这样就使得传出去的index是个对象，内部的index会被维护；这里采用的这个做法。
  *
  * @author jayzhou
  */
@@ -138,7 +139,19 @@ public class BinaryIndexHeap<E> implements IHeap<E> {
         return null;
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unchecked")
+    public void update(ElementIndex e) {
+        int elementIndex = e.index;
+        E value = (E) elements[elementIndex];
+        if (comparator == null) {
+            siftDownByComparable(reverses[elementIndex], elementIndex, value);
+            siftUpByComparable(reverses[elementIndex], elementIndex, value);
+        } else {
+            siftDownByComparator(reverses[elementIndex], elementIndex, value);
+            siftUpByComparator(reverses[elementIndex], elementIndex, value);
+        }
+    }
+
     public E update(ElementIndex e, E value) {
         return update(e.index, value);
     }

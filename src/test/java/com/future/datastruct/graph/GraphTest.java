@@ -126,13 +126,46 @@ public class GraphTest {
     }
 
     @Test
-    public void testShortestPath() {
+    public void testABPath() {
         IWeightGraph<String, Edge> graph = new ListGraph<>(false, GraphData.VERTICES_AF);
         addWeightedEdge(graph, GraphData.SP);
         System.out.println(graph);
-        IWeightGraph.PathInfo<String, Edge>[] as = graph.shortestPath("A");
+        IWeightGraph.PathInfo<String, Edge> as = graph.shortestPath("E", "A");
+        PrintUtils.println(as);
+    }
+
+    @Test
+    public void testDijkstra() {
+        IWeightGraph<String, Edge> graph = new ListGraph<>(false, GraphData.VERTICES_AF);
+        addWeightedEdge(graph, GraphData.SP);
+        System.out.println(graph);
+        IWeightGraph.PathInfo<String, Edge>[] as = graph.shortestPath("E", IWeightGraph.SHORTEST_PATH_DIJKSTRA);
         for (IWeightGraph.PathInfo<String, Edge> a : as) {
             PrintUtils.println(a);
         }
     }
+
+    @Test
+    public void testBellmanFord() {
+        IWeightGraph<String, Edge> graph = new ListGraph<>(false, GraphData.VERTICES_AF);
+        addWeightedEdge(graph, GraphData.SP);
+        System.out.println(graph);
+        IWeightGraph.PathInfo<String, Edge>[] as = graph.shortestPath("E", IWeightGraph.SHORTEST_PATH_BELLMAN_FORD);
+        Assert.assertNotNull(as);
+        for (IWeightGraph.PathInfo<String, Edge> a : as) {
+            PrintUtils.println(a);
+        }
+    }
+
+
+    @Test
+    public void testFloyd() {
+        IWeightGraph<String, Edge> graph = new ListGraph<>(false, GraphData.VERTICES_AF);
+        addWeightedEdge(graph, GraphData.SP);
+        System.out.println(graph);
+        IWeightGraph.PathInfo<String, Edge>[][] as = graph.shortestPath();
+        Assert.assertNotNull(as);
+        PrintUtils.println(as);
+    }
+
 }

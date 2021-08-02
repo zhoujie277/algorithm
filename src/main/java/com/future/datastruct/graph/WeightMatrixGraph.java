@@ -70,13 +70,13 @@ public class WeightMatrixGraph<V, E extends IWeightedEdge<E>> extends MatrixGrap
     }
 
     @Override
-    public PathInfo<V, E>[] shortestPath(V from) {
+    public PathInfo<V, E>[] shortestPath(V from, int type) {
         return new PathInfo[0];
     }
 
     @Override
-    public PathInfo<V, E>[] shortestPath() {
-        return new PathInfo[0];
+    public PathInfo<V, E>[][] shortestPath() {
+        return new PathInfo[0][0];
     }
 
     @SuppressWarnings("unchecked")
