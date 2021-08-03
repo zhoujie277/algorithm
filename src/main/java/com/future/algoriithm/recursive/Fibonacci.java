@@ -59,6 +59,19 @@ public class Fibonacci {
         return cur;
     }
 
+    // 特征方程
+    public static int equation(int n) {
+        n = n - 1;
+        double c = Math.sqrt(5);
+        return (int) ((Math.pow((1 + c) / 2, n) - Math.pow((1 - c) / 2, n)) / c);
+    }
+
+    // 尾递归
+    public static int tailRecursive(int n, int first, int second) {
+        if (n <= 1) return first;
+        return tailRecursive(n - 1, second, second + first);
+    }
+
     public static void main(String[] args) {
         int n = 7;
         int i = Fibonacci.get(n);
@@ -75,5 +88,11 @@ public class Fibonacci {
 
         int m = Fibonacci.rollArray(n);
         System.out.println(m);
+
+        int o = Fibonacci.equation(n);
+        System.out.println(o);
+
+        int p = Fibonacci.tailRecursive(n, 0, 1);
+        System.out.println(p);
     }
 }
