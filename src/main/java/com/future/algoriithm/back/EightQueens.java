@@ -15,7 +15,7 @@ import com.future.datastruct.list.TwoIntArray;
 public class EightQueens implements Printable {
 
     private final TwoIntArray chess;
-    private int chessCount;
+    private final int chessCount;
     private int putCount;
     private final int DEFAULT_CHESS_VALUE = 0;
 
@@ -65,27 +65,26 @@ public class EightQueens implements Printable {
         }
     }
 
-    private boolean putChess(int x, int y, int n) {
+    private void putChess(int x, int y, int n) {
         recursionCount++;
-        int code = chess.get(x, y);
-        if (code != DEFAULT_CHESS_VALUE) return false;
-        if (code == DEFAULT_CHESS_VALUE && n == 1) {
+        if (n == 1) {
             putCount++;
-            return true;
+            return;
         }
         mark(x, y, n);
         int i = x + 1;
         for (int j = 0; j < chessCount; j++) {
-            putChess(i, j, n - 1);
+            int code = chess.get(i, j);
+            if (code == DEFAULT_CHESS_VALUE) {
+                putChess(i, j, n - 1);
+            }
         }
         unmark(x, y, n);
-        return false;
     }
 
     @Override
     public void println() {
         PrintUtils.println("--------八皇后棋盘Solution1--------");
-//        chess.println();
         PrintUtils.println("total put count is " + putCount);
         PrintUtils.println("runMarkCount is " + runMarkCount);
         PrintUtils.println("recursionCount is " + recursionCount);
@@ -107,8 +106,8 @@ public class EightQueens implements Printable {
 
     public static void main(String[] args) {
         int length = 8;
-//        testSolution1(length);
-        testSolution2(length);
+        testSolution1(length);
+//        testSolution2(length);
     }
 }
 

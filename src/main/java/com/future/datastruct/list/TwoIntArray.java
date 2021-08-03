@@ -58,7 +58,7 @@ public class TwoIntArray implements Printable {
 
     public void or(int x, int y, int code) {
         if (!inRange(x, y)) return;
-        array[x][y] ^= code;
+        array[x][y] |= code;
     }
 
     public void and(int x, int y, int code) {
