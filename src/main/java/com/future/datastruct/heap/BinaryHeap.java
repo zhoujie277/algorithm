@@ -8,6 +8,16 @@ import java.util.NoSuchElementException;
 
 /**
  * 二叉堆
+ *
+ * 二叉堆的初始批量构建堆的方式有两种：
+ * 1、自顶向下的上滤
+ * 2、自底向上的下滤
+ * 其中第1种时间复杂度为O(nlogN)，而第二种可接近于O(n)。
+ * 因为其第一种在初始元素少的时候上滤的元素少，后面树高元素多的时候需要进行上滤的操作多；
+ * 而第二种恰恰相反，在初始元素少的时候，需要进行下滤的元素多；而在需要下滤路径比较长的时候元素少；并且总共只需要一半的元素进行下滤
+ * 故第2中批量建堆效率更优。
+ *
+ * @author jayzhou
  */
 public class BinaryHeap<T extends Comparable<T>> implements IHeap<T> {
 

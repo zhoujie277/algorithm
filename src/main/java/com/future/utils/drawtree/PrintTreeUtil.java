@@ -46,31 +46,37 @@ public class PrintTreeUtil {
         PrintUtils.println();
     }
 
+    public static void printPriority(Object queue, String name) {
+        DrawTree<Integer> drawTree = new DrawTree<>(new ProxyPriorityQueue(queue, name));
+        drawTree.println();
+        PrintUtils.println();
+    }
+
+    private static Object getField(Object inObject, String name) {
+        Class<?> aClass = inObject.getClass();
+        try {
+            java.util.List<Field> array = new java.util.ArrayList<>();
+            do {
+                array.addAll(Arrays.asList(aClass.getDeclaredFields()));
+                aClass = aClass.getSuperclass();
+            } while (aClass != null);
+            for (Field field : array) {
+                if (field.getName().equals(name)) {
+                    field.setAccessible(true);
+                    return field.get(inObject);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private static class ProxyTree implements IDrawableTree<Object> {
         final Object tree;
 
         public ProxyTree(Object instance) {
             this.tree = instance;
-        }
-
-        private Object getField(Object inObject, String name) {
-            Class<?> aClass = inObject.getClass();
-            try {
-                java.util.List<Field> array = new java.util.ArrayList<>();
-                do {
-                    array.addAll(Arrays.asList(aClass.getDeclaredFields()));
-                    aClass = aClass.getSuperclass();
-                } while (aClass != null);
-                for (Field field : array) {
-                    if (field.getName().equals(name)) {
-                        field.setAccessible(true);
-                        return field.get(inObject);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
         }
 
         @Override
@@ -168,6 +174,23 @@ public class PrintTreeUtil {
             if (node == null) return "";
             int index = indexes[node].get();
             return elements[index].toString();
+        }
+    }
+
+    private static class ProxyPriorityQueue extends ProxyHeap {
+
+        private int[] heap;
+
+        public ProxyPriorityQueue(Object heap, String heapName) {
+            super(heap);
+            this.heap = (int[]) getField(heap, heapName);
+        }
+
+        @Override
+        public String string(Integer node) {
+            if (node == null) return "";
+            int index = heap[node];
+            return elements[index] == null? "null" : elements[index].toString();
         }
     }
 }

@@ -1,31 +1,30 @@
 package com.future.datastruct.tree.huffman;
 
-import com.future.datastruct.tree.BinaryTree;
-import com.future.datastruct.list.HeapPriorityQueue;
+import com.future.datastruct.heap.BinaryHeap;
 import com.future.datastruct.list.LinkedQueue;
+import com.future.datastruct.tree.BinaryTree;
 
 import java.util.Iterator;
 
 /**
  * 哈夫曼树
  */
-@SuppressWarnings("unused")
 public class HuffmanTree<T> extends BinaryTree<T> implements Iterable<T> {
 
     public static <T> HuffmanTree<T> createTree(WeightNode<T>[] array) {
-        HeapPriorityQueue<WeightNode<T>> queue = new HeapPriorityQueue<>(array);
+        BinaryHeap<WeightNode<T>> queue = new BinaryHeap<>(array);
         WeightNode<T> prev;
         WeightNode<T> current;
         int newWeight;
         WeightNode<T> node;
         while (queue.size() > 1) {
-            prev = queue.poll();
-            current = queue.poll();
+            prev = queue.remove();
+            current = queue.remove();
             newWeight = prev.weight + current.weight;
             node = newNode(null, newWeight, prev, current);
-            queue.push(node);
+            queue.add(node);
         }
-        return new HuffmanTree<>(queue.poll());
+        return new HuffmanTree<>(queue.remove());
     }
 
     public static <T> WeightNode<T> newNode(T value, int weight) {
@@ -123,6 +122,7 @@ public class HuffmanTree<T> extends BinaryTree<T> implements Iterable<T> {
 
     /**
      * 带权的结点
+     *
      * @param <T>
      */
     protected static class WeightNode<T> extends Node<T> implements Comparable<WeightNode<T>> {

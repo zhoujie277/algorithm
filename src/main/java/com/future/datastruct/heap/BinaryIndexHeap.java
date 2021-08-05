@@ -14,6 +14,7 @@ import java.util.Iterator;
  * 三：使用IndexHeapElement包装实际对象E；该做法好处在于使用方便，如果使用者关心索引，则获取IndexHeapElement对象，不关心，则如同使用普通堆一样。
  * 四：采用ElementIndex对象包装index，这样就使得传出去的index是个对象，内部的index会被维护；这里采用的这个做法。
  *
+ *
  * @author jayzhou
  */
 //@SuppressWarnings("unchecked")
