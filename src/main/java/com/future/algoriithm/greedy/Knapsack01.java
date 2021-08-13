@@ -13,6 +13,13 @@ import java.util.Comparator;
  * 在保证总重量不超过W的前提下，将哪几件物品装入背包，可使得背包总价值最大。
  * 注意：每个物品只有1件，也就是每个物品只能选择0件或1件，因此称为0-1背包问题。
  *
+ * 该示例演示了三种优先维度：分别是重量优先、价值优先、价值密度优先
+ * 无论是哪种优先策略。
+ * 贪心算法都不能保证最后的求解是最优解。
+ * 其中重量优先/价值优先很容易判断不是最优解，
+ * 而价值密度乍一看是可以求的最优解，但其实也不然。
+ * 试举例：{capacity = 50, weight={30, 25, 25}, value={40, 25, 25}}
+ *
  * @author jayzhou
  */
 public class Knapsack01 {
@@ -95,19 +102,27 @@ public class Knapsack01 {
         initData(knapsack);
         PrintUtils.println("----------------Value--------------------");
         DynamicArray<Goods> result = greedy(knapsack, Comparator.comparingInt(o -> o.value));
+        int maxValue = 0;
         for (int i = 0; i < result.size(); i++) {
+            maxValue += result.get(i).value;
             PrintUtils.println(result.get(i));
         }
+        System.out.println("maxValue=" + maxValue);
+        maxValue = 0;
         PrintUtils.println("----------------Weight--------------------");
         result = greedy(knapsack, (o1, o2) -> o2.weight - o1.weight);
         for (int i = 0; i < result.size(); i++) {
+            maxValue += result.get(i).value;
             PrintUtils.println(result.get(i));
         }
-
+        System.out.println("maxValue=" + maxValue);
+        maxValue = 0;
         PrintUtils.println("---------------ValueDensity---------------------");
         result = greedy(knapsack, Comparator.comparingDouble(o -> o.valueDensity));
         for (int i = 0; i < result.size(); i++) {
+            maxValue += result.get(i).value;
             PrintUtils.println(result.get(i));
         }
+        System.out.println("maxValue=" + maxValue);
     }
 }

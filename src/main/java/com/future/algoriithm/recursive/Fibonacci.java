@@ -2,6 +2,8 @@ package com.future.algoriithm.recursive;
 
 public class Fibonacci {
 
+    static int recursiveCount = 0;
+
     public static int recursion(int n) {
         if (n == 1) return 0;
         if (n == 2 || n == 3) return 1;
@@ -11,6 +13,7 @@ public class Fibonacci {
     public static int recursionOptimize(int n) {
         if (n == 1) return 0;
         if (n == 2 || n == 3) return 1;
+        recursiveCount = 0;
         int[] array = new int[n];
         array[1] = array[2] = 1;
         // 前n项，索引为n-1
@@ -19,6 +22,7 @@ public class Fibonacci {
 
     private static int recursion(int i, int[] array) {
         if (array[i] == 0) {
+            recursiveCount++;
             return recursion(i - 1, array) + recursion(i - 2, array);
         }
         return array[i];
@@ -82,6 +86,7 @@ public class Fibonacci {
 
         int k = Fibonacci.recursionOptimize(n);
         System.out.println(k);
+        System.out.println("recursionCount=" + recursiveCount);
 
         int l = Fibonacci.array(n);
         System.out.println(l);
