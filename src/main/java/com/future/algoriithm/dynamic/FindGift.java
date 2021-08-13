@@ -10,15 +10,27 @@ package com.future.algoriithm.dynamic;
  */
 public class FindGift {
 
+    /**
+     * 空间压缩
+     */
     public static int beta(int[][] chess) {
         int m = chess.length;
         int n = chess[0].length;
-        int left = 0, top = 0, now = 0;
+        int[] dp = new int[m];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[j] = chess[i][j];
+                } else if (i == 0) {
+                    dp[j] = dp[j - 1] + chess[i][j];
+                } else if (j == 0) {
+                    dp[j] = dp[j] + chess[i][j];
+                } else {
+                    dp[j] = Math.max(dp[j - 1], dp[j]) + chess[i][j];
+                }
             }
         }
-        return now;
+        return dp[m - 1];
     }
 
     /**
@@ -51,5 +63,7 @@ public class FindGift {
         int[][] chess = new int[][]{{1, 3, 1}, {1, 5, 1}, {4, 2, 1}};
         int alpha = alpha(chess);
         System.out.println("alpha=" + alpha);
+        int beta = beta(chess);
+        System.out.println("beta=" + beta);
     }
 }
