@@ -1,4 +1,4 @@
-package com.future.algoriithm.dynamic;
+package com.future.algoriithm.dynamic.linear;
 
 /**
  * 在一个m*n的棋盘中每一格都放有一个礼物。每个礼物都有一定的价值（价值大于0）。
