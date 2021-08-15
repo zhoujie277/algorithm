@@ -1,4 +1,4 @@
-package com.future.algoriithm.practice;
+package com.future.algoriithm.back;
 
 import com.future.utils.PrintUtils;
 import com.future.utils.Printable;
