@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 /**
  * 无重复的最长子串
+ * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长子串 的长度。
  *
  * @author jayzhou
  */
@@ -45,6 +46,7 @@ public class NoRepeatLongestSubsequence {
         // 字符上一次出现的位置
         HashMap<Character, Integer> map = new HashMap<>();
         map.put(chars[0], 0);
+        // li是以s[i-1]字符结尾的最长不重复子串的开始索引(最左索引)
         int li = 0;
         int max = 1;
         for (int i = 1; i < chars.length; i++) {
