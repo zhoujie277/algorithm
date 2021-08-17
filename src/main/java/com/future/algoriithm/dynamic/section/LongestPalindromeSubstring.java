@@ -1,5 +1,7 @@
 package com.future.algoriithm.dynamic.section;
 
+import java.util.Arrays;
+
 import static com.future.algoriithm.dynamic.DynamicProgramming.printDp;
 
 /**
@@ -21,6 +23,165 @@ public class LongestPalindromeSubstring {
         return "";
     }
 
+    private static char[] preprocess(char[] chars) {
+        char[] newChars = new char[(chars.length << 1) + 3];
+        newChars[0] = '^';
+        newChars[1] = '#';
+        newChars[newChars.length - 1] = '$';
+        for (int i = 0; i < chars.length; i++) {
+            int idx = (i + 1) << 1;
+            newChars[idx] = chars[i];
+            newChars[idx + 1] = '#';
+        }
+        System.out.println(Arrays.toString(newChars));
+        return newChars;
+    }
+
+    @SuppressWarnings("SpellCheckingInspection")
+    private static String manacherOpt(String s) {
+        if (s == null || s.length() <= 1) return s;
+        int begin = 2;
+        int max = 1;
+        char[] chars = preprocess(s.toCharArray());
+        int[] manacher = new int[chars.length];
+        int c = 0, r = 0;
+        for (int i = 2; i < chars.length - 2; i++) {
+            if (i < r) {
+                int li = (c << 1) - i;
+                int ri = i + manacher[li];
+                if (ri < r) {
+                    manacher[i] = manacher[li];
+                    continue;
+                }
+                manacher[i] = ri == r ? manacher[li] : (r - i);
+            }
+
+            while (chars[i + manacher[i] + 1] == chars[i - manacher[i] - 1]) {
+                manacher[i]++;
+            }
+
+            if (i + manacher[i] > r) {
+                r = i + manacher[i];
+                c = i;
+            }
+
+            if (manacher[i] > max) {
+                max = manacher[i];
+                begin = i;
+            }
+        }
+        // max代表manacher数组以begin为中心点向一方扩展的元素个数。 begin - max 是开始的索引
+        begin = (begin - max) >> 1;
+        return s.substring(begin, begin + max);
+    }
+
+    @SuppressWarnings("SpellCheckingInspection")
+    private static String manacher(String s) {
+        if (s == null || s.length() <= 1) return s;
+        int begin = 2;
+        int max = 1;
+        char[] chars = preprocess(s.toCharArray());
+        int[] manacher = new int[chars.length];
+        int c = 0, r = 0;
+        for (int i = 2; i < chars.length - 2; i++) {
+            if (i < r) {
+                int li = (c << 1) - i;
+                manacher[i] = (i + manacher[li] <= r) ? manacher[li] : (r - i);
+            }
+
+            while (chars[i + manacher[i] + 1] == chars[i - manacher[i] - 1]) {
+                manacher[i]++;
+            }
+
+            if (i + manacher[i] > r) {
+                r = i + manacher[i];
+                c = i;
+            }
+
+            if (manacher[i] > max) {
+                max = manacher[i];
+                begin = i;
+            }
+        }
+        // max代表manacher数组以begin为中心点向一方扩展的元素个数。 begin - max 是开始的索引
+        begin = (begin - max) >> 1;
+        return s.substring(begin, begin + max);
+    }
+
+    /**
+     * 扩展中心法的优化
+     * 以相同元素为基准，向旁边扩散。该算法包含了以中心线为基准的扩散，故相比普通的中心扩散法优化至少一半。
+     * 时间复杂度：最坏情况，"abababababababa"这种串。每次都需要扩散遍历。此时复杂度为：O(n^2)
+     * 空间复杂度: O(1)
+     */
+    private static String extendsCenterOpt(String s) {
+        if (s == null || s.length() <= 1) return s;
+        char[] chars = s.toCharArray();
+        int max = 1;
+        int begin = 0;
+        int l, r;
+        for (int i = 1, li = 0; i < chars.length; i++) {
+            while (i < chars.length && chars[li] == chars[i]) {
+                i++;
+            }
+            l = li;
+            r = i - 1;
+            while (l >= 0 && r < chars.length && chars[l] == chars[r]) {
+                l--;
+                r++;
+            }
+            int len = r - l - 1;
+            if (len > max) {
+                max = len;
+                begin = l + 1;
+            }
+            li = i;
+        }
+        return new String(chars, begin, max);
+    }
+
+    /**
+     * 扩展中心法
+     * 逐个遍历数组中的每个元素，分别计算以该元素为中心扩撒的回文串长度，如果该长度比之前的大，则覆盖。
+     * 注意：由于有奇偶型存在，所以还需要增加该元素和该元素右边的中心线为基准的扩散。
+     * 另外：数组首尾两端的元素因为以其为中心最大的回文子串便是它自身，故不需要遍历。
+     * *    又因为，去掉首尾两数之后，便会有一端的中心线遍历不到，所以在最后需要补上判断。
+     * *    并且，为了方便计算，所以从数组后面元素开始遍历，这样最后补上chars[0] ==chars[1]的判断即可。
+     * <p>
+     * 时间复杂度：最坏时间复杂度，整个字符都是回文串，此时，时间复杂度O(n^2)。可优化
+     * 空间复杂度：O(1)
+     */
+    private static String extendsCenter(String s) {
+        if (s == null || s.length() <= 1) return s;
+        char[] chars = s.toCharArray();
+        int max = 1;
+        int begin = 0;
+        for (int i = chars.length - 2; i >= 1; i--) {
+            // 基于字符i为中心的扩散
+            int len1 = palindromeLen(chars, i - 1, i + 1);
+            // 基于i和i+1之间的竖线扩散
+            int len2 = palindromeLen(chars, i, i + 1);
+            len1 = Math.max(len1, len2);
+            if (len1 > max) {
+                max = len1;
+                begin = i - ((max - 1) >> 1);
+            }
+        }
+        if (chars[0] == chars[1] && max < 2) {
+            max = 2;
+            begin = 0;
+        }
+        return new String(chars, begin, max);
+    }
+
+    private static int palindromeLen(char[] chars, int l, int r) {
+        while (l >= 0 && r < chars.length && chars[l] == chars[r]) {
+            l--;
+            r++;
+        } // len = (r - 1) - (l + 1) + 1 = r - l - 1;
+        return r - l - 1;
+    }
+
     /**
      * 题意要求返回string，alpha版本要返回string比较难。
      * 换一种思路，依然是动态规划，
@@ -33,7 +194,7 @@ public class LongestPalindromeSubstring {
      * 计算顺序，依然从左至右，从下至上搜索。
      */
     private static String beta(String s) {
-        if (s == null || s.length() == 0) return "";
+        if (s == null || s.length() == 0) return s;
         char[] chars = s.toCharArray();
         int n = chars.length;
         int max = 0;
@@ -52,12 +213,6 @@ public class LongestPalindromeSubstring {
                     beginIndex = i;
                 }
             }
-        }
-        for (int i = 0; i < f.length; i++) {
-            for (int j = 0; j < f[i].length; j++) {
-                System.out.print(f[i][j] + " ");
-            }
-            System.out.println();
         }
         return s.substring(beginIndex, beginIndex + max);
     }
@@ -137,9 +292,13 @@ public class LongestPalindromeSubstring {
 
     public static void main(String[] args) {
 //        String text1 = "babad";
-        String text1 = "cbbd";
+        String text1 = "abb";
         System.out.println("dev=" + dev(text1));
         System.out.println("alpha=" + alpha(text1));
         System.out.println("beta=" + beta(text1));
+        System.out.println("extendsCenter=" + extendsCenter(text1));
+        System.out.println("extendsCenterOpt=" + extendsCenterOpt(text1));
+        System.out.println("manacher=" + manacher(text1));
+        System.out.println("product=" + product(text1));
     }
 }

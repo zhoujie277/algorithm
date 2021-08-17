@@ -64,4 +64,12 @@ public class BinarySearchTreeTest {
             PrintUtils.print(t + " ");
         });
     }
+
+    @Test
+    public void testTraversal() {
+        testAdd();
+        searchTree.preOrder((v) -> {
+            System.out.println(v);
+        });
+    }
 }
