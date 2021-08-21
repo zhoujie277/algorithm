@@ -13,7 +13,8 @@ public class KMP {
         if (text == null || pattern == null || text.length() < pattern.length()) return -1;
         int[] nextTable = getOriginNextTable(pattern);
         int i = 0, j = 0;
-        while (j < pattern.length() && i - j < text.length()) {
+        int maxIndex = text.length() - pattern.length();
+        while (j < pattern.length() && i - j <= maxIndex) {
             if (text.charAt(i) == pattern.charAt(j)) {
                 i++;
                 j++;
@@ -31,7 +32,8 @@ public class KMP {
         if (text == null || pattern == null || text.length() < pattern.length()) return -1;
         int[] nextTable = getNextTable(pattern);
         int i = 0, j = 0;
-        while (j < nextTable.length && i - j < text.length()) {
+        int maxIndex = text.length() - pattern.length();
+        while (j < nextTable.length && i - j <= maxIndex) {
             if (j < 0 || text.charAt(i) == pattern.charAt(j)) {
                 i++;
                 j++;
@@ -111,6 +113,9 @@ public class KMP {
         System.out.println("AABCAAABC=" + Arrays.toString(kmp.getNextTable(pattern3)));
 
         System.out.println("-------indexOf-------");
-        System.out.println(kmp.indexOf("abcfabczhoujie", "zhou"));
+        System.out.println("abcfabczhoujie indexOf=" + kmp.indexOf("abcfabczhoujie", "zhou"));
+        System.out.println("mississippi indexOf=" + kmp.indexOf("mississippi", "issipi"));
+        System.out.println("aaa indexOf=" + kmp.indexOf("aaa", "aaa"));
+        System.out.println("aaaaa indexOf=" + kmp.indexOf("aaaaa", "bba"));
     }
 }

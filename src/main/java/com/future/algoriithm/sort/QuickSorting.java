@@ -34,6 +34,18 @@ public class QuickSorting<E extends Comparable<E>> extends Sorter<E> {
         }
     }
 
+    private void quicksort2(int[] nums, int l, int r) {
+        if (l >= r) return;
+        int slow = l, fast = l;
+        for (; fast < r; fast++) {
+            if (nums[fast] > nums[r]) continue;
+            swap(slow++, fast);
+        }
+        swap(slow, r);
+        quicksort2(nums, l, slow - 1);
+        quicksort2(nums, slow + 1, r);
+    }
+
     private void quicksort(int left, int right) {
         if (left >= right) return;
         int start = left++;
