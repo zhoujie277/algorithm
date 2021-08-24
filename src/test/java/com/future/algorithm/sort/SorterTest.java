@@ -39,7 +39,7 @@ public class SorterTest {
         Integer[] array = Arrays.stream(intArray).boxed().toArray(Integer[]::new);
         Sorter[] sort = sort(array, new SelectionSorter<>(), new BubbleSorter<>(), new InsertSorter<>(),
                 new InsertSorter<>(InsertSorter.DIRECT_INSERT), new ShellSorter<>(ShellSorter.KNUTH_SEQUENCE),
-                new HeapSorter<>(), new MergeSorter<>(),  new ShellSorter<>(),
+                new HeapSorter<>(), new MergeSorter<>(), new ShellSorter<>(),
                 new QuickSorting<>(), new ShellSorter<>(ShellSorter.BINARY_SEQUENCE),
                 new ShellSorter<>(ShellSorter.BINARY_SEQUENCE_OPT),
                 new QuickSorting<>(QuickSorting.SWAP_FIND),
@@ -78,6 +78,21 @@ public class SorterTest {
                 new ShellSorter<>(ShellSorter.BINARY_SEQUENCE_OPT),
                 new JavaSorter<>()
         );
+    }
+
+    @Test
+    public void testQuickSorting() {
+//        int[] intArray = StdRandom.permutation(testLength << 1, testLength);
+//        int[] intArray = new int[]{22, 37, 20, 59, 14, 28, 48, 29, 41, 2};
+        int[] intArray = new int[testLength];
+        for (int i = 0; i < testLength; i++) {
+            intArray[i] = (int) (Math.random() * 10) + 100;
+        }
+        Integer[] array = Arrays.stream(intArray).boxed().toArray(Integer[]::new);
+        QuickSorting<Integer> sorter = new QuickSorting<>(QuickSorting.THREE_WAY_QUICK);
+        sort(array, sorter);
+        PrintUtils.println(intArray);
+        PrintUtils.println(sorter.getElements());
     }
 
     @Test

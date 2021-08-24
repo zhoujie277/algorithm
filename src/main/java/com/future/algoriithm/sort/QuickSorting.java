@@ -17,6 +17,7 @@ import java.util.Arrays;
 public class QuickSorting<E extends Comparable<E>> extends Sorter<E> {
 
     public static final int SWAP_FIND = VERSION_DEFAULT << 1;
+    public static final int THREE_WAY_QUICK = VERSION_DEFAULT << 2;
 
     public QuickSorting() {
     }
@@ -31,8 +32,33 @@ public class QuickSorting<E extends Comparable<E>> extends Sorter<E> {
             quicksort(0, elements.length - 1);
         } else if (version == SWAP_FIND) {
             swapFind(0, elements.length - 1);
+        } else if (version == THREE_WAY_QUICK) {
+            threeWayQuicksort(0, elements.length - 1);
         }
     }
+
+    private void threeWayQuicksort(int left, int right) {
+        if (left >= right) return;
+        int pivot = right;
+        int l = left, p = l, r = right - 1;
+        int cmp = 0;
+        while (true) {
+            for (; l <= r && (cmp = compare(l, pivot)) <= 0; l++) {
+                if (cmp < 0) {
+                    swap(l, p++);
+                }
+            }
+            while (l <= r && compare(r, pivot) > 0) {
+                r--;
+            }
+            if (l > r) break;
+            swap(l, r--);
+        }
+        swap(pivot, l);
+        threeWayQuicksort(left, p - 1);
+        threeWayQuicksort(l + 1, right);
+    }
+
 
     private void quicksort2(int[] nums, int l, int r) {
         if (l >= r) return;
@@ -50,7 +76,7 @@ public class QuickSorting<E extends Comparable<E>> extends Sorter<E> {
         if (left >= right) return;
         int start = left++;
         int end = right;
-        while (left <= right) {
+        while (true) {
             while (left <= right && compare(right, start) >= 0) {
                 right--;
             }

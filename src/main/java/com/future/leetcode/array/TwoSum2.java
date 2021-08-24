@@ -40,8 +40,28 @@ public class TwoSum2 {
         return null;
     }
 
+    public int[] binarySearch(int[] numbers, int target) {
+        if (numbers == null || numbers.length == 0) return numbers;
+        for (int i = 0; i < numbers.length; i++) {
+            int tt = target - numbers[i];
+            int left = i + 1, right = numbers.length;
+            do {
+                int mid = (left + right) >>> 1;
+                if (mid != i && tt == numbers[mid]) return new int[]{i + 1, mid + 1};
+                if (tt <= numbers[mid]) {
+                    right = mid;
+                } else {
+                    left = mid + 1;
+                }
+            } while (left < right);
+        }
+        return new int[]{-1, -1};
+    }
+
     public static void main(String[] args) {
         int[] nums = new int[]{2, 7, 11, 15};
+        int[] nums1 = new int[]{1, 3, 4, 4};
         System.out.println(Arrays.toString(new TwoSum2().twoSum(nums, 9)));
+        System.out.println(Arrays.toString(new TwoSum2().binarySearch(nums, 8)));
     }
 }

@@ -81,7 +81,7 @@ public class RemoveElement {
     public static void main(String[] args) {
         int[] nums = new int[]{3, 2, 2, 3};
         RemoveElement instance = new RemoveElement();
-        int len = instance.removeElement(nums, 3);
+        int len = instance.removeElement2(nums, 3);
 //        int i = instance.removeElement(nums, 3);
         System.out.println(Arrays.toString(nums));
         System.out.println("len = " + len);

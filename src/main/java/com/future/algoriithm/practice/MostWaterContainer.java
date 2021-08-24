@@ -15,7 +15,7 @@ package com.future.algoriithm.practice;
  *
  * @author jayzhou
  */
-public class MostWaterContainer {
+class MostWaterContainer {
 
     public int maxArea(int[] height) {
         int l = 0, r = height.length - 1;

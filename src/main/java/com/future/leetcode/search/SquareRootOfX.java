@@ -23,13 +23,27 @@ package com.future.leetcode.search;
  *
  * @author jayzhou
  */
-public class SquareRootOfX {
+class SquareRootOfX {
 
+    // 返回整数部分
     public int mySqrt(int x) {
-        return 0;
+        if (x <= 1) return x;
+        int left = 0, right = x >> 1;
+        do {
+            int mid = (left + right) >> 1;
+            long square = (long) mid * mid;
+            if (square == x) return mid;
+            if (square > x) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } while (left <= right);
+        return right;
     }
 
     public static void main(String[] args) {
-
+        int x = 2147395599;
+        System.out.println(new SquareRootOfX().mySqrt(x));
     }
 }
