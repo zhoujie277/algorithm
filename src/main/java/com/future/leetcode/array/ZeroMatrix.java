@@ -30,7 +30,7 @@ public class ZeroMatrix {
 
     /**
      * 时间复杂度：O(mn)
-     * 空间复杂度：O(m)
+     * 空间复杂度：O(1)
      */
     public void setZeroes(int[][] matrix) {
         int m = matrix.length, n = matrix[0].length;
