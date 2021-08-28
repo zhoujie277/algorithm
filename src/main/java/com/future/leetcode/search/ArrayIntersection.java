@@ -15,6 +15,7 @@ import java.util.HashSet;
  *
  * @author jayzhou
  */
+@SuppressWarnings("all")
 public class ArrayIntersection {
 
     private void swap(int[] nums, int i, int j) {
