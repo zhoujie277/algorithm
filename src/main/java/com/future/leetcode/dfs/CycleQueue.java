@@ -1,4 +1,4 @@
-package com.future.leetcode.queue;
+package com.future.leetcode.dfs;
 
 /**
  * 循环队列

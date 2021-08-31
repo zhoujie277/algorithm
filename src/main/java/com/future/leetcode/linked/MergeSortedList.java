@@ -13,7 +13,7 @@ package com.future.leetcode.linked;
 @SuppressWarnings("all")
 public class MergeSortedList {
 
-    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    public ListNode mergeTwoLists2(ListNode l1, ListNode l2) {
         ListNode dummy = new ListNode(-1);
         ListNode tail = dummy;
         ListNode l = l1, r = l2;
@@ -38,6 +38,38 @@ public class MergeSortedList {
             tail.next = r;
             tail = r;
             r = r.next;
+        }
+        return dummy.next;
+    }
+
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+        ListNode left = l1;
+        ListNode right = l2;
+        ListNode dummy = new ListNode(-1);
+        ListNode tail = dummy;
+        while (left != null && right != null) {
+            ListNode node;
+            if (left.val <= right.val) {
+                node = left;
+                left = left.next;
+            } else {
+                node = right;
+                right = right.next;
+            }
+            tail.next = node;
+            tail = node;
+        }
+        while (left != null) {
+            tail.next = left;
+            tail = left;
+            left = left.next;
+        }
+        while (right != null) {
+            tail.next = right;
+            tail = right;
+            right = right.next;
         }
         return dummy.next;
     }

@@ -1,4 +1,4 @@
-package com.future.leetcode.queue;
+package com.future.leetcode.dfs;
 
 import java.util.Deque;
 import java.util.LinkedList;

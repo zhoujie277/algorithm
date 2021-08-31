@@ -1,4 +1,4 @@
-package com.future.leetcode.queue;
+package com.future.leetcode.dfs;
 
 /**
  * 完全平方数
