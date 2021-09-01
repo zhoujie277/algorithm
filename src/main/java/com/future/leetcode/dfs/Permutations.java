@@ -38,9 +38,9 @@ public class Permutations {
         return result;
     }
 
-    private void dfs(int[] nums, int index, List<List<Integer>> result) {
-        if (index == nums.length) {
-            List<Integer> list = new ArrayList<>(index);
+    private void dfs(int[] nums, int depth, List<List<Integer>> result) {
+        if (depth == nums.length) {
+            List<Integer> list = new ArrayList<>(depth);
             for (int num : nums) {
                 list.add(num);
             }
@@ -48,10 +48,10 @@ public class Permutations {
             return;
         }
 
-        for (int i = index; i < nums.length; i++) {
-            swap(nums, index, i);
-            dfs(nums, index + 1, result);
-            swap(nums, index, i);
+        for (int i = depth; i < nums.length; i++) {
+            swap(nums, depth, i);
+            dfs(nums, depth + 1, result);
+            swap(nums, depth, i);
         }
     }
 
@@ -61,7 +61,6 @@ public class Permutations {
         nums[j] = nums[i] ^ nums[j];
         nums[i] = nums[i] ^ nums[j];
     }
-
 
     public List<List<Integer>> permute2(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();

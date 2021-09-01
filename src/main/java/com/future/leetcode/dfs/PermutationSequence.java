@@ -1,5 +1,8 @@
 package com.future.leetcode.dfs;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * 排序序列
  * <p>
@@ -32,12 +35,43 @@ package com.future.leetcode.dfs;
  */
 public class PermutationSequence {
 
-    public String getPermutation(int n, int k) {
+    int count = 0;
 
-        return "";
+    /**
+     * 深度其实就是一个排列中的第几个位置
+     */
+    private boolean dfs(int depth, int n, int k, boolean[] seen, Deque<Integer> path) {
+        if (depth == n + 1) {
+            count++;
+            if (count == k) {
+                return true;
+            }
+            return false;
+        }
+        for (int i = 1; i <= n; i++) {
+            if (seen[i]) continue;
+            seen[i] = true;
+            path.addLast(i);
+            if (dfs(depth + 1, n, k, seen, path)) return true;
+            path.removeLast();
+            seen[i] = false;
+        }
+        return false;
+    }
+
+    public String getPermutation(int n, int k) {
+        Deque<Integer> path = new ArrayDeque<>();
+        boolean[] seen = new boolean[n + 1];
+        dfs(1, n, k, seen, path);
+        StringBuilder builder = new StringBuilder();
+        for (Integer integer : path) {
+            builder.append(integer);
+        }
+        return builder.toString();
     }
 
     public static void main(String[] args) {
-
+        PermutationSequence sequence = new PermutationSequence();
+        System.out.println(sequence.getPermutation(3, 3));
     }
 }
